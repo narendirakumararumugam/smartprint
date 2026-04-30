@@ -1,0 +1,87 @@
+@font-face {
+     font-family: 'Google Sans Flex';
+     font-weight: 100 900; /* Supports the full range of weights */
+  font-stretch: 25% 150%; /* Range for width/stretch if supported */
+  font-display: swap;
+    src: url("assets/fonts/Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD\,ROND\,opsz\,slnt\,wdth\,wght.ttf") format('truetype');
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #dbeafe;
+
+  --primary-glow: rgba(37,99,235,.18);
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+
+  --success: #10b981;
+  --danger: #ef4444;
+  --purple: #7c3aed;
+  --pink: #ec4899;
+
+  --text-900: #0f172a;
+  --text-700: #334155;
+  --text-500: #64748b;
+  --text-400: #94a3b8;
+  --text-300: #cbd5e1;
+
+  --bg-page: #f1f5f9;
+  --bg-white: #ffffff;
+  --bg-subtle: #f8fafc;
+
+  --border: #e2e8f0;
+  --border-focus: #93c5fd;
+
+  --nav-height: 64px;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-sm: 0 2px 6px rgba(0,0,0,.06);
+  --shadow: 0 4px 16px rgba(0,0,0,.08);
+  --shadow-md: 0 8px 28px rgba(0,0,0,.10);
+  --shadow-lg: 0 20px 48px rgba(0,0,0,.14);
+  --shadow-xl: 0 32px 72px rgba(0,0,0,.20);
+
+  --transition-fast: .15s ease;
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+  --transition-spring: .35s cubic-bezier(.34,1.56,.64,1);
+}
+
+
+* {
+  font-family: "Google Sans Flex", sans-serif !important;
+} 
+
+button{
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+::-webkit-scrollbar{
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: var(--text-300);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+

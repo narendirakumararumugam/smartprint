@@ -1,0 +1,80 @@
+<div class="shop-search-container">
+  <section
+    class="hero d-flex justify-content-center flex-column align-items-center"
+  >
+    <i class="bxf bx-printer hero-float hf1"></i>
+    <i class="bxf bx-book hero-float hf2"></i>
+    <i class="bxf bx-copy hero-float hf3"></i>
+    <div class="hero-badge d-flex flex-column align-items-center">
+      <div
+        class="shop-count d-flex align-items-center justify-content-center px-2 py-1 mb-2"
+      >
+        <i class="bxf bx-circle text-success"></i>
+        <span>245 shops available near you</span>
+      </div>
+      <div class="line1">
+        <h1>Find <span class="hl">Print & Xerox</span> Shops</h1>
+      </div>
+      <div class="line2">
+        <h1>Near You Instantly</h1>
+      </div>
+      <p class="line3">
+        Compare prices, wait times, and order from the best print shops around
+        you
+      </p>
+    </div>
+    <div class="search-box d-flex align-items-center justify-content-center">
+      <div class="filter d-flex align-items-center">
+        <i class="bxf bx-filter text-primary"></i>
+        <span>All Services</span>
+        <i class="bx bx-chevron-down text-primary"></i>
+      </div>
+      <input
+        id="nav-search"
+        type="search"
+        placeholder="Search by name, area..."
+        autocomplete="off"
+      />
+      <div class="search-btn d-flex align-items-center">
+        <i class="bx bx-search"></i>
+        <span>Search</span>
+      </div>
+    </div>
+    <div class="hero-stats d-flex mt-4">
+      <div class="stat">
+        <strong>2400+ </strong>
+        <span>Shops Listed</span>
+      </div>
+      <div class="stat">
+        <strong>98% </strong>
+        <span>On-time Ready</span>
+      </div>
+      <div class="stat">
+        <strong>4.7 </strong>
+        <span>Avg. Rating</span>
+      </div>
+      <div class="stat">
+        <strong>50K+ </strong>
+        <span>Happy Customers</span>
+      </div>
+    </div>
+  </section>
+  <section class="shops-list-section">
+    <!-- <div class="filter-strip">
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+      <button class="filter-chip"><i class="bx bx-border-all"></i>All shops</button>
+    </div> -->
+    <main class="content">
+      <div class="shops-grid">
+        @for (shop of shopsList; track shop) {
+          <app-shop-preview [shopPreviewDetails]="shop"></app-shop-preview>
+        }
+      </div>
+    </main>
+  </section>
+</div>

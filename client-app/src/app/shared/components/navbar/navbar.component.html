@@ -1,0 +1,26 @@
+<nav class="navbar d-flex align-items-center">
+  <a class="nav-logo d-flex align-items-center fw-bolder">
+    <div class="nav-logo-icon d-flex justify-content-center align-items-center">
+      <i class="bxf bx-printer"></i>
+    </div>
+    <span>Smart</span>
+    <span>Print</span>
+  </a>
+  <div class="nav-location d-flex align-items-center px-2 py-1">
+    <i class="bxf bx-location text-danger"></i>
+    <span>{{ userLocation }}</span>
+    <i class="bxf bx-chevron-down"></i>
+  </div>
+  <div class="nav-links">
+    @for (menu of menuItems; track menu) {
+      <a
+        href="/"
+        [routerLink]="menu.route"
+        class="nav-link d-flex align-items-center"
+        [class.active]="activeMenu === menu.label"
+        ><i [class]="menu.icon"></i> {{menu.label}}</a
+      >
+    }
+  </div>
+  <div class="nav-avatar" href="/" title="My Profile"></div>
+</nav>
