@@ -1,0 +1,82 @@
+scalar LocalDateTime
+scalar LocalTime
+
+type Shop {
+    id: ID!
+    name: String!
+    description: String
+    isVerified: Boolean
+    isActive: Boolean
+    phone: String
+    email: String
+    coverImage: String
+    logo: String
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
+    distanceFromUserLocation: String
+
+    # Relationships
+    location: ShopLocation
+    services: [ShopService]
+    pricing: [ShopPricing]
+    workingHours: [ShopWorkingHours]
+    reviews: [ShopReview]
+    tags: [Tag]
+}
+
+type ShopLocation {
+    id: ID!
+    address: String
+    city: String
+    pincode: String
+    latitude: Float
+    longitude: Float
+    # 'location' is usually handled as a custom GeoJSON scalar or String
+    location: String
+}
+
+type ShopWorkingHours {
+    id: ID!
+    dayOfWeek: String
+    openTime: String
+    closeTime: String
+    isClosed: Boolean
+}
+
+type LkpShopService {
+    id: ID!
+    name: String!
+}
+
+type ShopService {
+    id: ID!
+    service: LkpShopService
+}
+
+type ShopPricing {
+    id: ID!
+    service: LkpShopService
+    paperSize: String
+    printType: String
+    sides: String
+    price: Float!
+}
+
+type ShopReview {
+    id: ID!
+    userId: ID
+    rating: Float
+    review: String
+    createdAt: String
+}
+
+type Tag {
+    id: ID!
+    name: String
+    tagClass: String
+}
+
+type Query{
+    getPopularShopsNearby(userLat: Float!, userLon: Float!): [Shop]
+    getAllDetailsForShopByID(id: ID): Shop
+}
