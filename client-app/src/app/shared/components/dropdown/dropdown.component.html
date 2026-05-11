@@ -1,0 +1,19 @@
+<div class="cfg-group">
+  <div class="cfg-label">
+    <i [class]="labelIcon"></i>
+    {{label}}
+  </div>
+  <div ngbDropdown>
+    <button type="button" class="form-select" id="dd-element" ngbDropdownToggle>
+      {{ selectedValue }}
+    </button>
+
+    <div ngbDropdownMenu aria-labelledby="dd-element">
+      @for (opt of options; track opt) {
+        <button ngbDropdownItem (click)="updateValue(opt.value)">
+          {{ opt.label }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

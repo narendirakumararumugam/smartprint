@@ -1,0 +1,31 @@
+<div class="step-panel">
+  <div class="step-header">
+    <div class="step-badge mb-3">
+      <i class="bx bx-palette"></i>
+      Step 2 of 3
+    </div>
+    <h2 class="step-heading">Personalise your profile</h2>
+  </div>
+
+  <div class="form-group">
+    <label class="fg-label">Username</label>
+    <div class="input-wrap">
+      <i class="input-icon fa-solid fa-at"></i>
+      <input
+        class="form-input"
+        type="text"
+        id="username"
+        placeholder="arjun_mehta"
+      />
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-back" (click)="goToPreviousStep()">
+      <i class="bx bx-arrow-left"></i> Back
+    </button>
+    <button class="btn-next" (click)="goToNextStep()">
+      Continue <i class="bx bx-arrow-right"></i>
+    </button>
+  </div>
+</div>

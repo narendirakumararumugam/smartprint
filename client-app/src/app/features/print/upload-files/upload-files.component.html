@@ -1,0 +1,62 @@
+<div class="step-panel">
+  <div class="step-title mb-1">Upload Your Documents</div>
+  <div class="step-sub mb-2">
+    Drag & drop or browse to upload. Supports PDF, DOC, DOCX, PPT, PPTX, JPG,
+    PNG.
+  </div>
+
+  <div class="drop-zone" (click)="fileInput.click()">
+    <div class="dz-icon">
+      <i class="bxf bx-arrow-out-up-circle-half"></i>
+    </div>
+    <div class="dz-title">Drag & drop files here</div>
+    <div class="dz-sub">
+      or
+      <span>browse to upload</span>
+    </div>
+    <div class="dz-types">
+      <span class="dz-type">PDF</span>
+      <span class="dz-type">DOC</span>
+      <span class="dz-type">DOCX</span>
+      <span class="dz-type">PPT</span>
+      <span class="dz-type">PPTX</span>
+      <span class="dz-type">JPG</span>
+      <span class="dz-type">PNG</span>
+    </div>
+    <input
+      type="file"
+      #fileInput
+      multiple
+      accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"
+      style="display: none"
+      (change)="onSelectedFiles($event)"
+    />
+  </div>
+
+  <div class="file-list">
+    @for (fileItem of uploadedFiles(); track fileItem) {
+      <div class="file-item">
+        <div class="file-icon fi-pdf">
+          <i class="bxf bx-file"></i>
+        </div>
+        <div class="file-info">
+          <div class="file-name">{{ fileItem.name }}</div>
+          <div class="file-meta">{{ getFileSizeInMB(fileItem.size) }}</div>
+        </div>
+        <div class="action-btns d-flex alin-items-center gap-2">
+          <i class="bx bx-check bg-success text-white rounded-circle p-1"></i>
+          <i class="bxf bx-x text-secondary rounded-circle p-1" style="background-color: var(--bg-page)"></i>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="upload-tip">
+    <i class="bxf bx-info-circle"></i>
+    <div>
+      <strong>Tip:</strong> Maximum file size is 50MB per file. For best
+      results, upload files in PDF format. Your files are encrypted and deleted
+      after 7 days automatically.
+    </div>
+  </div>
+</div>

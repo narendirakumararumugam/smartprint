@@ -1,0 +1,263 @@
+@if (shopDetails(); as shop) {
+  <div class="modal-back" [class.open]="isOpen()">
+    <div class="modal">
+      <!-- LEFT -->
+      <div class="m-left">
+        <div class="m-cover">
+          <div
+            class="m-cov-img"
+            [style.backgroundImage]="'url(' + shop.coverImage + ')'"
+          ></div>
+
+          <div class="m-cov-grad"></div>
+
+          <div class="m-cov-body">
+            <div
+              class="m-logo"
+              [style.backgroundImage]="'url(' + shop.logo + ')'"
+            ></div>
+
+            <div class="m-cov-name">
+              {{ shop.name }}
+            </div>
+
+            <div class="m-cov-addr">
+              <i class="bx bx-location"></i>
+              {{ shop.address }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="m-stats">
+          <div class="m-stat">
+            <div class="m-stat-v">
+              <i class="bxf bx-star" style="color: var(--accent)"></i>
+              {{ shop.rating }}
+            </div>
+            <div class="m-stat-l">Rating</div>
+          </div>
+
+          <div class="m-stat">
+            <div class="m-stat-v">
+              <i class="bxf bx-location" style="color: #f87171"></i>
+              {{ shop.distance }} km
+            </div>
+            <div class="m-stat-l">Distance</div>
+          </div>
+
+          <div class="m-stat">
+            <div class="m-stat-v">
+              <i class="bx bx-clock" style="color: #60a5fa"></i>
+              {{ shop.waitTime }} mins
+            </div>
+            <div class="m-stat-l">Est. Wait</div>
+          </div>
+        </div>
+
+        <!-- Gallery -->
+        <!-- <div class="m-gallery">
+        @for (img of shop.gallery; track img) {
+          <img [src]="img" />
+        }
+      </div> -->
+      </div>
+
+      <!-- RIGHT -->
+      <div class="m-right">
+        <!-- Header -->
+        <div class="m-hd">
+          <div class="m-hd-l">
+            <div class="m-shop-name">
+              {{ shop.name }}
+
+              <span class="v-badge">
+                <i class="bxf bx-check-circle"></i> Verified
+              </span>
+            </div>
+
+            <div class="m-sub">
+              <i class="bxf bx-location"></i>
+              {{ shop.address }}
+            </div>
+          </div>
+
+          <div class="m-hd-r">
+            <button class="m-icon-btn">
+              <i
+                class="bx-bookmark"
+                [class]="shop.isFavourite ? 'bxs' : 'bx'"
+              ></i>
+            </button>
+
+            <button class="m-icon-btn">
+              <i class="bx bx-share"></i>
+            </button>
+
+            <button class="m-close">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="m-body">
+          <!-- Rating -->
+          <div class="rat-block">
+            <div class="rat-big">
+              {{ shop.rating }}
+            </div>
+
+            <div class="rat-r">
+              <div class="rat-stars-lg">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  @if (star <= floorRating) {
+                    <i class="bxf bx-star"></i>
+                  } @else if (star === ceilRating && shop.rating % 1 >= 0.5) {
+                    <i class="bxf bx-star-half"></i>
+                  } @else if (star > shop.rating) {
+                    <i class="bx bx-star"></i>
+                  }
+                }
+              </div>
+              <div class="rat-txt">
+                Based on {{ shop.totalReviews }} reviews
+              </div>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="q-pills">
+            @for (tag of shop.tags; track tag) {
+              <span class="pill" [class]="tag.tagClass">{{ tag.tagName }}</span>
+            }
+          </div>
+
+          <!-- About -->
+          <div class="d-sec">
+            <div class="d-sec-title">
+              <i class="bxf bx-info-circle"></i> About
+            </div>
+            <p class="about-txt">
+              {{ shop.about }}
+            </p>
+          </div>
+
+          <!-- Services -->
+          <div class="d-sec">
+            <div class="d-sec-title">
+              <i class="bxf bx-checklist"></i> Services Offered
+            </div>
+
+            <div class="svc-tags">
+              @for (svc of shop.services; track svc) {
+                <div class="svc-tag">
+                  <i class="bx bx-check"></i>
+                  {{ svc }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="d-sec">
+            <div class="d-sec-title">
+              <i class="bxf bx-price-tag"></i> Price List
+            </div>
+
+            <table class="ptable">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Spec</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of shop.pricing; track p) {
+                  <tr>
+                    <td>{{ p.service }}</td>
+                    <td>{{ p.spec }}</td>
+                    <td class="pc">₹{{ p.price }}/page</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Working Hours -->
+          <div class="d-sec">
+            <div class="d-sec-title">
+              <i class="bx bx-clock"></i> Working Hours
+            </div>
+
+            <div class="hrs-grid">
+              @for (h of shop.workingHours; track h.day) {
+                <div class="hr-row" [class.tod]="isToday(h.day)">
+                  <span class="hr-day"
+                    >{{ h.day }} {{ isToday(h.day) ? "(Today)" : "" }}</span
+                  >
+                  <span
+                    class="hr-time"
+                    [ngClass]="{ 'hr-cx': h.open === 'Closed' }"
+                  >
+                    {{
+                      h.open === "Closed" ? "Closed" : h.open + " - " + h.close
+                    }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="d-sec">
+            <div class="d-sec-title">
+              <i class="bxf bx-address-book"></i> Contact
+            </div>
+            <div class="m-contact">
+              <div class="ct-row">
+                <div class="ct-icon ci-ph">
+                  <i class="bx bx-phone"></i>
+                </div>
+                <div>
+                  <div class="ct-lbl">Phone</div>
+                  <div class="ct-val">{{ shop.phone }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="m-contact">
+              <div class="ct-row">
+                <div class="ct-icon ci-em">
+                  <i class="bx bx-envelope"></i>
+                </div>
+                <div>
+                  <div class="ct-lbl">Email</div>
+                  <div class="ct-val">{{ shop.email }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="m-foot">
+          <div class="m-foot-note">
+            <i class="bxf bx-shield"></i>
+            Secure order • No advance required
+          </div>
+
+          <button class="btn btn-ghost" (click)="closeModal()">
+            <i class="bx bx-x"></i>
+            Cancel
+          </button>
+
+          <button class="btn btn-primary" (click)="goToPrintPage()">
+            <i class="bxf bx-cart-alt"></i>
+            Proceed to Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

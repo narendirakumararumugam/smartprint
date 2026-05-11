@@ -2,6 +2,60 @@
   border-radius: 10px;
   font-size: 14px;
   border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  animation: staggerIn .5s ease both;
+}
+
+.shop-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+}
+
+.shop-card:hover .cv-overlay {
+  opacity: 1;
+}
+
+.shop-card:hover .c-view {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.cv-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.75) 0%,
+    rgba(15, 23, 42, 0.15) 50%,
+    transparent 100%
+  );
+  opacity: 0.55;
+  transform: opacity var(--transition);
+}
+
+.c-view{
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background-color: var(--bg-page);
+  color: var(--primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transition: all var(--transition);
+  font-size: 13px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.c-view i {
+  font-size: 16px;
 }
 
 .card-cover {
@@ -80,7 +134,7 @@
   color: var(--success);
 }
 
-.open-status span{
-    font-size: 12px;
-    border-radius: var(--radius-full);
+.open-status span {
+  font-size: 12px;
+  border-radius: var(--radius-full);
 }

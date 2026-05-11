@@ -1,0 +1,18 @@
+<div class="cfg-group">
+  <div class="cfg-label">
+    <i [class]="labelIcon"></i>
+    {{ label }}
+  </div>
+  <div class="toggle-group">
+    @for (opt of options; track opt) {
+      <div
+        class="toggle-opt"
+        [class.selected]="opt.value == selectedValue"
+        (click)="updateValue(opt.value)"
+      >
+        <i [class]="optionIcon"></i>
+        {{ opt.label }}
+      </div>
+    }
+  </div>
+</div>

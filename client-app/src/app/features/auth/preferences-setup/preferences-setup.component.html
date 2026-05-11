@@ -1,0 +1,152 @@
+<div class="panel" id="step3">
+  <div class="step-header">
+    <span class="step-badge mb-3">
+      <i class="bx bx-slider"></i>
+      Step {{ currentStep }} of 3
+    </span>
+    <h2 class="step-heading">Your print preferences</h2>
+    <p class="step-sub">We'll use these as defaults when you place orders.</p>
+  </div>
+
+  <!-- Row 1 -->
+  <div class="form-row d-flex gap-2">
+    <!-- Print Mode -->
+    <div class="form-group col-6">
+      <label class="fg-label">Default Print Mode</label>
+      <div ngbDropdown>
+        <button
+          type="button"
+          class="form-select"
+          id="print-mode-dd"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-palette"></i>
+          {{ selectedPrintMode || "Select Print Mode" }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="print-mode-dd">
+          @for (mode of printModes; track mode) {
+            <button ngbDropdownItem (click)="selectedPrintMode = mode">
+              {{ mode }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Sides -->
+    <div class="form-group col-6">
+      <label class="fg-label">Default Sides</label>
+      <div ngbDropdown>
+        <button
+          type="button"
+          class="form-select"
+          id="print-sides-dd"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-copy"></i>
+          {{ selectedPrintSides || "Select Sides" }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="print-sides-dd">
+          @for (side of printSides; track side) {
+            <button ngbDropdownItem (click)="selectedPrintSides = side">
+              {{ side }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="form-row d-flex gap-2">
+    <!-- Paper Size -->
+    <div class="form-group col-6">
+      <label class="fg-label">Paper Size</label>
+      <div ngbDropdown>
+        <button
+          type="button"
+          class="form-select"
+          id="paper-size-dd"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-fullscreen"></i>
+          {{ selectedPaperSize || "Select Paper Size" }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="paper-size-dd">
+          @for (size of paperSizes; track size) {
+            <button ngbDropdownItem (click)="selectedPaperSize = size">
+              {{ size }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Binding -->
+    <div class="form-group col-6">
+      <label class="fg-label">Binding Type</label>
+      <div ngbDropdown>
+        <button
+          type="button"
+          class="form-select"
+          id="binding-type-dd"
+          ngbDropdownToggle
+        >
+          <i class="bx bx-book"></i>
+          {{ selectedBindingType || "Select Binding" }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="binding-type-dd">
+          @for (binding of bindingTypes; track binding) {
+            <button ngbDropdownItem (click)="selectedBindingType = binding">
+              {{ binding }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="terms-row d-flex align-items-start p-3 mb-3 gap-2">
+    <label class="custom-check d-flex align-items-start gap-2">
+      <input type="checkbox" id="termsCheck" />
+      <span class="check-label">
+        I agree to SmartPrint's <a href="#">Terms of Service</a> and
+        <a href="#">Privacy Policy</a>. I'm cool with receiving print
+        notifications and offers.
+      </span>
+    </label>
+    <!-- <div
+      class="field-error"
+      id="termsErr"
+      style="margin-top: -12px; margin-bottom: 14px"
+    >
+      <i class="fa-solid fa-circle-exclamation"></i> You must agree to the
+      terms.
+    </div> -->
+  </div>
+
+  <div class="btn-row d-flex align-items-center gap-2">
+    <button class="btn-back" (click)="goToPreviousStep()">
+      <i class="bx bx-arrow-left"></i> Back
+    </button>
+    <button
+      class="submit-btn d-flex align-items-center justify-content-center gap-3"
+      (click)="signUpUser()"
+    >
+      <span class="d-flex align-items-center justify-content-center gap-2"
+        ><i class="bxf bx-rocket"></i> Create Account</span
+      >
+      <!-- <span id="submitLoader" style="display: none">
+        <i class="fa-solid fa-circle-notch btn-spinner"></i> Creating...
+      </span> -->
+    </button>
+  </div>
+
+  <div class="signin-row mt-3">
+    Already have an account? <a href="#" (click)="goToLogin()">Sign in</a>
+  </div>
+</div>

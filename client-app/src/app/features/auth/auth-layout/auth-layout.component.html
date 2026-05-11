@@ -1,0 +1,79 @@
+<div class="form-container container-fluid vh-100 d-flex p-0">
+  <div class="left-panel d-flex col-md-6 flex-column align-items-start">
+    <div class="grid-lines"></div>
+    <div class="grid-float-icons gfi1">
+      <i class="bxf bx-copy"></i>
+    </div>
+    <div class="grid-float-icons gfi2">
+      <i class="bxf bx-file"></i>
+    </div>
+    <div class="grid-float-icons gfi3">
+      <i class="bxf bx-printer"></i>
+    </div>
+    <div class="grid-float-icons gfi4">
+      <i class="bxf bx-save"></i>
+    </div>
+    <div class="grid-float-icons gfi5">
+      <i class="bxf bx-image"></i>
+    </div>
+    <div class="grid-float-icons gfi6">
+      <i class="bxf bx-receipt"></i>
+    </div>
+    <div class="grid-float-icons gfi7">
+      <i class="bxf bx-bookmark-alt"></i>
+    </div>
+
+    <div class="lp-logo d-flex gap-2 mb-4">
+      <div
+        class="lp-logo-icon d-flex justify-content-center align-items-center"
+      >
+        <i class="bxf bx-printer"></i>
+      </div>
+      <div class="lp-logo-text">
+        <span>Smart</span>
+        <span>Print</span>
+      </div>
+    </div>
+    <div class="lp-tagline text-uppercase">your digital print companion</div>
+    <div class="lp-slogan my-3">
+      <h1>Print smarter,<br />not <span>harder.</span></h1>
+    </div>
+    <span class="lp-desc"
+      >Upload. Configure. SmartPrint connects you to the best local print shops
+      in seconds - zero waiting in lines</span
+    >
+    <div class="feature-pills d-flex flex-column gap-3 w-100">
+      @for (feature of keyFeatures; track feature) {
+        <div class="fp-item d-flex align-items-center px-3 py-2 gap-2">
+          <div
+            class="fp-icon d-flex justify-content-center align-items-center p-2"
+            [class]="feature.styleClass"
+            [style.background-color]="feature.backgroundColor"
+          >
+            <i [class]="feature.icon"></i>
+          </div>
+
+          <div class="fp-text d-flex flex-column">
+            <span class="fp-title">{{ feature.title }}</span>
+            <span class="fp-sub">{{ feature.sub }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="right-panel-wrapper h-100 col-md-6 overflow-y-scroll">
+    <!-- <div
+      class="right-panel d-flex align-items-center justify-content-center"
+    > -->
+      @if (isLoginMode()) {
+        <app-login
+          class="w-100 h-100 d-flex align-items-center justify-content-center"
+        ></app-login>
+      } @else {
+        <app-signup
+          class="w-100 d-flex align-items-center justify-content-center"
+        ></app-signup>
+      }
+    <!-- </div> -->
+  </div>
+</div>

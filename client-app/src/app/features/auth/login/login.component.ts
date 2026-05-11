@@ -7,8 +7,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Event, Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+import { Event, Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { KeyFeature } from '../../../models/key-feature';
+import { keyFeatures } from '../../../config/key-features';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,7 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  isLoginMode = true;
+  keyFeatures: KeyFeature[] = keyFeatures;
 
   // Form Groups
   loginForm!: FormGroup;
@@ -28,7 +30,9 @@ export class LoginComponent {
     private fb: FormBuilder,
     private _router: Router,
     private _authService: AuthService,
-  ) {}
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.initForms();
@@ -49,11 +53,6 @@ export class LoginComponent {
     });
   }
 
-  // Swaps the view between Login and Signup
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-  }
-
   // Handle Login Submission
   onSubmit() {
     if (this.loginForm.valid) {
@@ -66,14 +65,10 @@ export class LoginComponent {
         },
       });
     }
-    console.log(this.loginForm.valid)
   }
 
-  // Handle Signup Submission
-  onSignup() {
-    if (this.signupForm.valid) {
-      console.log('Creating account...', this.signupForm.value);
-      // Integrate your Auth Service here
-    }
+  goToSignup(event: any): void{
+    event.preventDefault();
+    this._authService.setIsLoginMode(false);
   }
 }

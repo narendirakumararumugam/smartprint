@@ -18,7 +18,7 @@ export const MENU_CONFIG: MenuItem[] = [
   {
     label: 'Upload & Print',
     icon: 'bx bx-arrow-up-circle',
-    route: '/upload',
+    route: '/print',
     role: 'USER'
   },
 
