@@ -1,0 +1,292 @@
+:host {
+  display: block;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.step-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-900);
+  margin-bottom: 6px;
+}
+.step-sub {
+  font-size: 14px;
+  color: var(--text-500);
+  margin-bottom: 28px;
+}
+
+.step3-layout {
+  display: block;
+}
+
+/* File tabs */
+.config-file-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  max-height: 120px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+.cfg-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-700);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: var(--bg-white);
+}
+
+.cfg-tab:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.cfg-tab.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Config grid */
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.cfg-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cfg-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cfg-label i {
+  color: var(--primary);
+}
+
+.cfg-select,
+.cfg-input {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text-900);
+  background: var(--bg-subtle);
+  outline: none;
+  transition: all var(--transition-fast);
+  width: 100%;
+  font-family: inherit;
+}
+
+.cfg-select:focus,
+.cfg-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: var(--bg-white);
+}
+
+.toggle-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.toggle-opt {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-700);
+  background: var(--bg-white);
+}
+
+.toggle-opt:hover {
+  border-color: var(--primary);
+}
+.toggle-opt.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+}
+.toggle-opt i {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.opt-price {
+  font-size: 10px;
+  color: var(--text-400);
+}
+
+.cfg-estimate {
+  padding: 12px 14px;
+  background: var(--bg-page);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text-700);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Addons section title */
+.shops-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-400);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.shops-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.addon-card {
+  padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+  background: var(--bg-white);
+}
+.addon-card:hover {
+  border-color: var(--primary);
+}
+.addon-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.addon-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.addon-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-900);
+}
+.addon-price {
+  font-size: 12px;
+  color: var(--success);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Price panel */
+.price-panel {
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  color: #fff;
+  position: sticky;
+  top: calc(var(--nav-height) + 16px);
+}
+
+.pp-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 14px;
+}
+.pp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.pp-row:last-of-type {
+  border-bottom: none;
+}
+.pp-lbl {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.pp-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.pp-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0 0;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.pp-total-lbl {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.pp-total-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+}
+.pp-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 768px) {
+  .step3-layout {
+    grid-template-columns: 1fr;
+  }
+  .price-panel {
+    position: static;
+  }
+  .config-grid {
+    grid-template-columns: 1fr;
+  }
+}

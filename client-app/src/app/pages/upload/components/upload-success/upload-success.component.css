@@ -1,0 +1,56 @@
+@keyframes checkPop { 
+  0% { transform: scale(0) } 
+  70% { transform: scale(1.2) } 
+  100% { transform: scale(1) } 
+}
+
+:host { display: block; }
+
+.success-screen {
+  text-align: center; padding: 60px 32px;
+  animation: fadeIn .5s ease both;
+}
+
+.success-icon-wrap {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--success), #34d399);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 46px; color: #fff; margin: 0 auto 24px;
+  box-shadow: 0 8px 32px rgba(16,185,129,.4);
+  animation: checkPop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+.success-title { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-900); margin-bottom: 8px; }
+.success-sub { font-size: 15px; color: var(--text-500); margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+.success-order-id {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--primary-light); color: var(--primary);
+  font-size: 15px; font-weight: 700; padding: 10px 24px;
+  border-radius: var(--radius-full); margin-bottom: 30px;
+}
+
+.success-eta-box {
+  background: var(--bg-page); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 28px;
+  font-size: 14px; color: var(--text-700);
+  max-width: 400px; margin-left: auto; margin-right: auto;
+}
+
+.seb-title { font-weight: 600; margin-bottom: 6px; color: var(--text-900); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.seb-time { font-size: 20px; font-weight: 800; color: var(--primary); }
+
+.success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* Buttons (used only in this component) */
+.btn {
+  padding: 11px 26px; border-radius: var(--radius-full);
+  font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-family: inherit; border: none;
+  transition: all var(--transition);
+}
+
+.btn-ghost { border: 1px solid var(--border) !important; color: var(--text-700); background: var(--bg-white); }
+.btn-ghost:hover { border-color: var(--text-400) !important; background: var(--bg-page); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--purple)); color: #fff; box-shadow: 0 4px 14px var(--primary-glow); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--primary-glow); }

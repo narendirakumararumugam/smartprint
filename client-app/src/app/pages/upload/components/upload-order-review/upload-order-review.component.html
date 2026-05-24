@@ -1,0 +1,104 @@
+<div class="step-title">Review Your Order</div>
+<div class="step-sub">Double-check everything before placing your order.</div>
+
+<div class="review-grid">
+  <div class="review-card">
+    <div class="rc-title">
+      <i class="bx bxs-store" style="color: var(--primary)"></i> Shop Details
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Shop</span
+      ><span class="rc-val">{{ shop?.name || "-" }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Address</span
+      ><span class="rc-val">{{ shop?.addr || "-" }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Distance</span
+      ><span class="rc-val">{{ shop?.dist || "-" }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Est. Wait</span
+      ><span class="rc-val" style="color: var(--success)">{{
+        shop?.wait || "-"
+      }}</span>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="rc-title">
+      <i class="bx bxs-tag" style="color: var(--primary)"></i> Order Summary
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Total Files</span
+      ><span class="rc-val">{{ files.length }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Total Pages</span
+      ><span class="rc-val">{{ totalPages }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Add-ons</span
+      ><span class="rc-val">{{ totalAddonsLabel }}</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-lbl">Payment</span
+      ><span class="rc-val" style="color: var(--success)">Pay at Pickup</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-title" style="margin-bottom: 10px">
+  <i class="bx bx-file"></i> Files in This Order
+</div>
+<div class="review-files">
+  <div class="rf-item" *ngFor="let file of files; trackBy: trackByFileId">
+    <i
+      class="bx bx-file"
+      style="color: var(--primary); font-size: 16px; flex-shrink: 0"
+    ></i>
+    <span class="rf-name">{{ file.name }}</span>
+    <span class="rf-pages">
+      {{ file.pages }}pg × {{ file.copies }} -
+      {{ file.color ? "Color" : "B&W" }}, {{ file.sides }}-sided,
+      {{ file.size }}
+    </span>
+  </div>
+</div>
+
+<div class="section-title" style="margin-bottom: 10px">
+  <i class="bx bx-notepad"></i> Special Instructions (optional)
+</div>
+<textarea
+  class="note-area"
+  rows="3"
+  placeholder="E.g. Use glossy paper, print front cover in color, spiral bind all copies together."
+  [value]="specialNote"
+  (input)="specialNoteChange.emit($any($event.target).value)"
+></textarea>
+
+<div class="total-box">
+  <div>
+    <div class="tb-label">Order Total</div>
+    <div class="tb-amount">₹{{ totalPrice }}</div>
+    <div class="tb-breakdown">
+      {{ files.length }} file(s) • {{ totalPages }} total pages
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-payment-label">Payment at shop</div>
+    <div class="tb-no-advance">
+      <i class="bx bxs-shield" style="color: #4ade80"></i> No advance required
+    </div>
+  </div>
+</div>
+
+<div class="pay-at-pickup-note">
+  <i
+    class="bx bxs-check-circle"
+    style="font-size: 20px; color: var(--success)"
+  ></i>
+  <strong>Pay at Pickup:</strong> No online payment needed. Simply walk in,
+  collect your prints, and pay at the counter.
+</div>

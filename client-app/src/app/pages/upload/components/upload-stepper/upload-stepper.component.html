@@ -1,0 +1,26 @@
+<div class="stepper">
+  <div class="stepper-row">
+    @for (label of steps; let i = $index; track i) {
+      <div
+        class="wstep"
+        [class.active]="currentStep === i + 1 && !orderPlaced"
+        [class.done]="currentStep > i + 1 || orderPlaced"
+        (click)="stepClick.emit(i + 1)"
+      >
+        <div class="wstep-dot">
+          @if (currentStep > i + 1) {
+            <ng-container orderPlaced>
+              <i class="bx bx-check" style="font-size: 15px"></i>
+            </ng-container>
+          } @else {
+            <ng-container stepNum>
+              <i class="bx bx-check" style="font-size: 15px"></i>
+            </ng-container>
+          }
+          <ng-template #stepNum>{{ i + 1 }}</ng-template>
+        </div>
+        <div class="wstep-lbl">{{ label }}</div>
+      </div>
+    }
+  </div>
+</div>

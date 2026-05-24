@@ -1,0 +1,122 @@
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-breadcrumb">
+      <a routerLink="/"><i class="bx bxs-home"></i> Home</a>
+      <i class="bx bx-chevron-right" style="font-size: 12px"></i>
+      <span style="color: rgba(255, 255, 255, 0.8)">Upload &amp; Print</span>
+    </div>
+    <div class="ph-title">
+      <i class="bx bx-upload" style="margin-right: 10px"></i>Upload &amp; Print
+    </div>
+    <div class="ph-sub">
+      Uploading for <strong>{{ selectedShop?.name }}</strong> &mdash; configure
+      settings and place your order in 3 easy steps.
+    </div>
+  </div>
+</div>
+
+<div class="wizard-wrap">
+  <app-upload-stepper
+    [steps]="stepLabels"
+    [currentStep]="currentStep"
+    [orderPlaced]="orderPlaced"
+    (stepClick)="goToStep($event)"
+  >
+  </app-upload-stepper>
+
+  <div class="wizard-body">
+    <app-upload-success
+      *ngIf="orderPlaced"
+      [orderId]="orderId"
+      [shop]="selectedShop"
+    >
+    </app-upload-success>
+
+    <app-upload-file-drop
+      *ngIf="!orderPlaced && currentStep === 1"
+      [files]="uploadedFiles"
+      (filesAdded)="onFilesAdded($event)"
+      (fileRemoved)="removeFile($event)"
+    >
+    </app-upload-file-drop>
+
+    <app-upload-print-config
+      *ngIf="!orderPlaced && currentStep === 2"
+      [files]="uploadedFiles"
+      [(activeIndex)]="activeFileCfg"
+      [addons]="addons"
+      [selectedAddons]="selectedAddons"
+      (fileConfigChange)="onFileConfigChange($event)"
+      (activeIndexChange)="activeFileCfg = $event"
+      (addonToggle)="toggleAddon($event)"
+    >
+    </app-upload-print-config>
+
+    <app-upload-order-review
+      *ngIf="!orderPlaced && currentStep === 3"
+      [shop]="selectedShop"
+      [files]="uploadedFiles"
+      [addons]="addons"
+      [selectedAddons]="selectedAddons"
+      [totalPrice]="totalPrice"
+      [totalPages]="totalPages"
+      [specialNote]="specialNote"
+      (specialNoteChange)="specialNote = $event"
+    >
+    </app-upload-order-review>
+  </div>
+</div>
+
+<div class="wizard-footer" *ngIf="!orderPlaced">
+  <div class="wf-left">
+    <i class="bx bxs-shield" style="color: var(--success)"></i> Secure &amp;
+    Encrypted Upload
+    <span class="wf-file-count" *ngIf="uploadedFiles.length">
+      &bull; {{ uploadedFiles.length }}/{{ maxFileCount }} files
+    </span>
+  </div>
+  <div class="wf-btns">
+    <button
+      class="btn btn-ghost"
+      type="button"
+      *ngIf="currentStep > 1"
+      (click)="prevStep()"
+    >
+      <i class="bx bx-left-arrow-alt"></i> Back
+    </button>
+    <button
+      class="btn"
+      type="button"
+      [class.btn-primary]="currentStep < 3"
+      [class.btn-success]="currentStep === 3"
+      [disabled]="orderPlacing"
+      (click)="nextStep()"
+    >
+      <ng-container *ngIf="orderPlacing">
+        <i class="bx bx-loader-alt bx-spin"></i> Placing Order&hellip;
+      </ng-container>
+      <ng-container *ngIf="!orderPlacing && currentStep < 3">
+        Next <i class="bx bx-right-arrow-alt"></i>
+      </ng-container>
+      <ng-container *ngIf="!orderPlacing && currentStep === 3">
+        <i class="bx bx-check"></i> Place Order
+      </ng-container>
+    </button>
+  </div>
+</div>
+
+<div class="confetti-wrap" *ngIf="confettiPieces.length">
+  <div
+    class="conf-piece"
+    *ngFor="let p of confettiPieces; let i = index; trackBy: trackByIndex"
+    [style.left.%]="p.left"
+    [style.background]="p.bg"
+    [style.width.px]="p.size"
+    [style.height.px]="p.size"
+    [style.border-radius]="p.radius"
+    [style.animation-delay.s]="p.delay"
+    [style.animation-duration.s]="p.duration"
+  ></div>
+</div>
+
+<app-toast-container></app-toast-container>

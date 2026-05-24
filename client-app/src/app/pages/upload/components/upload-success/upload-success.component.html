@@ -1,0 +1,22 @@
+<div class="success-screen">
+  <div class="success-icon-wrap"><i class="bx bx-check"></i></div>
+  <div class="success-title">Order Placed Successfully! 🥳</div>
+  <div class="success-sub">
+    Your print job has been sent to {{ shop?.name }}. Head over to pick it up when it's ready!
+  </div>
+  <div class="success-order-id"><i class="bx bx-hash"></i> {{ orderId }}</div>
+  <div class="success-eta-box">
+    <div class="seb-title">
+      <i class="bx bx-time" style="color:var(--primary)"></i> Estimated Ready Time
+    </div>
+    <div class="seb-time">{{ shop ? ('Ready in ' + shop.wait) : '~15 min' }}</div>
+  </div>
+  <div class="success-actions">
+    <button class="btn btn-primary" type="button" routerLink="/customer/orders">
+      <i class="bx bx-list-ul"></i> Track Order
+    </button>
+    <button class="btn btn-ghost" type="button" routerLink="/">
+      <i class="bx bxs-store"></i> Back to Shops
+    </button>
+  </div>
+</div>

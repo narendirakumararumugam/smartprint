@@ -1,0 +1,153 @@
+<div class="step-title">Configure Print Settings</div>
+<div class="step-sub">Customise how each document should be printed.</div>
+
+<div class="step3-layout">
+  <div>
+    <div class="config-file-tabs">
+      <div
+        class="cfg-tab"
+        *ngFor="let file of files; let i = index; trackBy: trackByFileId"
+        [class.active]="activeIndex === i"
+        (click)="activeIndexChange.emit(i)"
+      >
+        <i class="bx bx-file"></i>
+        {{
+          file.name.length > 18
+            ? (file.name | slice: 0 : 16) + "..."
+            : file.name
+        }}
+      </div>
+    </div>
+
+    <ng-container *ngIf="currentFile as f">
+      <div class="config-grid">
+        <div class="cfg-group">
+          <label class="cfg-label"
+            ><i class="bx bx-palette"></i> Print Mode</label
+          >
+          <div class="toggle-group">
+            <div
+              class="toggle-opt"
+              [class.selected]="!f.color"
+              (click)="setCfg('color', false)"
+            >
+              <i class="bx bxs-check-circle" style="color: #555"></i>
+              B&amp;W<br /><small class="opt-price">₹1.5/page</small>
+            </div>
+            <div
+              class="toggle-opt"
+              [class.selected]="f.color"
+              (click)="setCfg('color', true)"
+            >
+              <i class="bx bxs-check-circle" style="color: var(--primary)"></i>
+              Color<br /><small class="opt-price">₹10/page</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="cfg-group">
+          <label class="cfg-label"
+            ><i class="bx bx-file-blank"></i> Sides</label
+          >
+          <div class="toggle-group">
+            <div
+              class="toggle-opt"
+              [class.selected]="f.sides === 'single'"
+              (click)="setCfg('sides', 'single')"
+            >
+              <i class="bx bx-file"></i> Single
+            </div>
+            <div
+              class="toggle-opt"
+              [class.selected]="f.sides === 'double'"
+              (click)="setCfg('sides', 'double')"
+            >
+              <i class="bx bx-file-blank"></i> Double
+            </div>
+          </div>
+        </div>
+
+        <div class="cfg-group">
+          <label class="cfg-label"
+            ><i class="bx bx-copy"></i> Number of Copies</label
+          >
+          <input
+            class="cfg-input"
+            type="number"
+            min="1"
+            max="100"
+            [value]="f.copies"
+            (change)="setCfg('copies', $any($event.target).valueAsNumber || 1)"
+          />
+        </div>
+
+        <div class="cfg-group">
+          <label class="cfg-label"
+            ><i class="bx bx-expand"></i> Paper Size</label
+          >
+          <app-dropdown
+            variant="form"
+            [options]="paperSizeOptions"
+            [selected]="f.sizeP"
+            placeholder="Select Size"
+            icon="bx bx-expand"
+            (selectionChange)="setCfg('sizeP', $event)"
+          >
+          </app-dropdown>
+        </div>
+
+        <div class="cfg-group">
+          <label class="cfg-label"><i class="bx bx-hash"></i> Page Range</label>
+          <input
+            class="cfg-input"
+            type="text"
+            placeholder="e.g. 1-5 or All"
+            value="All"
+          />
+        </div>
+
+        <div class="cfg-group">
+          <label class="cfg-label"
+            ><i class="bx bx-align-left"></i> Orientation</label
+          >
+          <app-dropdown
+            variant="form"
+            [options]="orientationOptions"
+            [selected]="'Portrait'"
+            placeholder="Select Orientation"
+            icon="bx bx-align-left"
+            (selectionChange)="setCfg('orientation', $event)"
+          >
+          </app-dropdown>
+        </div>
+      </div>
+
+      <div class="cfg-estimate">
+        <i class="bx bx-calculator" style="color: var(--primary)"></i>
+        <span>
+          This file: <strong>{{ f.pages }} pages</strong>
+          <strong>{{ f.copies }} {{ f.copies > 1 ? "copies" : "copy" }}</strong>
+          <strong>{{ f.color ? "Color (₹10)" : "B&amp;W (₹1.5)" }}</strong> =
+          <strong style="color: var(--success)">₹{{ estimateFile(f) }}</strong>
+        </span>
+      </div>
+    </ng-container>
+
+    <div class="shops-section-title" style="margin-bottom: 12px">
+      <i class="bx bx-extension"></i> Add-ons &amp; Finishing
+    </div>
+
+    <div class="addon-grid">
+      <div
+        class="addon-card"
+        *ngFor="let addon of addons; trackBy: trackByAddonId"
+        [class.selected]="selectedAddons.has(addon.id)"
+        (click)="addonToggle.emit(addon.id)"
+      >
+        <div class="addon-icon">{{ addon.icon }}</div>
+        <div class="addon-name">{{ addon.name }}</div>
+        <div class="addon-price">+₹{{ addon.price }}</div>
+      </div>
+    </div>
+  </div>
+</div>

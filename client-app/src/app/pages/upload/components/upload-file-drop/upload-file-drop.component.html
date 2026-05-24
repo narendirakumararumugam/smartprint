@@ -1,0 +1,85 @@
+<div class="step-title">Upload Your Documents</div>
+<div class="step-sub">
+  Drag &amp; drop or browse to upload. Supports PDF, DOC, DOCX, PPT, PPTX, JPG,
+  PNG.
+</div>
+
+<div
+  class="drop-zone"
+  [class.drag-over]="isDragOver"
+  (click)="openFilePicker()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+>
+  <div class="dz-icon"><i class="bx bx-cloud-upload"></i></div>
+  <div class="dz-title">Drag &amp; drop files here</div>
+  <div class="dz-sub">
+    or
+    <span
+      class="browse-link"
+      (click)="$event.stopPropagation(); openFilePicker()"
+      >browse to upload</span
+    >
+  </div>
+  <div class="dz-types">
+    <span class="dz-type">PDF</span>
+    <span class="dz-type">DOC</span>
+    <span class="dz-type">DOCX</span>
+    <span class="dz-type">PPT</span>
+    <span class="dz-type">PPTX</span>
+    <span class="dz-type">JPG</span>
+    <span class="dz-type">PNG</span>
+  </div>
+  <input
+    #fileInputRef
+    type="file"
+    multiple
+    accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"
+    style="display: none"
+    (change)="onFileChange($event)"
+  />
+</div>
+
+<div class="file-list">
+  <div
+    class="file-item"
+    *ngFor="let file of files; let i = index; trackBy: trackById"
+    [style.animation-delay]="i * 60 + 'ms'"
+  >
+    <div class="file-icon" [ngClass]="fileIconBg(file.ext)">
+      <i [ngClass]="fileIconBx(file.ext)"></i>
+    </div>
+    <div class="file-info">
+      <div class="file-name">{{ file.name }}</div>
+      <div class="file-meta">
+        {{ file.size }}&nbsp;•&nbsp;{{ file.pages }} pages
+      </div>
+      <div class="file-progress" *ngIf="file.prog < 100">
+        <div class="file-prog-fill" [style.width.%]="file.prog"></div>
+      </div>
+    </div>
+    <div class="file-actions">
+      <i
+        *ngIf="file.prog === 100"
+        class="bx bxs-check-circle"
+        style="color: var(--success); font-size: 18px"
+      ></i>
+      <div
+        class="file-remove"
+        (click)="$event.stopPropagation(); fileRemoved.emit(i)"
+      >
+        <i class="bx bx-x"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="upload-tip">
+  <i class="bx bx-info-circle"></i>
+  <div>
+    <strong>Tip:</strong> Maximum file size is 50 MB per file. For best results,
+    upload files in PDF format. Your files are encrypted and deleted after 7
+    days automatically.
+  </div>
+</div>
