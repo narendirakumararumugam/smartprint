@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +22,10 @@ import java.util.function.Function;
 public class JWTService {
 
     private final String secretKey;
+    private final long accessExpirationMs;
+    private final long refreshExpirationMs;
 
-    public JWTService() {
+    public JWTService(@Value("${app.jwt.expiration-ms}") long accessExpirationMs, @Value("${app.jwt.refresh-expiration-ms}") long refreshExpirationMs) {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGen.generateKey();
@@ -29,16 +33,47 @@ public class JWTService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+
+        this.accessExpirationMs = accessExpirationMs;
+        this.refreshExpirationMs = refreshExpirationMs;
     }
 
-    public String generateToken(String username){
+    public String generateAccessToken(String email){
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 60 * 30))
+                .and()
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String generateAccessToken(Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        Map<String, Object> claims = new HashMap<>();
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + accessExpirationMs))
+                .and()
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(String email){
+        Map<String, Object> claims = new HashMap<>();
+        return Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject(email)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
                 .and()
                 .signWith(getKey())
                 .compact();
