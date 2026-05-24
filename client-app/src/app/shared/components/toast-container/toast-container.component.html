@@ -1,0 +1,17 @@
+<div class="toast-wrap">
+  <div
+    *ngFor="let t of _toastService.toasts | async"
+    class="toast"
+    [class.success]="t.type === 'success'"
+    [class.info]="t.type === 'info'"
+    [class.warning]="t.type === 'warning'"
+  >
+    <i
+      class="bx"
+      [class.bx-circle-check]="t.type === 'success'"
+      [class.bx-info-info]="t.type === 'info'"
+      [class.bx-alert-triangle]="t.type === 'warning'"
+    ></i>
+    {{ t.message }}
+  </div>
+</div>

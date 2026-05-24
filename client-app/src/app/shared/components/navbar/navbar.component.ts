@@ -1,30 +1,32 @@
-import { Component } from '@angular/core';
-import { MenuItem } from '../../../models/menu-details';
-import { MENU_CONFIG } from '../../../config/menu.config';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { 
+  Component, 
+  EventEmitter, 
+  Input, 
+  Output, 
+  ChangeDetectionStrategy, 
+  inject 
+} from '@angular/core';
+import { CommonModule, AsyncPipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { LocationService } from '../../../core/services/location.service';
+import { ShopService } from '../../../core/services/shop.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [CommonModule, AsyncPipe, RouterModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
-  userLocation: string = 'Alandur, Chennai';
-  activeMenu: string = 'Shops';
-  menuItems: MenuItem[] = [];
-  userRole: string = 'USER';
+  @Input() showSearch = false;
+  @Output() openLocationPicker = new EventEmitter<void>();
 
-  constructor(private _router: Router) {}
+  readonly locationService = inject(LocationService);
+  private readonly shopService = inject(ShopService);
 
-  ngOnInit() {
-    // Filter menu based on user role
-    this.menuItems = MENU_CONFIG.filter((item) => item.role === this.userRole);
-  }
-
-
-  routeTo(routeUrl: string): void {
-    this._router.navigateByUrl(routeUrl);
+  onSearch(value: string): void {
+    this.shopService.setSearch(value);
   }
 }

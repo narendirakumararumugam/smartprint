@@ -1,30 +1,145 @@
-.form-select {
+:host { display: inline-block; position: relative; }
+
+.dropdown { position: relative; }
+.dropdown.disabled { opacity: 0.6; pointer-events: none; }
+
+.dd-trigger {
   display: flex;
   align-items: center;
-  gap: 7px;
-  width: 100%;
-  padding: 12px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 14px;
-  color: var(--text-700);
-  background: var(--bg-page);
+  gap: 10px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-700, #334155);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 140px;
+  height: 100%;
 }
 
-.form-select:focus {
-  border-color: #2563eb;
-  outline: none;
+.dd-trigger:hover {
+  background: var(--bg-subtle, #f8fafc);
 }
 
-.cfg-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-500);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.dropdown.open .dd-trigger {
+  background: var(--primary-light, #dbeafe);
+  color: var(--primary, #2563eb);
+}
+
+/* Form variant */
+.dropdown.form { width: 100%; display: block; }
+.dropdown.form .dd-trigger {
+  padding: 12px 14px;
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  background: var(--bg-subtle, #f8fafc);
+  width: 100%;
+  min-width: 0;
+}
+
+.dropdown.form .dd-trigger:hover {
+  border-color: var(--text-400, #94a3b8);
+}
+
+.dropdown.form.open .dd-trigger {
+  border-color: var(--primary, #2563eb);
+  background: var(--bg-white, #fff);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dd-trigger i:first-child {
+  font-size: 16px;
+  color: var(--primary, #2563eb);
+}
+
+.dd-label {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+}
+
+.dd-arrow {
+  font-size: 13px;
+  color: var(--text-400, #94a3b8);
+  transition: transform 0.2s cubic-bezier(.4, 0, .2, 1);
+}
+
+.dropdown.open .dd-arrow {
+  transform: rotate(180deg);
+  color: var(--primary, #2563eb);
+}
+
+/* Menu - fixed positioned to avoid overflow clipping */
+.dd-menu {
+  position: fixed;
+  min-width: 200px;
+  width: max-content;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--bg-white, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), 0 6px 16px rgba(0, 0, 0, 0.06);
+  padding: 6px;
+  z-index: 9999;
+  animation: ddSlideIn 0.2s cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes ddSlideIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dd-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-700, #334155);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
 }
+
+.dd-item:hover {
+  background: var(--bg-page, #f1f5f9);
+  transform: translateX(2px);
+}
+
+.dd-item.active {
+  background: var(--primary-light, #dbeafe);
+  color: var(--primary, #2563eb);
+  font-weight: 600;
+}
+
+.dd-item i:first-child {
+  font-size: 17px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.dd-item.active i:first-child { opacity: 1; }
+
+.dd-check {
+  margin-left: auto;
+  font-size: 16px;
+  color: var(--primary, #2563eb);
+}
+
+/* Scrollbar */
+.dd-menu::-webkit-scrollbar { width: 5px; }
+/* rest of the webkit-scrollbar properties cut off in the image */

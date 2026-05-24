@@ -1,0 +1,76 @@
+<div class="afm-overlay" *ngIf="show" (click)="onBackdropClick($event)">
+  <div class="afm-box">
+    <div class="afm-header">
+      <div class="afm-title">
+        <i class="bx bx-location-alt"></i>
+        {{ initial ? 'Edit address' : 'Add new address' }}
+      </div>
+      <button class="afm-close" (click)="cancel()" aria-label="Close"><i class="bx bx-x"></i></button>
+    </div>
+
+    <div class="afm-body">
+      <div class="afm-section">
+        <label class="afm-label">Pin location on map</label>
+        <app-inline-map-picker
+          [initialCenter]="{ lat: form.latitude || 28.6315, lng: form.longitude || 77.2167 }"
+          height="240px"
+          (locationPicked)="onLocationPicked($event)"
+        ></app-inline-map-picker>
+        <div class="afm-coords" *ngIf="form.latitude != null && form.longitude != null">
+          <i class="bx bx-location-alt-pin"></i>
+          Pinned at <strong>{{ form.latitude | number:'1.5-5' }}, {{ form.longitude | number:'1.5-5' }}</strong>
+        </div>
+      </div>
+
+      <div class="afm-grid">
+        <div class="afm-field">
+          <label class="afm-label">Address type *</label>
+          <app-dropdown
+            [options]="typeOptions"
+            [selected]="form.type"
+            (selectionChange)="onTypeChange($event)"
+            variant="form"
+          ></app-dropdown>
+        </div>
+
+        <div class="afm-field">
+          <label class="afm-label">Recipient name *</label>
+          <input class="afm-input" [(ngModel)]="form.name" [class.error]="hasError('name')" placeholder="Full name" />
+        </div>
+
+        <div class="afm-field span-2">
+          <label class="afm-label">Address line 1 *</label>
+          <input class="afm-input" [(ngModel)]="form.line1" [class.error]="hasError('line1')" placeholder="House / flat / building" />
+        </div>
+
+        <div class="afm-field span-2">
+          <label class="afm-label">Address line 2</label>
+          <input class="afm-input" [(ngModel)]="form.line2" placeholder="Area, landmark (optional)" />
+        </div>
+
+        <div class="afm-field">
+          <label class="afm-label">City *</label>
+          <input class="afm-input" [(ngModel)]="form.city" [class.error]="hasError('city')" placeholder="City" />
+        </div>
+
+        <div class="afm-field">
+          <label class="afm-label">PIN code *</label>
+          <input class="afm-input" [(ngModel)]="form.pincode" [class.error]="hasError('pincode')" placeholder="6-digit PIN" maxlength="6" />
+          <span class="afm-err" *ngIf="hasError('pincode')">{{ errors['pincode'] }}</span>
+        </div>
+
+        <div class="afm-field span-2">
+          <label class="afm-label">Phone number *</label>
+          <input class="afm-input" type="tel" [(ngModel)]="form.phone" [class.error]="hasError('phone')" placeholder="+91 _" />
+        </div>
+      </div>
+    </div>
+
+    <div class="afm-actions">
+      <button class="afm-btn ghost" (click)="cancel()">Cancel</button>
+      <button class="afm-btn primary" (click)="save()">
+        <i class="bx bx-check"></i> {{ initial ? 'Update' : 'Save' }} address
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,26 +1,53 @@
-<nav class="navbar d-flex align-items-center">
-  <a class="nav-logo d-flex align-items-center fw-bolder">
-    <div class="nav-logo-icon d-flex justify-content-center align-items-center">
-      <i class="bxf bx-printer"></i>
-    </div>
-    <span>Smart</span>
-    <span>Print</span>
+<nav class="navbar">
+  <a class="nav-logo" routerLink="/">
+    <div class="nav-logo-icon"><i class="bxs bx-printer"></i></div>
+    Print<span>Hub</span>
   </a>
-  <div class="nav-location d-flex align-items-center px-2 py-1">
-    <i class="bxf bx-location text-danger"></i>
-    <span>{{ userLocation }}</span>
-    <i class="bxf bx-chevron-down"></i>
+
+  <button
+    class="nav-location"
+    (click)="openLocationPicker.emit()"
+    aria-label="Change location"
+  >
+    <i class="bx bx-location-alt" style="color: var(--danger)"></i>
+    <span *ngIf="locationService.location$ | async as loc; else defaultLoc">
+      {{ loc.shortAddress }}
+    </span>
+    <ng-template #defaultLoc>Connaught Place, Delhi</ng-template>
+    <i
+      class="bx bx-chevron-down"
+      style="font-size: 12px; color: var(--text-400)"
+    ></i>
+  </button>
+
+  <div class="nav-search-bar" [class.visible]="showSearch">
+    <i class="bx bx-search si"></i>
+    <input
+      type="search"
+      placeholder="Search shops, services..."
+      autocomplete="off"
+      (input)="onSearch($any($event.target).value)"
+    />
   </div>
+
   <div class="nav-links">
-    @for (menu of menuItems; track menu) {
-      <a
-        href="/"
-        [routerLink]="menu.route"
-        class="nav-link d-flex align-items-center"
-        [class.active]="activeMenu === menu.label"
-        ><i [class]="menu.icon"></i> {{menu.label}}</a
-      >
-    }
+    <a
+      class="nav-link"
+      [routerLink]="['/']"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bx bxs-store"></i> Shops
+    </a>
+    <a class="nav-link" routerLink="/customer/orders" routerLinkActive="active">
+      <i class="bx bx-list-ul"></i> Orders
+      <span class="badge">2</span>
+    </a>
+    <a class="nav-link" routerLink="/customer/saved" routerLinkActive="active">
+      <i class="bx bx-bookmark"></i> Saved
+    </a>
+    <a class="nav-avatar" routerLink="/customer/profile" title="My Profile"
+      >A</a
+    >
   </div>
-  <div class="nav-avatar" href="/" title="My Profile"></div>
 </nav>

@@ -1,0 +1,193 @@
+<div class="auth-page">
+  <div class="left-panel">
+    <div class="grid-lines"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="ico-float ico1">
+      <i class="bx bx-printer" style="font-size: 60px; color: white"></i>
+    </div>
+    <div class="ico-float ico2">
+      <i class="bx bx-copy-alt" style="font-size: 50px; color: white"></i>
+    </div>
+    <div class="ico-float ico3">
+      <i class="bx bx-file" style="font-size: 56px; color: white"></i>
+    </div>
+    <div class="ico-float ico4">
+      <i class="bx bx-layer" style="font-size: 44px; color: white"></i>
+    </div>
+    <div class="ico-float ico5">
+      <i class="bx bx-cut" style="font-size: 36px; color: white"></i>
+    </div>
+
+    <div id="auth-particles"></div>
+
+    <div class="left-content">
+      <a routerLink="/" class="lp-logo">
+        <div class="lp-logo-icon"><i class="bx bx-printer"></i></div>
+        <div class="lp-logo-text">Print<span>Hub</span></div>
+      </a>
+
+      @if (variant === "login") {
+        <div class="lp-hero">
+          <div class="lp-tagline">Your digital print companion</div>
+          <h1 class="lp-heading">
+            Print smarter,<br />not <span class="hl">harder.</span>
+          </h1>
+          <p class="lp-desc">
+            Upload. Configure. Collect. SmartPrint connects you to the best
+            local print shops in seconds – zero waiting in lines.
+          </p>
+
+          <div class="feature-pills">
+            <div class="fp-item">
+              <div
+                class="fp-icon"
+                style="background: rgba(37, 99, 235, 0.25); color: #93c5fd"
+              >
+                <i class="bx bx-bolt-circle"></i>
+              </div>
+              <div class="fp-text">
+                <div class="fp-title">Instant Order Placement</div>
+                <div class="fp-sub">
+                  Send files to nearby shops without leaving home
+                </div>
+              </div>
+            </div>
+
+            <div class="fp-item">
+              <div
+                class="fp-icon"
+                style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7"
+              >
+                <i class="bx bx-shield-quarter"></i>
+              </div>
+              <div class="fp-text">
+                <div class="fp-title">Secure & Private</div>
+                <div class="fp-sub">
+                  Files deleted automatically after 7 days
+                </div>
+              </div>
+            </div>
+
+            <div class="fp-item">
+              <div
+                class="fp-icon"
+                style="background: rgba(245, 158, 11, 0.2); color: #fcd34d"
+              >
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="fp-text">
+                <div class="fp-title">Verified Shops Only</div>
+                <div class="fp-sub">
+                  Real reviews from 50,000+ happy students
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (variant === "signup") {
+        <div class="lp-hero">
+          <div class="lp-tagline">Join 50,000+ happy users</div>
+          <h1 class="lp-heading">
+            Start printing<br />the <span class="hl">smart way.</span>
+          </h1>
+          <p class="lp-desc">
+            Set up your free account in under 2 minutes. Upload, configure and
+            collect your prints without ever waiting in a queue.
+          </p>
+
+          <div class="steps-preview">
+            <div class="sp-title">Your journey starts here</div>
+            <div class="sp-list">
+              <div class="sp-item">
+                <div
+                  class="sp-num"
+                  style="background: rgba(37, 99, 235, 0.3); color: #93c5fd"
+                >
+                  1
+                </div>
+                <div class="sp-info">
+                  <div class="sp-name">Create Your Account</div>
+                  <div class="sp-desc">
+                    Name, email and a secure password – 30 seconds
+                  </div>
+                </div>
+              </div>
+
+              <div class="sp-item">
+                <div
+                  class="sp-num"
+                  style="background: rgba(124, 58, 237, 0.3); color: #c4b5fd"
+                >
+                  2
+                </div>
+                <div class="sp-info">
+                  <div class="sp-name">Set Up Your Profile</div>
+                  <div class="sp-desc">
+                    Pick an avatar & default print preferences
+                  </div>
+                </div>
+              </div>
+
+              <div class="sp-item">
+                <div
+                  class="sp-num"
+                  style="background: rgba(16, 185, 129, 0.25); color: #6ee7b7"
+                >
+                  3
+                </div>
+                <div class="sp-info">
+                  <div class="sp-name">Start Printing!</div>
+                  <div class="sp-desc">Find a shop, upload docs, done</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (variant === "login") {
+        <div class="perk-row">
+          <div class="lp-testimonial">
+            <div class="lt-quote">
+              SmartPrint saved my thesis submission night. Found an open shop
+              nearby at 1AM and had it printed in 20 minutes.
+            </div>
+            <div class="lt-author">
+              <div class="lt-avatar">S</div>
+              <div>
+                <div class="lt-name">Sneha Kapoor</div>
+                <div class="lt-role">M.Tech Student, IIT Delhi</div>
+              </div>
+              <div class="lt-stars">★★★★★</div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (variant === "signup") {
+        <div class="perk-row">
+          <div class="perk">
+            <i class="bx bx-check-circle" style="color: var(--success)"></i>
+            Free Forever
+          </div>
+          <div class="perk">
+            <i class="bx bx-shield" style="color: #60a5fa"></i> No Card Needed
+          </div>
+          <div class="perk">
+            <i class="bx bx-bolt-circle" style="color: var(--accent)"></i> Ready
+            in 60s
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <ng-content></ng-content>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+.apm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+  animation: apm-fade .18s ease;
+}
+
+.apm-box {
+  width: 100%; max-width: 460px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  animation: apm-pop .22s cubic-bezier(.4,0,.2,1);
+}
+
+.apm-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.apm-title { font-size: 17px; font-weight: 700; color: #0f172a; display: inline-flex; align-items: center; gap: 8px; }
+.apm-title i { color: var(--primary, #2563eb); }
+
+.apm-close {
+  width: 34px; height: 34px;
+  border: none; background: transparent;
+  border-radius: 50%; cursor: pointer; color: #64748b;
+}
+.apm-close:hover { background: #f1f5f9; }
+.apm-close i { font-size: 22px; }
+
+.apm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.apm-tile {
+  aspect-ratio: 1; width: 100%;
+  border: 2.5px solid transparent;
+  border-radius: 14px;
+  font-size: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform .12s, border-color .15s;
+}
+.apm-tile:hover { transform: translateY(-2px); }
+.apm-tile.selected {
+  border-color: var(--primary, #2563eb);
+  box-shadow: 0 0 0 4px rgba(37,99,235,.15);
+}
+
+.apm-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+.apm-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+.apm-btn.ghost { background: transparent; border-color: #e2e8f0; color: #475569; }
+.apm-btn.ghost:hover { background: #f8fafc; }
+
+.apm-btn.primary { background: var(--primary, #2563eb); color: #fff; }
+.apm-btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+.apm-btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+
+@keyframes apm-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes apm-pop {
+  from { transform: scale(.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

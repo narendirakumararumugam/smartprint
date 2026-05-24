@@ -1,0 +1,53 @@
+<div class="imp-shell">
+
+<div class="imp-toolbar">
+    <div class="imp-search-wrap">
+        <i class="bx bx-search imp-search-icon"></i>
+        <input
+            class="imp-search"
+            type="text"
+            placeholder="Search area, street name, landmark..."
+            autocomplete="off"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchInput()"
+        />
+        <span *ngIf="isSearching" class="imp-spinner" aria-label="Searching..."></span>
+    </div>
+    <button type="button" class="imp-gps" (click)="detectCurrentLocation()" title="Use my current location">
+        <i class="bx bx-crosshair"></i>
+        <span>Use GPS</span>
+    </button>
+</div>
+
+<ul *ngIf="suggestions.length" class="imp-suggestions" role="listbox">
+    <li
+        *ngFor="let s of suggestions"
+        class="imp-suggestion"
+        role="option"
+        (click)="selectSuggestion(s)"
+    >
+        <i class="bx bx-location-alt imp-pin-icon"></i>
+        <div class="imp-suggest-text">
+            <span class="imp-main">{{ s.display_name.split(',')[0] }}</span>
+            <span class="imp-sub">{{ s.display_name.split(',').slice(1, 3).join(',') }}</span>
+        </div>
+    </li>
+</ul>
+
+<div *ngIf="detectError" class="imp-error" role="alert">
+    <i class="bx bx-error-circle"></i> {{ detectError }}
+</div>
+
+<div #mapContainer class="imp-map" [style.height]="height"></div>
+
+<div class="imp-address-bar" *ngIf="currentAddress || isLoadingAddress">
+    <i class="bx bx-location-alt-pin"></i>
+    <ng-container *ngIf="isLoadingAddress; else addr">Resolving address...</ng-container>
+    <ng-template #addr>{{ currentAddress }}</ng-template>
+</div>
+
+<div class="imp-hint" *ngIf="!hasPin">
+    <i class="bx bx-info-circle"></i> Click anywhere on the map to drop a pin, or search above.
+</div>
+
+</div>

@@ -1,34 +1,64 @@
 import { Routes } from '@angular/router';
-import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
-import { ShopSearchComponent } from './features/shops/shop-search/shop-search.component';
-import { OrdersComponent } from './features/orders/orders/orders.component';
-import { AuthLayoutComponent } from './features/auth/auth-layout/auth-layout.component';
-import { UploadPrintComponent } from './features/print/upload-print/upload-print.component';
+import { customerGuard, guestGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  //   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'auth', component: AuthLayoutComponent },
+  // — Public routes —
   {
     path: '',
-    component: MainLayoutComponent,
-    children: [
-      // {
-      //   path: '',
-      //   pathMatch: 'full',
-      //   redirectTo: 'search-shops',
-      // },
-      {
-        path: 'search-shops',
-        component: ShopSearchComponent,
-      },
-      {
-        path: 'orders',
-        component: OrdersComponent,
-      },
-      {
-        path: 'print',
-        component: UploadPrintComponent,
-      }
-    ],
+    canActivate: [customerGuard],
+    loadComponent: () =>
+      import('./pages/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/auth/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
+  },
+  {
+    path: 'signup',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/auth/signup/signup.component').then(
+        (m) => m.SignupComponent,
+      ),
+  },
+  // {
+  //   path: 'owner/register',
+  //   canActivate: [guestGuard],
+  //   loadComponent: () =>
+  //     import('./pages/owner/register/owner-register.component').then(m => m.OwnerRegisterComponent),
+  // },
+
+  // — Customer routes (requires login + customer role) —
+  {
+    path: 'customer/upload',
+    canActivate: [customerGuard],
+    loadComponent: () =>
+      import('./pages/upload/upload-page.component').then(
+        (m) => m.UploadPageComponent,
+      ),
+  },
+  {
+    path: 'customer/orders',
+    canActivate: [customerGuard],
+    loadComponent: () =>
+      import('./pages/orders/orders.component').then((m) => m.OrdersComponent),
+  },
+  {
+    path: 'customer/saved',
+    canActivate: [customerGuard],
+    loadComponent: () =>
+      import('./pages/saved/saved.component').then((m) => m.SavedComponent),
+  },
+  {
+    path: 'customer/profile',
+    canActivate: [customerGuard],
+    loadComponent: () =>
+      import('./pages/profile/profile.component').then(
+        (m) => m.ProfileComponent,
+      ),
   },
 ];

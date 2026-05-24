@@ -1,0 +1,167 @@
+:host { display: block; }
+
+.imp-shell {
+    position: relative;
+    border: 1.5px solid var(--border, #e2e8f0);
+    border-radius: 16px;
+    background: var(--bg-white, #fff);
+    overflow: hidden;
+}
+
+.imp-toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+    background: var(--bg-subtle, #f8fafc);
+}
+
+.imp-search-wrap {
+    flex: 1;
+    position: relative;
+}
+
+.imp-search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--text-400, #94a3b8);
+}
+
+.imp-search {
+    width: 100%;
+    height: 42px;
+    padding: 0 36px 0 38px;
+    border: 1.5px solid var(--border, #e2e8f0);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.imp-search:focus { border-color: var(--primary, #2563eb); }
+
+.imp-spinner {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    border: 2px solid var(--border, #e2e8f0);
+    border-top-color: var(--primary, #2563eb);
+    border-radius: 50%;
+    animation: imp-spin 0.8s linear infinite;
+}
+
+@keyframes imp-spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+.imp-gps {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 42px;
+    padding: 0 14px;
+    background: var(--primary, #2563eb);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.15s;
+}
+
+.imp-gps:hover { filter: brightness(1.08); }
+.imp-gps i { font-size: 18px; }
+
+.imp-suggestions {
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #fff;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.imp-suggestion {
+    display: flex;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.imp-suggestion:hover { background: var(--bg-subtle, #f1f5f9); }
+.imp-pin-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.imp-suggest-text { display: flex; flex-direction: column; min-width: 0; }
+.imp-main { font-size: 13.5px; font-weight: 600; color: var(--text-800, #1e293b); }
+.imp-sub { font-size: 12px; color: var(--text-400, #94a3b8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.imp-error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    background: #fef2f2;
+    color: #b91c1c;
+    border-bottom: 1px solid #fecaca;
+}
+
+.imp-map {
+    width: 100%;
+    background: #e2e8f0;
+}
+
+:host ::ng-deep .imp-map .leaflet-container { width: 100%; height: 100%; }
+
+.imp-address-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-700, #334155);
+    background: var(--bg-subtle, #f8fafc);
+    border-top: 1px solid var(--border, #e2e8f0);
+}
+
+.imp-address-bar i { color: #ef4444; font-size: 16px; }
+
+.imp-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-400, #94a3b8);
+    background: var(--bg-subtle, #f8fafc);
+    border-top: 1px solid var(--border, #e2e8f0);
+}
+
+/* Custom pin (matches existing location-picker styling) */
+:host ::ng-deep .map-pin-icon {
+    position: relative;
+    width: 40px; height: 50px;
+}
+
+:host ::ng-deep .map-pin-icon .pin-body {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    margin: 0 auto;
+}
+
+:host ::ng-deep .map-pin-icon .pin-tip {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 14px solid #ef4444;
+    margin: -2px auto 0;
+}

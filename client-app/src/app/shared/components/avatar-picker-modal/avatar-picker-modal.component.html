@@ -1,0 +1,28 @@
+<div class="apm-overlay" *ngIf="show" (click)="onBackdropClick($event)">
+  <div class="apm-box">
+    <div class="apm-header">
+      <div class="apm-title"><i class="bx bx-smile"></i> Choose your avatar</div>
+      <button class="apm-close" (click)="closed.emit()" aria-label="Close"><i class="bx bx-x"></i></button>
+    </div>
+
+    <div class="apm-grid">
+      <button
+        type="button"
+        class="apm-tile"
+        *ngFor="let a of avatars"
+        [class.selected]="picked === a.emoji"
+        [style.background]="a.bg"
+        (click)="pick(a.emoji)"
+      >
+        <span>{{ a.emoji }}</span>
+      </button>
+    </div>
+
+    <div class="apm-actions">
+      <button class="apm-btn ghost" (click)="closed.emit()">Cancel</button>
+      <button class="apm-btn primary" [disabled]="!picked" (click)="save()">
+        <i class="bx bx-check"></i> Use this avatar
+      </button>
+    </div>
+  </div>
+</div>

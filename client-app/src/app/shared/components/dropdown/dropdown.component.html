@@ -1,19 +1,22 @@
-<div class="cfg-group">
-  <div class="cfg-label">
-    <i [class]="labelIcon"></i>
-    {{label}}
-  </div>
-  <div ngbDropdown>
-    <button type="button" class="form-select" id="dd-element" ngbDropdownToggle>
-      {{ selectedValue }}
-    </button>
-
-    <div ngbDropdownMenu aria-labelledby="dd-element">
-      @for (opt of options; track opt) {
-        <button ngbDropdownItem (click)="updateValue(opt.value)">
-          {{ opt.label }}
-        </button>
-      }
-    </div>
-  </div>
+<div class="dropdown" [class.open]="isOpen" [class.disabled]="disabled" [ngClass]="variant">
+  <button #trigger class="dd-trigger" type="button" (click)="toggle()" [disabled]="disabled">
+    <i *ngIf="icon" [class]="icon"></i>
+    <span class="dd-label">{{ displayLabel }}</span>
+    <i class="bx bx-chevron-down dd-arrow"></i>
+  </button>
 </div>
+
+<ng-template #menuTpl>
+  <div class="dd-menu" [ngStyle]="menuStyle">
+    <button
+      class="dd-item"
+      *ngFor="let opt of options; trackBy: trackByValue"
+      [class.active]="opt.value === selected"
+      type="button"
+      (click)="select(opt)">
+      <i *ngIf="opt.icon" [class]="opt.icon"></i>
+      <span>{{ opt.label }}</span>
+      <i class="bx bx-check dd-check" *ngIf="opt.value === selected"></i>
+    </button>
+  </div>
+</ng-template>

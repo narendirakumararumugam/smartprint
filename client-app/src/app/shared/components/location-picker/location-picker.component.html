@@ -1,0 +1,25 @@
+<div class="picker-backdrop" (click)="close()">
+  <div class="picker-sheet" (click)="$event.stopPropagation()">
+    <div class="picker-header">
+      <h2 class="picker-title">Select Delivery Location</h2>
+      <button class="btn-close" (click)="close()" aria-label="Close">
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="picker-body">
+    <app-inline-map-picker
+      [initialCenter]="initialCenter"
+      height="360px"
+      (locationPicked)="onLocationPicked($event)"
+    ></app-inline-map-picker>
+  </div>
+
+  <div class="picker-footer">
+    <div class="picker-pin-info">
+        <i class="bx bx-location-alt"></i>
+        <div class="pin-text"></div>
+    </div>
+  </div>
+</div>
