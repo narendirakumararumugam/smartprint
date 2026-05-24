@@ -1,0 +1,121 @@
+.page-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+  padding: 40px 32px 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 55% 80% at 5% 80%,
+      rgba(124, 58, 237, 0.3) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 45% 60% at 90% 10%,
+      rgba(245, 158, 11, 0.15) 0%,
+      transparent 55%
+    );
+}
+
+.ph-inner {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.ph-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 16px;
+}
+.ph-breadcrumb a {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color var(--transition-fast);
+}
+.ph-breadcrumb a:hover {
+  color: #fff;
+}
+
+.ph-title {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  animation: fadeInUp 0.5s ease both;
+}
+.ph-sub {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 15px;
+  animation: fadeInUp 0.5s ease 0.1s both;
+}
+.ph-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.5s ease 0.2s both;
+}
+.ph-stat {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 150px;
+}
+.ph-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ph-stat-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.ph-stat-lbl {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 28px 16px 80px;
+  }
+  .ph-stats {
+    gap: 10px;
+  }
+  .ph-stat {
+    min-width: 120px;
+    padding: 10px 14px;
+  }
+}

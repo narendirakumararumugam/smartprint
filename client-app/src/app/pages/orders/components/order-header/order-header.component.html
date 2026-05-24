@@ -1,0 +1,63 @@
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-breadcrumb">
+      <a routerLink="/"><i class="bx bxs-home"></i> Home</a>
+      <i class="bx bx-chevron-right" style="font-size: 12px"></i>
+      <span style="color: rgba(255, 255, 255, 0.8)">My Orders</span>
+    </div>
+    <div class="ph-title">
+      <i class="bx bx-list-ul" style="margin-right: 10px"></i>My Orders
+    </div>
+    <div class="ph-sub">Track, manage, and reorder your print jobs</div>
+    <div class="ph-stats">
+      <div class="ph-stat">
+        <div
+          class="ph-stat-icon"
+          style="background: rgba(37, 99, 235, 0.3); color: #93c5fd"
+        >
+          <i class="bx bxs-box"></i>
+        </div>
+        <div>
+          <div class="ph-stat-val">{{ totalOrders }}</div>
+          <div class="ph-stat-lbl">Total Orders</div>
+        </div>
+      </div>
+      <div class="ph-stat">
+        <div
+          class="ph-stat-icon"
+          style="background: rgba(245, 158, 11, 0.3); color: #fde68a"
+        >
+          <i class="bx bx-loader-alt"></i>
+        </div>
+        <div>
+          <div class="ph-stat-val">{{ activeCount }}</div>
+          <div class="ph-stat-lbl">Active</div>
+        </div>
+      </div>
+      <div class="ph-stat">
+        <div
+          class="ph-stat-icon"
+          style="background: rgba(16, 185, 129, 0.3); color: #6ee7b7"
+        >
+          <i class="bx bxs-check-circle"></i>
+        </div>
+        <div>
+          <div class="ph-stat-val">{{ completedCount }}</div>
+          <div class="ph-stat-lbl">Completed</div>
+        </div>
+      </div>
+      <div class="ph-stat">
+        <div
+          class="ph-stat-icon"
+          style="background: rgba(124, 58, 237, 0.3); color: #c4b5fd"
+        >
+          <i class="bx bx-rupee"></i>
+        </div>
+        <div>
+          <div class="ph-stat-val">{{ totalSpent }}</div>
+          <div class="ph-stat-lbl">Total Spent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

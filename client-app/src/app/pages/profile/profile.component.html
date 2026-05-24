@@ -1,0 +1,109 @@
+<app-profile-header
+  [fullName]="fullName"
+  [email]="email"
+  [initials]="initials"
+  [avatar]="avatar"
+  [memberSince]="memberSince"
+  [totalOrders]="totalOrders"
+  [totalSpent]="totalSpent"
+  [pagesPrinted]="pagesPrinted"
+  [savedShops]="savedShops"
+  (editAvatar)="openAvatarModal()"
+>
+</app-profile-header>
+
+<div class="profile-wrap">
+  <div class="profile-grid">
+    <aside>
+      <app-profile-sidebar
+        [items]="sideNavItems"
+        [activeSection]="activeSection"
+        (sectionChange)="showSection($event)"
+        (logoutClicked)="openLogoutModal()"
+      >
+      </app-profile-sidebar>
+    </aside>
+
+    <main>
+      <app-profile-personal
+        *ngIf="activeSection === 'personal'"
+        [firstName]="firstName"
+        [lastName]="lastName"
+        [email]="email"
+        [phone]="phone"
+        [whatsapp]="whatsapp"
+        [gender]="gender"
+        [isEditing]="isEditing"
+        (firstNameChange)="firstName = $event"
+        (lastNameChange)="lastName = $event"
+        (emailChange)="email = $event"
+        (phoneChange)="phone = $event"
+        (whatsappChange)="whatsapp = $event"
+        (genderChange)="gender = $event"
+        (toggleEdit)="toggleEdit()"
+        (save)="saveProfile()"
+        (cancel)="cancelEdit()"
+      >
+      </app-profile-personal>
+
+      <app-profile-sections
+        [activeSection]="activeSection"
+        [prefs]="prefs"
+        [addresses]="addresses"
+        [securityItems]="securityItems"
+        [activityItems]="activityItems"
+        [favShops]="favShops"
+        (savePrefs)="savePrefs()"
+        (prefChange)="updatePref($event.key, $event.value)"
+        (addAddress)="openAddAddressModal()"
+        (editAddress)="openEditAddressModal($event)"
+        (setDefaultAddress)="setDefaultAddress($event)"
+        (removeAddress)="removeAddress($event)"
+        (securityAction)="onSecurityAction($event)"
+        (removeFav)="removeFav($event)"
+        (clearActivity)="clearActivity()"
+        (deactivateAccount)="deactivateAccount()"
+        (clearHistory)="clearHistory()"
+        (openDeleteModal)="openDeleteModal()"
+      >
+      </app-profile-sections>
+    </main>
+  </div>
+</div>
+
+<app-profile-modals
+  [showLogoutModal]="showLogoutModal"
+  [showDeleteModal]="showDeleteModal"
+  (closeLogout)="closeLogoutModal()"
+  (confirmLogout)="doLogout()"
+  (closeDelete)="closeDeleteModal()"
+  (confirmDelete)="confirmDelete()"
+>
+</app-profile-modals>
+
+<app-avatar-picker-modal
+  [show]="showAvatarModal"
+  [currentAvatar]="avatar"
+  (closed)="closeAvatarModal()"
+  (avatarSelected)="onAvatarSelected($event)"
+>
+</app-avatar-picker-modal>
+
+<app-address-form-modal
+  [show]="showAddressModal"
+  [initial]="editingAddress"
+  (closed)="closeAddressModal()"
+  (saved)="onAddressSaved($event)"
+>
+</app-address-form-modal>
+
+<app-change-password-modal
+  [show]="showPasswordModal"
+  [submitting]="passwordSubmitting"
+  [serverError]="passwordServerError"
+  (closed)="closePasswordModal()"
+  (submitted)="onPasswordSubmit($event)"
+>
+</app-change-password-modal>
+
+<app-toast-container></app-toast-container>

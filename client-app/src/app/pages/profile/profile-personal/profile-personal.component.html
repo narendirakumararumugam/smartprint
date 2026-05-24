@@ -1,0 +1,53 @@
+<div class="sec-card">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-user blue"></i> Personal Information</div>
+        <button class="btn btn-ghost btn-sm" (click)="toggleEdit.emit()">
+            <i class="bx" [ngClass]="isEditing ? 'bx-x' : 'bx-edit-alt'"></i>
+            {{ isEditing ? 'Cancel edit' : 'Edit' }}
+        </button>
+    </div>
+    <div class="sc-body">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input class="form-input" [ngModel]="firstName" (ngModelChange)="firstNameChange.emit($event)" [readonly]="!isEditing" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input class="form-input" [ngModel]="lastName" (ngModelChange)="lastNameChange.emit($event)" [readonly]="!isEditing" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-input" type="email" [ngModel]="email" (ngModelChange)="emailChange.emit($event)" [readonly]="true" />
+                <span class="form-hint">Email is used for login and cannot be changed here.</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" type="tel" [ngModel]="phone" (ngModelChange)="phoneChange.emit($event)" [readonly]="!isEditing" placeholder="+91 _" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">WhatsApp Number</label>
+                <input class="form-input" type="tel" [ngModel]="whatsapp" (ngModelChange)="whatsappChange.emit($event)" [readonly]="!isEditing" placeholder="Optional" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Gender</label>
+                <app-dropdown
+                    [options]="genderOptions"
+                    [selected]="gender"
+                    (selectionChange)="onGenderSelected($event)"
+                    [disabled]="!isEditing"
+                    variant="form"
+                    placeholder="Select gender">
+                </app-dropdown>
+            </div>
+        </div>
+        <div class="form-actions" *ngIf="isEditing">
+            <button class="btn btn-primary" (click)="save.emit()"><i class="bx bx-check"></i> Save Changes</button>
+            <button class="btn btn-ghost" (click)="cancel.emit()"><i class="bx bx-x"></i> Cancel</button>
+        </div>
+    </div>
+</div>

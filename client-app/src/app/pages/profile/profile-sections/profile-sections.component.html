@@ -1,0 +1,189 @@
+<div class="sec-card" *ngIf="activeSection === 'prefs'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-slider purple"></i> Default Print Preferences</div>
+        <button class="btn btn-primary btn-sm" (click)="savePrefs.emit()"><i class="bx bx-check"></i> Save</button>
+    </div>
+    <div class="sc-body">
+        <p style="font-size:13px;color:var(--text-400);margin-bottom:20px;">These settings will be pre-filled when you create a new print order.</p>
+        <div class="pref-form">
+            <div class="pref-field">
+                <label>Print Mode</label>
+                <app-dropdown [options]="colorOptions" [selected]="prefs['color']" variant="form"
+                    (selectionChange)="emitPref('color', $event)"></app-dropdown>
+            </div>
+            <div class="pref-field">
+                <label>Sides</label>
+                <app-dropdown [options]="sidesOptions" [selected]="prefs['sides']" variant="form"
+                    (selectionChange)="emitPref('sides', $event)"></app-dropdown>
+            </div>
+            <div class="pref-field">
+                <label>Paper Size</label>
+                <app-dropdown [options]="paperOptions" [selected]="prefs['paper']" variant="form"
+                    (selectionChange)="emitPref('paper', $event)"></app-dropdown>
+            </div>
+            <div class="pref-field">
+                <label>Copies</label>
+                <app-dropdown [options]="copiesOptions" [selected]="prefs['copies']" variant="form"
+                    (selectionChange)="emitPref('copies', $event)"></app-dropdown>
+            </div>
+            <div class="pref-field">
+                <label>Binding</label>
+                <app-dropdown [options]="bindingOptions" [selected]="prefs['binding']" variant="form"
+                    (selectionChange)="emitPref('binding', $event)"></app-dropdown>
+            </div>
+            <div class="pref-field">
+                <label>Orientation</label>
+                <app-dropdown [options]="orientationOptions" [selected]="prefs['orientation']" variant="form"
+                    (selectionChange)="emitPref('orientation', $event)"></app-dropdown>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sec-card" *ngIf="activeSection === 'addresses'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-location-alt blue"></i> Saved Addresses</div>
+        <button class="btn btn-primary btn-sm" (click)="addAddress.emit()"><i class="bx bx-plus"></i> Add New</button>
+    </div>
+    <div class="sc-body">
+        <div class="addr-grid" *ngIf="addresses.length; else emptyAddr">
+            <div class="addr-card"
+                *ngFor="let addr of addresses; trackBy: trackByAddress"
+                [class.default-addr]="addr.isDefault">
+                <div class="addr-type">
+                    <i class="bx bx-location-alt"></i> {{ addr.type }}
+                    <span class="default-badge" *ngIf="addr.isDefault">Default</span>
+                </div>
+                <div class="addr-name">{{ addr.name }}</div>
+                <div class="addr-text">
+                    {{ addr.line1 }}<br/>
+                    <ng-container *ngIf="addr.line2">{{ addr.line2 }}<br/></ng-container>
+                    {{ addr.city }} - {{ addr.pincode }}<br/>
+                    {{ addr.phone }}
+                </div>
+                <div class="addr-actions">
+                    <button class="addr-btn" (click)="editAddress.emit(addr)">Edit</button>
+                    <button class="addr-btn" *ngIf="!addr.isDefault" (click)="setDefaultAddress.emit(addr.id)">Set Default</button>
+                    <button class="addr-btn remove" (click)="removeAddress.emit(addr.id)">Remove</button>
+                </div>
+            </div>
+            <div class="addr-add" (click)="addAddress.emit()">
+                <i class="bx bx-plus"></i>
+                <div style="font-size:14px;font-weight:600">Add New Address</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #emptyAddr>
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bx bx-location-alt"></i></div>
+        <div class="empty-title">No saved addresses yet</div>
+        <div class="empty-sub">Add an address to speed up your next print order.</div>
+        <button class="btn btn-primary btn-sm" style="margin-top:14px;" (click)="addAddress.emit()">
+            <i class="bx bx-plus"></i> Add address
+        </button>
+    </div>
+</ng-template>
+
+<div class="sec-card" *ngIf="activeSection === 'security'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-shield green"></i> Security Settings</div>
+    </div>
+    <div class="sc-body">
+        <div class="security-item" *ngFor="let item of securityItems; trackBy: trackByIdx">
+            <div class="sec-icon" [style.background]="item.iconBg" [style.color]="item.iconClr">
+                <i [class]="item.icon"></i>
+            </div>
+            <div class="sec-info">
+                <div class="sec-name">{{ item.name }}</div>
+                <div class="sec-desc">{{ item.desc }}</div>
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="securityAction.emit(item)">{{ item.action }}</button>
+        </div>
+    </div>
+</div>
+
+<div class="sec-card" *ngIf="activeSection === 'activity'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-history blue"></i> Recent Activity</div>
+        <button class="btn btn-ghost btn-sm" (click)="clearActivity.emit()"><i class="bx bx-trash"></i> Clear All</button>
+    </div>
+    <div class="sc-body">
+        <div class="activity-list" *ngIf="activityItems.length">
+            <div class="activity-item" *ngFor="let item of activityItems; let i = index; trackBy: trackByIdx" [style.animation-delay.ms]="i * 50">
+                <div class="ai-icon" [style.background]="item.iconBg" [style.color]="item.iconClr">
+                    <i [class]="item.icon"></i>
+                </div>
+                <div class="ai-content">
+                    <div class="ai-title">{{ item.title }}</div>
+                    <div class="ai-sub">{{ item.sub }}</div>
+                </div>
+                <div class="ai-time">{{ item.time }}</div>
+            </div>
+        </div>
+        <div class="empty-state" *ngIf="!activityItems.length">
+            <div class="empty-icon"><i class="bx bx-history"></i></div>
+            <div class="empty-title">No activity yet</div>
+        </div>
+    </div>
+</div>
+
+<div class="sec-card" *ngIf="activeSection === 'favourites'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bxf bx-heart" style="color:var(--danger)"></i> Favourite Shops</div>
+        <a routerLink="/"><button class="btn btn-ghost btn-sm"><i class="bxf bx-store"></i> Explore Shops</button></a>
+    </div>
+    <div class="sc-body">
+        <div class="fav-shop-row" *ngFor="let shop of favShops; let i = index; trackBy: trackByIdx">
+            <div class="fav-logo" [style.background]="shop.grad">{{ shop.icon }}</div>
+            <div class="fav-info">
+                <div class="fav-name">{{ shop.name }}</div>
+                <div class="fav-addr">{{ shop.addr }} &middot; <i class="bx bxs-star"></i> {{ shop.rating }}</div>
+            </div>
+            <div class="fav-actions">
+                <button class="btn btn-ghost btn-sm"><i class="bx bx-navigation"></i> Visit</button>
+                <button class="btn btn-ghost btn-sm" style="color:var(--danger)" (click)="removeFav.emit(i)"><i class="bx bx-trash"></i></button>
+            </div>
+        </div>
+        <div class="empty-state" *ngIf="!favShops.length">
+            <div class="empty-icon"><i class="bx bxs-heart"></i></div>
+            <div class="empty-title">No favourite shops</div>
+            <div class="empty-sub">Start exploring shops to save your favourites.</div>
+        </div>
+    </div>
+</div>
+
+<div class="sec-card" *ngIf="activeSection === 'danger'">
+    <div class="sc-header">
+        <div class="sc-title"><i class="bx bx-alert-triangle" style="color:var(--danger)"></i> Danger Zone</div>
+    </div>
+    <div class="sc-body">
+        <div class="danger-item">
+            <div>
+                <div class="di-title">Deactivate Account</div>
+                <div class="di-desc">Temporarily disable your account. You can reactivate at any time by logging back in.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:#fecaca!important;flex-shrink:0" (click)="deactivateAccount.emit()">
+                <i class="bx bx-pause"></i> Deactivate
+            </button>
+        </div>
+        <div class="danger-item">
+            <div>
+                <div class="di-title">Clear Order History</div>
+                <div class="di-desc">Permanently delete all your order history. This action cannot be undone.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:#fecaca!important;flex-shrink:0" (click)="clearHistory.emit()">
+                <i class="bx bx-trash"></i> Clear
+            </button>
+        </div>
+        <div class="danger-item" style="border-color: #ef4444">
+            <div>
+                <div class="di-title">Delete Account</div>
+                <div class="di-desc">Permanently delete your account and all associated data. This cannot be reversed.</div>
+            </div>
+            <button class="btn btn-danger btn-sm" style="flex-shrink:0" (click)="openDeleteModal.emit()">
+                <i class="bx bx-x-circle"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>

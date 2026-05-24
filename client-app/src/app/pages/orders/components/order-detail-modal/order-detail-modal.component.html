@@ -1,0 +1,218 @@
+<div class="modal-back" [class.open]="isOpen" (click)="onBackdropClick($event)">
+  <div class="modal" *ngIf="order as o">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-title">Order {{ o.id }}</div>
+        <div class="modal-sub">
+          <span
+            class="oc-status-badge"
+            [ngClass]="statusClass(o.status)"
+            style="font-size: 12px; padding: 3px 10px"
+          >
+            <i [class]="statusIcon(o.status)"></i> {{ o.statusLabel }}
+          </span>
+          &nbsp;
+          <span style="font-size: 13px; color: var(--text-400)"
+            >{{ o.date }} &middot; {{ o.time }}</span
+          >
+        </div>
+      </div>
+      <button class="m-close" (click)="close.emit()">
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="summary-row">
+        <div class="s-card">
+          <div class="s-card-icon">📄</div>
+          <div class="s-card-val">{{ o.pages }}</div>
+          <div class="s-card-lbl">Total Pages</div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-icon">🖨️</div>
+          <div class="s-card-val">{{ o.copies }}</div>
+          <div class="s-card-lbl">Copies</div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-icon">💰</div>
+          <div class="s-card-val">{{ o.total }}</div>
+          <div class="s-card-lbl">Total Amount</div>
+        </div>
+      </div>
+
+      <ng-container
+        *ngIf="o.status !== 'completed' && o.status !== 'cancelled'"
+      >
+        <div class="section-label">
+          <i class="bx bx-transfer"></i> Order Progress
+        </div>
+        <div class="modal-progress">
+          <div class="mp-label">
+            <span>{{ o.progressLabel }}</span>
+            <span [style.color]="progressColor(o)" style="font-weight: 600"
+              >{{ o.progress }}%</span
+            >
+          </div>
+          <div class="mp-bar">
+            <div
+              class="mp-fill"
+              [style.width.%]="o.progress"
+              [style.background]="progressColor(o)"
+            ></div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="section-label">
+        <i class="bx bx-git-commit"></i> Order Timeline
+      </div>
+      <div class="timeline">
+        <div class="tl-item" *ngFor="let st of o.steps">
+          <div
+            class="tl-dot"
+            [ngClass]="
+              st.state === 'done'
+                ? 'done'
+                : st.state === 'active'
+                  ? 'active'
+                  : 'pend'
+            "
+          >
+            <i
+              class="bx"
+              [ngClass]="{
+                'bx-check': st.state === 'done',
+                'bx-radio-circle-marked': st.state === 'active',
+                'bx-circle': st.state === 'pending',
+              }"
+            ></i>
+          </div>
+          <div class="tl-content">
+            <div class="tl-title">{{ st.label }}</div>
+            <div class="tl-time">{{ st.time }}</div>
+            <div class="tl-desc" *ngIf="st.desc">{{ st.desc }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <i class="bx bx-purchase-tag"></i> Items &amp; Pricing
+      </div>
+      <table class="oi-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let it of o.items">
+            <td>{{ it.name }}</td>
+            <td>{{ it.qty }}</td>
+            <td>{{ it.rate }}</td>
+            <td style="font-weight: 600; color: var(--success)">
+              {{ it.total }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="oi-total">
+        <span class="lbl">Subtotal</span
+        ><span class="val">{{ o.subtotal }}</span>
+      </div>
+      <div class="oi-total">
+        <span class="lbl">Tax</span><span class="val">{{ o.tax }}</span>
+      </div>
+      <div class="oi-grand">
+        <span class="lbl"><i class="bx bx-rupee"></i> Grand Total</span
+        ><span class="val">{{ o.total }}</span>
+      </div>
+
+      <div class="section-label" style="margin-top: 20pxpx">
+        <i class="bx bx-file"></i> Files Uploaded
+      </div>
+      <div class="info-row" *ngFor="let f of o.files">
+        <div
+          class="info-icon"
+          style="background: var(--primary-light); color: var(--primary)"
+        >
+          <i class="bx bx-file"></i>
+        </div>
+        <div class="info-lbl">File</div>
+        <div class="info-val">{{ f }}</div>
+      </div>
+
+      <div class="section-label" style="margin-top: 20pxpx">
+        <i class="bx bx-id-card"></i> Shop &amp; Contact
+      </div>
+      <div class="info-row">
+        <div
+          class="info-icon"
+          style="background: #d1fae5; color: var(--success)"
+        >
+          <i class="bx bxs-store"></i>
+        </div>
+        <div class="info-lbl">Shop</div>
+        <div class="info-val">{{ o.shopName }}</div>
+      </div>
+      <div class="info-row">
+        <div
+          class="info-icon"
+          style="background: var(--primary-light); color: var(--primary)"
+        >
+          <i class="bx bx-location-alt"></i>
+        </div>
+        <div class="info-lbl">Address</div>
+        <div class="info-val">{{ o.address }}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-lbl">Phone</div>
+        <div class="info-val">{{ o.phone }}</div>
+      </div>
+      <div class="info-row" *ngIf="o.note">
+        <div
+          class="info-icon"
+          style="background: #fef3c7; color: var(--accent-dark)"
+        >
+          <i class="bx bx-note"></i>
+        </div>
+        <div class="info-lbl">Special Note</div>
+        <div class="info-val">{{ o.note }}</div>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button
+        class="btn btn-ghost"
+        *ngIf="o.canCancel"
+        (click)="cancelClicked.emit(o); close.emit()"
+      >
+        <i class="bx bx-x"></i> Cancel Order
+      </button>
+      <button
+        class="btn btn-success"
+        *ngIf="o.status === 'ready'"
+        (click)="confirmPickupClicked.emit(o); close.emit()"
+      >
+        <i class="bx bx-check"></i> Confirm Pickup
+      </button>
+      <button
+        class="btn btn-primary"
+        *ngIf="o.canReorder"
+        (click)="reorderClicked.emit(o); close.emit()"
+      >
+        <i class="bx bx-revision"></i> Reorder
+      </button>
+      <button
+        class="btn btn-ghost"
+        *ngIf="!o.canReorder && !o.canCancel"
+        (click)="close.emit()"
+      >
+        <i class="bx bx-x"></i> Close
+      </button>
+    </div>
+  </div>
+</div>

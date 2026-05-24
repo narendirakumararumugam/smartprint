@@ -1,0 +1,24 @@
+<div class="modal-overlay" [class.show]="showLogoutModal" (click)="onBackdropClick($event)">
+    <div class="modal-box">
+        <div class="modal-icon">👋</div>
+        <div class="modal-title">Logging Out?</div>
+        <div class="modal-sub">You'll need to sign back in to access your orders and saved shops. See you soon!</div>
+        <div class="modal-btns">
+            <button class="btn btn-ghost" (click)="closeLogout.emit()"><i class="bx bx-x"></i> Cancel</button>
+            <button class="btn btn-primary" (click)="confirmLogout.emit()"><i class="bx bx-log-out"></i> Yes, Log Out</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" [class.show]="showDeleteModal" (click)="onBackdropClick($event)">
+    <div class="modal-box">
+        <div class="modal-icon">⚠️</div>
+        <div class="modal-title" style="color:var(--danger)">Delete Account?</div>
+        <div class="modal-sub">This will permanently erase all your data including orders, saved shops, and preferences.
+            This <strong>cannot be undone</strong>.</div>
+        <div class="modal-btns">
+            <button class="btn btn-ghost" (click)="closeDelete.emit()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete.emit()"><i class="bx bx-trash"></i> Delete Forever</button>
+        </div>
+    </div>
+</div>

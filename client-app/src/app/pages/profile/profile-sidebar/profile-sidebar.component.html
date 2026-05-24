@@ -1,0 +1,16 @@
+<div class="side-nav">
+    <div class="sn-header"><div class="sn-heading">Account Menu</div></div>
+    <div class="sn-item"
+        *ngFor="let item of items; trackBy: trackByIdx"
+        [class.active]="activeSection === item.key"
+        [style.color]="item.danger ? 'var(--danger)' : null"
+        (click)="onSectionClick(item.key)">
+        <i [class]="item.icon" [style.color]="item.danger ? 'var(--danger)' : null"></i>
+        {{ item.label }}
+        <span class="sn-badge" *ngIf="item.badge">{{ item.badge }}</span>
+    </div>
+    <div class="sn-divider"></div>
+    <div class="sn-logout" (click)="logoutClicked.emit()">
+        <i class="bxf bx-arrow-out-left-square-half"></i> Log Out
+    </div>
+</div>

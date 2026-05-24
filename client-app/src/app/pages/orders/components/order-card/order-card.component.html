@@ -1,0 +1,119 @@
+<div
+  class="order-card"
+  [style.animation-delay.ms]="animationDelay"
+  (click)="viewOrder.emit(order)"
+>
+  <div class="oc-top">
+    <div class="oc-shop-logo" [style.background]="order.shopGrad">
+      {{ order.shopIcon }}
+    </div>
+    <div class="oc-meta">
+      <div class="oc-header">
+        <div>
+          <div class="oc-shop-name">{{ order.shopName }}</div>
+          <div class="oc-id">
+            Order {{ order.id }} &nbsp;&middot;&nbsp; {{ order.date }} at
+            {{ order.time }}
+          </div>
+        </div>
+        <div class="oc-status-badge" [ngClass]="statusClass(order.status)">
+          <i [class]="statusIcon(order.status)"></i> {{ order.statusLabel }}
+        </div>
+      </div>
+
+      <div class="oc-items">
+        <span class="oc-item-chip" *ngFor="let it of order.items">
+          {{ it.name }} &times;{{ it.qty }}
+        </span>
+      </div>
+
+      <div
+        class="oc-progress"
+        *ngIf="order.status !== 'completed' && order.status !== 'cancelled'"
+      >
+        <div class="oc-progress-label">
+          <span>{{ order.progressLabel }}</span>
+          <span [style.color]="progressColor()" style="font-weight: 600"
+            >{{ order.progress }}%</span
+          >
+        </div>
+        <div class="oc-progress-bar">
+          <div
+            class="oc-progress-fill"
+            [style.width.%]="order.progress"
+            [style.background]="progressColor()"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="oc-steps"
+        *ngIf="order.status !== 'completed' && order.status !== 'cancelled'"
+      >
+        <div class="step" *ngFor="let st of order.steps" [ngClass]="st.state">
+          <div class="step-dot" [ngClass]="st.state">
+            <i
+              class="bx"
+              [ngClass]="{
+                'bx-check': st.state === 'done',
+                'bx-radio-circle-marked': st.state === 'active',
+                'bx-circle': st.state === 'pending',
+              }"
+            ></i>
+          </div>
+          <div class="step-label">{{ st.label }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="oc-footer">
+    <div class="oc-date">
+      <i class="bx bx-time-five"></i>
+      <span
+        *ngIf="order.status === 'ready'"
+        style="color: var(--success); font-weight: 600"
+        >Ready for pickup!</span
+      >
+      <span *ngIf="order.status === 'active'"
+        >Est. pickup: {{ order.pickupTime }}</span
+      >
+      <span *ngIf="order.status === 'cancelled'" style="color: var(--danger)"
+        >Cancelled</span
+      >
+      <span *ngIf="order.status === 'completed'"
+        >Picked up: {{ order.pickupTime }}</span
+      >
+    </div>
+    <div class="oc-amount">{{ order.total }}</div>
+    <div class="oc-actions">
+      <button
+        class="oc-btn oc-btn-outline"
+        (click)="viewOrder.emit(order); $event.stopPropagation()"
+      >
+        <i class="bx bx-show"></i> View
+      </button>
+      <button
+        class="oc-btn oc-btn-success"
+        *ngIf="order.status === 'ready'"
+        (click)="confirmPickupClicked.emit(order); $event.stopPropagation()"
+      >
+        <i class="bx bx-check"></i> Confirm Pickup
+      </button>
+      <button
+        class="oc-btn oc-btn-danger"
+        *ngIf="order.canCancel"
+        (click)="cancelClicked.emit(order); $event.stopPropagation()"
+      >
+        <i class="bx bx-x"></i> Cancel
+      </button>
+      <button
+        class="oc-btn oc-btn-primary"
+        *ngIf="order.canReorder"
+        (click)="reorderClicked.emit(order); $event.stopPropagation()"
+      >
+        <i class="bx bx-revision"></i> Reorder
+      </button>
+    </div>
+  </div>
+</div>

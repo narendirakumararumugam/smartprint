@@ -1,0 +1,59 @@
+<div class="profile-hero">
+  <div class="hero-inner">
+    <div class="ph-breadcrumb mt-2">
+      <a routerLink="/"><i class="bxs bx-home"></i> Home</a>
+      <i class="bx bx-chevron-right" style="font-size:10px;"></i>
+      <span style="color: rgba(255,255,255,.8)">My Profile</span>
+    </div>
+
+    <div class="avatar-wrap">
+      <div class="big-avatar">{{ avatar || initials }}</div>
+      <div class="avatar-badge"><i class="bx bx-check"></i></div>
+      <button type="button" class="avatar-edit-btn" (click)="editAvatar.emit()" aria-label="Change avatar">
+        <i class="bx bx-camera"></i>
+      </button>
+    </div>
+
+    <div class="hero-info">
+      <div class="hero-name">{{ fullName }}</div>
+      <div class="hero-email">{{ email }}</div>
+      <div class="hero-tags">
+        <div class="hero-tag" *ngIf="memberSince">
+          <i class="bxs bx-star" style="color: var(--accent)"></i> {{ memberSince }}
+        </div>
+        <div class="hero-tag green">
+          <i class="bxs bx-check-circle"></i> Verified Account
+        </div>
+        <div class="hero-tag">
+          <i class="bxs bx-trophy" style="color: #fbbf24"></i> Gold Member
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card" style="animation-delay: .05s">
+    <div class="stat-icon" style="background: #dbeafe; color: var(--primary)"><i class="bxs bx-box"></i></div>
+    <div class="stat-val">{{ totalOrders }}</div>
+    <div class="stat-lbl">Total Orders</div>
+  </div>
+
+  <div class="stat-card" style="animation-delay: .1s">
+    <div class="stat-icon" style="background: #d1fae5; color: var(--success)"><i class="bx bx-rupee"></i></div>
+    <div class="stat-val">{{ totalSpent }}</div>
+    <div class="stat-lbl">Total Spent</div>
+  </div>
+
+  <div class="stat-card" style="animation-delay: .15s">
+    <div class="stat-icon" style="background: #ede9fe; color: var(--purple)"><i class="bx bx-file"></i></div>
+    <div class="stat-val">{{ pagesPrinted }}</div>
+    <div class="stat-lbl">Pages Printed</div>
+  </div>
+
+  <div class="stat-card" style="animation-delay: .2s">
+    <div class="stat-icon" style="background: #fef3c7; color: var(--accent-dark)"><i class="bxs bx-heart"></i></div>
+    <div class="stat-val">{{ savedShops }}</div>
+    <div class="stat-lbl">Saved Shops</div>
+  </div>
+</div>
