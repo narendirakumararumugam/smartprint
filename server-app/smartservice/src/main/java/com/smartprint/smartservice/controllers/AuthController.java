@@ -1,38 +1,47 @@
 package com.smartprint.smartservice.controllers;
 
-import com.smartprint.smartservice.dtos.AuthLoginDto;
-import com.smartprint.smartservice.models.Users;
+import com.smartprint.smartservice.constants.ApiPaths;
+import com.smartprint.smartservice.dtos.AuthResponse;
+import com.smartprint.smartservice.dtos.LoginRequest;
+import com.smartprint.smartservice.dtos.RefreshTokenRequest;
+import com.smartprint.smartservice.dtos.SignupRequest;
 import com.smartprint.smartservice.services.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(ApiPaths.AUTH)
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
-
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthLoginDto loginDetails, HttpServletResponse response){
-        String token = authService.login(loginDetails);
-        ResponseCookie resCookie = ResponseCookie.from("jwtToken", token)
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response){
+        AuthResponse authResponse = authService.login(request);
+        ResponseCookie resCookie = ResponseCookie.from("jwtToken", authResponse.getAccessToken())
                 .httpOnly(true)
                 .path("/")
                 .maxAge(3600)
                 .sameSite("Strict")
                 .build();
         response.setHeader(HttpHeaders.SET_COOKIE, resCookie.toString());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/register")
-    public String register(@RequestBody Users userDetails){
-        return authService.register(userDetails);
+    @PostMapping("/signup")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignupRequest request){
+        AuthResponse authResponse = authService.signup(request);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request){
+        AuthResponse authResponse = authService.refresh(request);
+        return ResponseEntity.ok(authResponse);
     }
 }
