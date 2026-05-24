@@ -1,3 +1,4 @@
 export const environment = {
-    baseApiUrl: 'http://localhost:8080'
+    apiBaseUrl: 'http://localhost:8080/api',
+    useMockData: false
 }

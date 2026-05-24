@@ -1,50 +1,123 @@
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { computed, Injectable, signal } from '@angular/core';
-import { ApiRoutes } from '../../config/api-routes';
-import { environment } from '../../environment/environment';
-import { LoginDetails } from '../../models/login-details';
 import { Observable } from 'rxjs';
-import { sign } from 'crypto';
+import { tap } from 'rxjs/operators';
+import { BaseApiService } from './base-api.service';
+import { AuthStateService } from './auth-state.service';
+import { API_ENDPOINTS, RESOURCE_PATHS } from '../constants/api-endpoints';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthService {
-  isLoginMode = signal(false);
-  private totalSteps: number = 3;
-  currentStep = signal(2);
-  isSuccess = signal(false);
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
 
-  constructor(private _http: HttpClient) {}
+export interface SignupRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  role?: string; // 'customer' | 'owner'
+  username?: string;
+  avatar?: string;
+  city?: string;
+  bio?: string;
+}
 
-  next(): void {
-    if (this.currentStep() < this.totalSteps) {
-      this.currentStep.update((step) => step + 1);
-    }
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  email: string;
+  fullName: string;
+  userType: string;
+  username?: string;
+  avatar?: string;
+  createdAt?: string;
+}
+
+const MOCK_LOGIN_RESPONSE: AuthResponse = {
+  accessToken: 'mock-jwt-token-xyz-123',
+  refreshToken: 'mock-refresh-token-xyz',
+  email: 'arjun@email.com',
+  fullName: 'Arjun Mehta',
+  userType: 'customer',
+};
+
+const MOCK_SIGNUP_RESPONSE: AuthResponse = {
+  accessToken: 'mock-jwt-token-abc-456',
+  refreshToken: 'mock-refresh-token-abc',
+  email: 'newuser@email.com',
+  fullName: 'New User',
+  userType: 'customer',
+};
+
+@Injectable({ providedIn: 'root' })
+export class AuthService extends BaseApiService {
+  protected readonly resourcePath = RESOURCE_PATHS.AUTH;
+
+  constructor(
+    http: HttpClient,
+    private authState: AuthStateService,
+  ) {
+    super(http);
   }
 
-  back(): void {
-    if (this.currentStep() > 1) {
-      this.currentStep.update((step) => step - 1);
-    }
+  login(request: LoginRequest): Observable<AuthResponse> {
+    return this.apiPost<AuthResponse>(
+      API_ENDPOINTS.AUTH.LOGIN,
+      request,
+      MOCK_LOGIN_RESPONSE,
+    ).pipe(
+      tap((res) => {
+        if (res.accessToken) {
+          this.authState.setSession(res.accessToken, res.refreshToken, {
+            email: res.email,
+            fullName: res.fullName,
+            userType: res.userType,
+            username: res.username,
+            avatar: res.avatar,
+            createdAt: res.createdAt,
+          });
+        }
+      }),
+    );
   }
 
-  getTotalSteps(): number{
-    return this.totalSteps;
+  signup(request: SignupRequest): Observable<AuthResponse> {
+    return this.apiPost<AuthResponse>(
+      API_ENDPOINTS.AUTH.SIGNUP,
+      request,
+      MOCK_SIGNUP_RESPONSE,
+    ).pipe(
+      tap((res) => {
+        if (res.accessToken) {
+          this.authState.setSession(res.accessToken, res.refreshToken, {
+            email: res.email,
+            fullName: res.fullName,
+            userType: res.userType,
+            username: res.username,
+            avatar: res.avatar,
+            createdAt: res.createdAt,
+          });
+        }
+      }),
+    );
   }
 
-  setIsLoginMode(val: boolean): void {
-    this.isLoginMode.set(val);
+  logout(): void {
+    this.authState.logout();
   }
 
-  setIsSuccess(val: boolean): void {
-    this.isSuccess.set(val);
+  forgotPassword(
+    email: string,
+  ): Observable<{ success: boolean; message: string }> {
+    return this.apiPost<{ success: boolean; message: string }>(
+      API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+      { email },
+      {
+        success: true,
+        message: 'If this email is registered, a reset link will be sent.',
+      },
+    );
   }
-
-  //#region API calls
-  
-  login(loginDetails: LoginDetails): Observable<any> {
-    return this._http.post(`${ApiRoutes.login()}`, loginDetails);
-  }
-  //#endregion
 }
