@@ -1,0 +1,83 @@
+<article
+  class="shop-card"
+  [style.animation-delay]="animationDelay + 'ms'"
+  (click)="viewDetail.emit(shop)"
+  role="button"
+  [attr.aria-label]="'View details for ' + shop.name"
+>
+  <div class="card-cover">
+    <div class="cv-img" [style.background]="shop.gradient"></div>
+    <div class="cv-overlay"></div>
+
+    <div class="cv-badges">
+      <span *ngFor="let b of shop.badges" [class]="badgeClass(b)">{{ b }}</span>
+      <span
+        class="badge"
+        [class.b-open]="shop.isOpen"
+        [class.b-closed]="!shop.isOpen"
+      >
+        <i class="fa-solid fa-circle" style="font-size: 7px"></i>
+        {{ shop.isOpen ? "Open" : "Closed" }}
+      </span>
+    </div>
+
+    <div class="cv-dist">
+      <i class="fa-solid fa-location-dot"></i> {{ shop.distance }}
+    </div>
+
+    <div class="cv-view"><i class="fa-solid fa-eye"></i> View Details</div>
+  </div>
+  <div class="card-body">
+    <div class="ch">
+      <div class="c-name">
+        {{ shop.name }}
+        <i
+          *ngIf="shop.isVerified"
+          class="fa-solid fa-circle-check vi"
+          title="Verified"
+        ></i>
+      </div>
+      <button
+        class="c-fav"
+        [class.active]="isSaved(shop.id)"
+        (click)="toggleSave($event)"
+        [attr.aria-label]="isSaved(shop.id) ? 'Remove from saved' : 'Save shop'"
+      >
+        <i
+          [class]="
+            isSaved(shop.id) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'
+          "
+        ></i>
+      </button>
+    </div>
+
+    <div class="c-addr">
+      <i class="fa-solid fa-location-dot"></i>
+      {{ shop.address }}
+    </div>
+
+    <div class="c-rat">
+      <app-star-rating [rating]="shop.rating" />
+      <span class="rat-score">{{ shop.rating }}</span>
+      <span class="rat-cnt">({{ shop.reviews.toLocaleString() }} reviews)</span>
+    </div>
+
+    <div class="c-svcs">
+      <span *ngFor="let svc of visibleServices" class="svc-chip">{{
+        svc
+      }}</span>
+      <span *ngIf="extraServicesCount > 0" class="svc-chip more"
+        >+{{ extraServicesCount }} more</span
+      >
+    </div>
+
+    <div class="c-foot">
+      <div class="c-price">
+        From <strong>₹{{ _shopService.lowestPrice(shop) }}/pg</strong>
+      </div>
+      <div class="c-wait">
+        <i class="fa-regular fa-clock"></i> Wait: {{ shop.wait }}
+      </div>
+    </div>
+  </div>
+</article>

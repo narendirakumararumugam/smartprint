@@ -1,0 +1,85 @@
+<div #heroRef>
+  <app-hero></app-hero>
+</div>
+
+<app-filter-strip></app-filter-strip>
+
+<main class="main-content">
+  <div class="container">
+
+    <section class="featured-sec" *ngIf="featuredShops.length">
+      <div class="sec-hd">
+        <h2 class="sec-title">
+          <i class="bxs bx-hot" style="color:var(--accent)"></i>
+          Featured Shops
+        </h2>
+        <span class="sec-sub">Highly rated near you</span>
+      </div>
+      <div class="feat-scroll">
+        <app-featured-card
+          *ngFor="let shop of featuredShops; trackBy: trackByShop"
+          [shop]="shop"
+          (selected)="openModal($event)">
+        </app-featured-card>
+      </div>
+    </section>
+
+    <section class="shops-sec">
+      <div class="sec-hd">
+        <h2 class="sec-title">
+          <i class="bxs bx-store" style="color:var(--primary)"></i>
+          All Print Shops
+        </h2>
+        <div class="sec-actions">
+          <span class="sec-sub">Click a card to view details & order</span>
+          <div class="view-toggle" role="tablist" aria-label="View mode">
+            <button type="button" class="vt-btn" [class.active]="viewMode === 'grid'"
+              (click)="setViewMode('grid')" role="tab" [attr.aria-selected]="viewMode === 'grid'">
+              <i class="bx bx-grid"></i> Grid
+            </button>
+            <button type="button" class="vt-btn" [class.active]="viewMode === 'map'"
+              (click)="setViewMode('map')" role="tab" [attr.aria-selected]="viewMode === 'map'">
+              <i class="bx bx-location-alt"></i> Map
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="shops-grid" *ngIf="isLoading">
+        <app-skeleton-card *ngFor="let s of skeletons"></app-skeleton-card>
+      </div>
+
+      <ng-container *ngIf="!isLoading">
+        <div class="shops-grid" *ngIf="viewMode === 'grid' && (shops$ | async) as shops">
+          <app-shop-card
+            *ngFor="let shop of shops; trackBy: trackByShop; let i = index"
+            [shop]="shop"
+            [animationDelay]="i * 60"
+            (viewDetail)="openModal($event)">
+          </app-shop-card>
+        </div>
+
+        <app-shops-map
+          *ngIf="viewMode === 'map' && (shops$ | async) as shops"
+          [shops]="shops"
+          height="520px"
+          (shopSelected)="openModal($event)">
+        </app-shops-map>
+
+        <div class="empty" *ngIf="viewMode === 'grid' && (shops$ | async)?.length === 0">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">No shops found</div>
+          <div class="empty-sub">Try a different search or filter.</div>
+        </div>
+      </ng-container>
+    </section>
+
+  </div></main>
+
+<app-shop-modal
+  *ngIf="isModalOpen && selectedShop"
+  [shop]="selectedShop"
+  (closed)="closeModal()">
+</app-shop-modal>
+
+<app-toast-container></app-toast-container>

@@ -1,0 +1,12 @@
+<div
+  class="feat-card"
+  (click)="selected.emit(shop)"
+  role="button"
+  [attr.aria-label]="'View ' + shop.name"
+>
+  <div class="feat-bg" [style.background]="shop.gradient"></div>
+  <div class="feat-overlay">
+    <div class="feat-name">{{ shop.name }}</div>
+    <div class="feat-sub">★ {{ shop.rating }} • {{ shop.distance }}</div>
+  </div>
+</div>

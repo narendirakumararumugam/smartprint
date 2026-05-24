@@ -1,0 +1,40 @@
+<section class="hero">
+  <i class="bx bx-printer hero-float hf1"></i>
+  <i class="bx bx-copy hero-float hf2"></i>
+  <i class="bxf bx-book hero-float hf3"></i>
+
+  <div class="hero-badge">
+    <i class="bx bx-circle" style="font-size:7px;color:#04ade0"></i>
+    245 shops available near you
+  </div>
+
+  <h1>Find <span class="hl">Print &amp; Xerox</span> Shops<br>Near You, Instantly</h1>
+
+  <p>Compare prices, check wait times, and order from the best print shops around you.</p>
+
+  <div class="search-box">
+    <!-- <div class="sb-cat">
+      <i class="bx bx-search"></i>
+    </div> -->
+    <input
+      #searchInput
+      type="search"
+      placeholder="Search by shop name, area, or service..."
+      autocomplete="off"
+      (input)="onSearch(searchInput.value)"
+    />
+    <button class="sb-btn" (click)="onSearch(searchInput.value)">
+      <i class="bx bx-search"></i> Search
+    </button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>2,400+</strong> Shops Listed</div>
+    <span class="dot">•</span>
+    <div class="hero-stat"><strong>98%</strong> On-time Ready</div>
+    <span class="dot">•</span>
+    <div class="hero-stat"><strong>4.7 ★</strong> Avg. Rating</div>
+    <span class="dot">•</span>
+    <div class="hero-stat"><strong>50K+</strong> Happy Customers</div>
+  </div>
+</section>

@@ -1,0 +1,237 @@
+<div class="modal-back" (click)="onBackdropClick($event)">
+  <div class="modal" role="dialog" [attr.aria-label]="shop.name + ' details'">
+    <div class="m-left">
+      <div class="m-cover">
+        <div class="m-cov-img" [style.background]="activeCoverGradient"></div>
+        <div class="m-cov-grad"></div>
+        <div class="m-cov-body">
+          <div class="m-logo">{{ shop.icon }}</div>
+          <div class="m-cov-name">{{ shop.name }}</div>
+          <div class="m-cov-addr">
+            <i class="bx bx-location-alt-pin"></i>
+            {{ shop.address }}, {{ shop.city }}
+          </div>
+        </div>
+      </div>
+
+      <div class="m-stats">
+        <div class="m-stat">
+          <div class="m-stat-v">
+            <i class="bx bxs-star" style="color: var(--accent)"></i>
+            {{ shop.rating }}
+          </div>
+          <div class="m-stat-l">Rating</div>
+        </div>
+        <div class="m-stat">
+          <div class="m-stat-v">
+            <i class="bx bx-location-alt-pin" style="color: #f87171"></i>
+            {{ shop.distance }}
+          </div>
+          <div class="m-stat-l">Distance</div>
+        </div>
+        <div class="m-stat">
+          <div class="m-stat-v">
+            <i class="bx bx-time" style="color: #60a5fa"></i>
+            {{ shop.wait }}
+          </div>
+          <div class="m-stat-l">Est. Wait</div>
+        </div>
+      </div>
+
+      <div class="m-gallery">
+        <div
+          *ngFor="let grad of shop.gallery; let i = index"
+          class="g-thumb"
+          [class.active]="activeGalleryIndex === i"
+          (click)="selectGallery(i)"
+        >
+          <div
+            [style.background]="grad"
+            style="width: 100%; height: 100%"
+          ></div>
+        </div>
+        <div class="g-more">+8</div>
+      </div>
+    </div>
+
+    <div class="m-right">
+      <div class="m-hd">
+        <div class="m-hd-l">
+          <div class="m-shop-name">
+            {{ shop.name }}
+            <span class="v-badge"
+              ><i class="bx bxs-check-circle"></i> Verified</span
+            >
+          </div>
+          <div class="m-sub">
+            <i class="bx bx-location-alt-pin"></i>
+            {{ shop.address }}, {{ shop.city }}
+          </div>
+        </div>
+        <div class="m-hd-r">
+          <button
+            class="m-icon-btn"
+            [class.saved]="isSaved"
+            (click)="toggleSave()"
+            title="Save"
+          >
+            <i [class]="isSaved ? 'bx bxs-bookmark' : 'bx bx-bookmark'"></i>
+          </button>
+          <button class="m-icon-btn" (click)="share()" title="Share">
+            <i class="bx bx-share-alt"></i>
+          </button>
+          <button
+            class="m-close"
+            (click)="closed.emit()"
+            aria-label="Close modal"
+          >
+            <i class="bx bx-x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="m-body">
+        <div class="rat-block">
+          <div class="rat-big">{{ shop.rating }}</div>
+          <div class="rat-r">
+            <app-star-rating [rating]="shop.rating" size="lg" />
+            <div class="rat-txt">
+              Based on {{ shop.reviews.toLocaleString() }} reviews
+            </div>
+          </div>
+        </div>
+
+        <div class="q-pills">
+          <span
+            class="pill"
+            [class.p-green]="shop.isOpen"
+            [class.p-amber]="!shop.isOpen"
+          >
+            <i class="bx bxs-circle" style="font-size: 7px"></i>
+            {{
+              shop.isOpen
+                ? "Open • Closes " + shop.closesAt
+                : "Currently Closed"
+            }}
+          </span>
+          <span class="pill p-blue"
+            ><i class="bx bx-time"></i> {{ shop.wait }}</span
+          >
+          <span class="pill p-purple"
+            ><i class="bx bx-location-alt-pin"></i> {{ shop.distance }}</span
+          >
+          <span *ngIf="shop.isVerified" class="pill p-green">
+            <i class="bx bxs-check-circle"></i> Verified
+          </span>
+        </div>
+
+        <div class="d-sec">
+          <div class="d-sec-title"><i class="bx bx-info-circle"></i> About</div>
+          <p class="about-txt">{{ shop.about }}</p>
+        </div>
+        <div class="d-sec">
+          <div class="d-sec-title">
+            <i class="bx bx-list-check"></i> Services Offered
+          </div>
+          <div class="svc-tags">
+            <span *ngFor="let svc of shop.services" class="svc-tag">
+              <i class="bx bx-check"></i> {{ svc }}
+            </span>
+          </div>
+        </div>
+
+        <div class="d-sec">
+          <div class="d-sec-title"><i class="bx bxs-tag"></i> Price List</div>
+          <table class="ptable">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Spec</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of shop.prices" [class.pop-row]="p.popular">
+                <td>{{ p.service }}</td>
+                <td>{{ p.spec }}</td>
+                <td class="pc">{{ p.price }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-sec">
+          <div class="d-sec-title">
+            <i class="bx bx-time"></i> Working Hours
+          </div>
+          <div class="hrs-grid">
+            <div
+              *ngFor="let h of shop.hours; let i = index"
+              class="hr-row"
+              [class.tod]="i === todayIndex"
+            >
+              <span class="hr-day"
+                >{{ h.day }}{{ i === todayIndex ? " (Today)" : "" }}</span
+              >
+              <span class="hr-time" [class.hr-cx]="h.closed">{{ h.time }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-sec">
+          <div class="d-sec-title">
+            <i class="bx bx-id-card"></i> Contact &amp; Location
+          </div>
+
+          <div class="ct-row">
+            <div class="ct-icon ci-ph"><i class="bx bx-phone"></i></div>
+            <div>
+              <div class="ct-lbl">Phone</div>
+              <div class="ct-val">{{ shop.phone }}</div>
+            </div>
+            <button class="ct-act" (click)="call()">Call</button>
+          </div>
+
+          <div *ngIf="shop.whatsapp" class="ct-row">
+            <div class="ct-icon ci-wa"><i class="bx bxl-whatsapp"></i></div>
+            <div>
+              <div class="ct-lbl">WhatsApp</div>
+              <div class="ct-val">{{ shop.whatsapp }}</div>
+            </div>
+            <button class="ct-act" (click)="openWA()">Chat</button>
+          </div>
+
+          <div class="ct-row">
+            <div class="ct-icon ci-em"><i class="bx bx-envelope"></i></div>
+            <div>
+              <div class="ct-lbl">Email</div>
+              <div class="ct-val">{{ shop.email }}</div>
+            </div>
+            <button class="ct-act" (click)="sendEmail()">Email</button>
+          </div>
+
+          <div class="ct-row">
+            <div class="ct-icon ci-loc"><i class="bx bx-location-alt"></i></div>
+            <div>
+              <div class="ct-lbl">Address • Owner: {{ shop.owner }}</div>
+              <div class="ct-val">{{ shop.address }}, {{ shop.city }}</div>
+            </div>
+            <button class="ct-act" (click)="openMap()">Map</button>
+          </div>
+        </div>
+      </div>
+      <div class="m-foot">
+        <div class="m-foot-note">
+          <i class="bx bxs-shield"></i>
+          Secure order • No advance required
+        </div>
+        <button class="btn btn-ghost" (click)="closed.emit()">
+          <i class="bx bx-x"></i> Cancel
+        </button>
+        <button class="btn btn-primary" (click)="onProceed()">
+          <i class="bx bxs-cart"></i> Proceed to Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

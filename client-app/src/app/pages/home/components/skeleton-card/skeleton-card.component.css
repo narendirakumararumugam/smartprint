@@ -1,0 +1,29 @@
+.skel {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.skel-cv {
+  height: 184px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+.skel-bd {
+  padding: 16px 18px 18px;
+}
+.skel-ln {
+  height: 13px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.5s infinite linear;
+  margin-bottom: 9px;
+}
+.skel-ln.sh {
+  width: 60%;
+}
+.skel-ln.ss {
+  width: 40%;
+}

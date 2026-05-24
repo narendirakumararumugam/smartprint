@@ -1,0 +1,27 @@
+<div class="filter-strip">
+  <button
+    *ngFor="let chip of chips"
+    class="f-chip"
+    [class.active]="activeFilter === chip.id"
+    (click)="selectFilter(chip.id)"
+  >
+    <i
+      class="{{ chip.icon }}"
+      [attr.style]="chip.iconStyle || null"
+    ></i>
+    {{ chip.label }}
+  </button>
+
+  <div class="f-divider"></div>
+
+  <select class="sort-sel" [(ngModel)]="selectedSort" (change)="onSortChange()">
+    <option *ngFor="let opt of sortOptions" [value]="opt.value">
+      {{ opt.label }}
+    </option>
+  </select>
+
+  <span class="res-count">
+    Showing {{ (_shopService.resultCount$ | async) ?? 0 }}
+    {{ (((_shopService.resultCount$ | async) ?? 0) !== 1) ? "shops" : "shop" }}
+  </span>
+</div>
