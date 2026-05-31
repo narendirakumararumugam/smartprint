@@ -54,10 +54,10 @@ public class ShopController {
 
     @GetMapping(ApiPaths.PUBLIC_SHOPS + "/nearby")
     public ResponseEntity<List<ShopListDTO>> getNearbyShops(
-            @RequestParam double Lat,
-            @RequestParam double Lng,
+            @RequestParam double lat,
+            @RequestParam double lng,
             @RequestParam(defaultValue = "5") double radiusKm) {
-        return ResponseEntity.ok(shopService.getNearbyShops(Lat, Lng, radiusKm));
+        return ResponseEntity.ok(shopService.getNearbyShops(lat, lng, radiusKm));
     }
 
     @GetMapping(ApiPaths.PUBLIC_SHOPS + "/{id}")

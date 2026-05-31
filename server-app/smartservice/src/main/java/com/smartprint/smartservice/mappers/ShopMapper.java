@@ -39,7 +39,7 @@ public interface ShopMapper {
     @Mapping(source = "user.avatar", target = "userAvatar")
     ReviewDTO toReviewDTO(Review review, User user);
 
-    @Mapping(source = "isPopular", target = "popular")
+    @Mapping(source = "popular", target = "popular")
     ShopDetailDTO.PriceDTO toPriceDTO(ShopPrice shopPrice);
 
     @Mapping(source = "dayOfWeek", target = "day")

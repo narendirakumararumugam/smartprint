@@ -32,5 +32,5 @@ public class ShopPrice {
 
     @Builder.Default
     @Column(name = "is_popular")
-    private Boolean isPopular = false;
+    private Boolean popular = false;
 }

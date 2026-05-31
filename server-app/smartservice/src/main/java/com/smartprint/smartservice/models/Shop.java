@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "shops")
@@ -19,11 +20,8 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User owner;
+    @Column(name = "owner_id")
+    private UUID ownerId;
 
     @Column(nullable = false, length = 200)
     private String name;
@@ -150,7 +148,7 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ShopAddon> addons = new ArrayList<>();
+    private List<ShopAddon> addOns = new ArrayList<>();
 
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

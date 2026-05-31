@@ -15,8 +15,8 @@ public interface PrinterRepository extends JpaRepository<Printer, Long> {
     long countByShopId(Integer shopId);
 
     @Query("SELECT COUNT(p) FROM Printer p WHERE p.shopId = :shopId AND p.status.code <> :statusCode")
-    long countByShopAndStatusCodeNot(Integer shopId, String statusCode);
+    long countByShopIdAndStatusCodeNot(Integer shopId, String statusCode);
 
     @Query("SELECT COUNT(p) FROM Printer p WHERE p.shopId = :shopId AND p.status.code = :statusCode")
-    long countByShopAndStatusCode(Integer shopId, String statusCode);
+    long countByShopIdAndStatusCode(Integer shopId, String statusCode);
 }

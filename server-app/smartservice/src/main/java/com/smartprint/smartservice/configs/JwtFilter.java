@@ -1,5 +1,6 @@
 package com.smartprint.smartservice.configs;
 
+import com.smartprint.smartservice.security.AuthCookieService;
 import com.smartprint.smartservice.services.AppUserDetailsService;
 import com.smartprint.smartservice.services.JWTService;
 import jakarta.servlet.FilterChain;
@@ -24,16 +25,15 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final JWTService jwtService;
     private final ApplicationContext applicationContext;
+    private final AuthCookieService authCookieService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Cookie cookie = WebUtils.getCookie(request,"jwtToken");
         String username = null;
-        String token = null;
+        String token = authCookieService.extractAccessToken(request);
 
-        if(cookie != null){
-            token = cookie.getValue();
-            username = jwtService.extractUsername(token);
+        if(token != null){
+            username = jwtService.extractEmail(token);
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){

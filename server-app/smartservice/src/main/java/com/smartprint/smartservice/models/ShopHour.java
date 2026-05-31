@@ -35,5 +35,5 @@ public class ShopHour {
 
     @Column(name = "is_closed")
     @Builder.Default
-    private Boolean closed = false;
+    private boolean closed = false;
 }

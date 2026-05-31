@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -93,9 +94,15 @@ public class AuthService {
     }
 
     public AuthResponse refresh(RefreshTokenRequest request){
-        String token = request.getRefreshToken();
+        return refresh(request.getRefreshToken());
+    }
 
-        String email = jwtService.extractUsername(token);
+    public AuthResponse refresh(String token){
+        if(!StringUtils.hasText(token)){
+            throw new IllegalArgumentException((Messages.Auth.INVALID_REFRESH_TOKEN));
+        }
+
+        String email = jwtService.extractEmail(token);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException(Messages.Auth.USER_NOT_FOUND));
 

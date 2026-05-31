@@ -28,7 +28,7 @@ public class OwnerShopSettingsDTO {
 
     // Pricing
     private List<PriceRowDTO> priceRows;
-    private List<AddonDTO> addons;
+    private List<AddonDTO> addOns;
     private List<BulkDiscountDTO> bulkDiscounts;
 
     // Hours
