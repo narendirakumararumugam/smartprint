@@ -1,0 +1,57 @@
+<app-admin-layout pageTitle="All Orders">
+  <div class="topbar-actions">
+    <span class="order-count">{{ filteredOrders.length }} orders</span>
+  </div>
+
+  <div class="tabs-bar">
+    @for (tab of statusTabs; track tab.key) {
+      <button class="tab-btn" [class.active]="filterStatus === tab.key" (click)="setFilter(tab.key)">
+        {{ tab.label }}
+        <span class="tab-count">{{ getCount(tab.key) }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="filters-bar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+      <input type="text" placeholder="Search by order #, customer, or shop..." [(ngModel)]="searchQuery" (input)="applyFilters()">
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>Customer</th>
+          <th>Shop</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of filteredOrders; track order.id) {
+          <tr>
+            <td><span class="order-number">{{ order.orderNumber }}</span></td>
+            <td>{{ order.customerName }}</td>
+            <td>{{ order.shopName }}</td>
+            <td>{{ order.items }}</td>
+            <td class="total-col">{{ order.total }}</td>
+            <td><span class="status-pill" [class]="getStatusClass(order.status)">{{ getStatusLabel(order.status) }}</span></td>
+            <td class="date-col">{{ order.createdAt }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (filteredOrders.length === 0) {
+      <div class="empty-state">
+        <i class="bx bx-package"></i>
+        <p>No orders match your filters.</p>
+      </div>
+    }
+  </div>
+</app-admin-layout>

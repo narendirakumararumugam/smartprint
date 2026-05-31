@@ -2,7 +2,7 @@
   <div class="afm-box">
     <div class="afm-header">
       <div class="afm-title">
-        <i class="bx bx-location-alt"></i>
+        <i class="bx bx-map"></i>
         {{ initial ? 'Edit address' : 'Add new address' }}
       </div>
       <button class="afm-close" (click)="cancel()" aria-label="Close"><i class="bx bx-x"></i></button>
@@ -17,7 +17,7 @@
           (locationPicked)="onLocationPicked($event)"
         ></app-inline-map-picker>
         <div class="afm-coords" *ngIf="form.latitude != null && form.longitude != null">
-          <i class="bx bx-location-alt-pin"></i>
+          <i class="bx bx-map-2"></i>
           Pinned at <strong>{{ form.latitude | number:'1.5-5' }}, {{ form.longitude | number:'1.5-5' }}</strong>
         </div>
       </div>

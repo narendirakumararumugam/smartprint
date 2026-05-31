@@ -1,0 +1,27 @@
+<app-admin-layout pageTitle="Audit Log">
+  <div class="audit-timeline">
+    @for (entry of entries; track entry.id) {
+      <div class="audit-item">
+        <div class="ai-icon" [class]="getActionColor(entry.action)">
+          <i [class]="getActionIcon(entry.action)"></i>
+        </div>
+        <div class="ai-content">
+          <div class="ai-header">
+            <span class="ai-admin">{{ entry.admin }}</span>
+            <span class="ai-action">{{ entry.action.replace('_', ' ') }}</span>
+            <span class="ai-target">{{ entry.targetName }}</span>
+          </div>
+          <p class="ai-details">{{ entry.details }}</p>
+          <span class="ai-time"><i class="bx bx-time"></i> {{ entry.createdAt }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (entries.length === 0) {
+    <div class="empty-state">
+      <i class="bx bx-history"></i>
+      <p>No audit log entries yet.</p>
+    </div>
+  }
+</app-admin-layout>

@@ -1,0 +1,80 @@
+<app-admin-layout pageTitle="Shop Management">
+    <div class="topbar-actions">
+        <span class="shop-count">{{ filteredShops.length }} shops</span>
+    </div>
+
+    <div class="filters-bar">
+        <div class="search-box">
+            <i class="bx bx-search"></i>
+            <input type="text" placeholder="Search shops..." [(ngModel)]="searchQuery" (input)="applyFilters()" />
+        </div>
+        <app-dropdown
+            [options]="filterStatusOptions"
+            [selected]="filterStatus"
+            (selectionChange)="filterStatus = $any($event); applyFilters()"
+            variant="borderless">
+        </app-dropdown>
+    </div>
+
+    <div class="table-card">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Shop</th>
+                    <th>Owner</th>
+                    <th>City</th>
+                    <th>Rating</th>
+                    <th>Orders</th>
+                    <th>Revenue</th>
+                    <th>Verified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (shop of filteredShops; track shop.id) {
+                    <tr>
+                        <td>
+                            <div class="shop-cell">
+                                <div class="shop-icon"><i class="bx bx-store"></i></div>
+                                <div>
+                                    <div class="shop-name">{{ shop.name }}</div>
+                                    <div class="shop-since">Since {{ shop.createdAt }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ shop.ownerName }}</td>
+                        <td>{{ shop.city }}</td>
+                        <td>
+                            @if (shop.rating > 0) {
+                                <span class="rating"><i class="bx bxs-star"></i> {{ shop.rating }}</span>
+                            } @else {
+                                <span class="no-data">-</span>
+                            }
+                        </td>
+                        <td>{{ shop.ordersCount }}</td>
+                        <td>{{ shop.revenue }}</td>
+                        <td>
+                            <span class="status-pill" [class.verified]="shop.isVerified" [class.unverified]="!shop.isVerified">
+                                {{ shop.isVerified ? 'Verified' : 'Pending' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                <button class="action-btn" (click)="toggleVerification(shop)" [title]="shop.isVerified ? 'Revoke' : 'Verify'">
+                                    <i [class]="shop.isVerified ? 'bx bx-x' : 'bx bx-check'"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        @if (filteredShops.length === 0) {
+            <div class="empty-state">
+                <i class="bx bx-store"></i>
+                <p>No shops match your filters.</p>
+            </div>
+        }
+    </div>
+</app-admin-layout>

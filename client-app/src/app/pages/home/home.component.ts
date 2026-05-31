@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, skip, Subscription } from 'rxjs';
 import { Shop } from '../../models/shop.model';
 import { ShopService } from '../../core/services/shop.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -65,6 +65,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private heroObserver?: IntersectionObserver;
   private sub!: Subscription;
+  private locationSub!: Subscription;
 
   private readonly shopService = inject(ShopService);
   private readonly toastService = inject(ToastService);
@@ -75,17 +76,35 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.shops$ = this.shopService.filteredShops$;
-    this.featuredShops = this.shopService.getFeatured();
-
-    setTimeout(() => {
-      this.isLoading = false;
+    this.initiateLoad();
+    
+    this.locationSub = this.locationService.location$.pipe(skip(1)).subscribe(() => {
+      this.isLoading = true;
       this.cdr.markForCheck();
-      if (environment.useMockData) {
-        const loc = this.locationService.currentLocation;
-        const area = loc?.shortAddress ?? 'Connaught Place, Delhi';
-        this.toastService.show(MESSAGES.SHOPS.FOUND(245, area), 'success');
+      this.initiateLoad();
+    })
+  }
+  
+  private initiateLoad(): void {
+    this.sub?.unsubscribe();
+    const loc = this.locationService.currentLocation;
+    const load$ = loc
+      ? this.shopService.loadShopsNearby(loc.coordinates.lat, loc.coordinates.lng)
+      : this.shopService.loadShops();
+  
+    this.sub = load$.subscribe({
+      next: (shops) => {
+        this.featuredShops = this.shopService.getFeatured();
+        this.isLoading = false;
+        this.cdr.markForCheck();
+        const area = loc?.shortAddress ?? 'your area';
+        this.toastService.show(MESSAGES.SHOPS.FOUND(shops.length, area), 'success');
+      },
+      error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
       }
-    }, 900);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -126,7 +145,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   onProceedToOrder(shop: Shop): void {
     this.closeModal();
     this.router.navigate(['/customer/upload'], {
-      queryParams: { shopId: shop.id },
+      queryParams: { shopId: shop.id},
     });
   }
 

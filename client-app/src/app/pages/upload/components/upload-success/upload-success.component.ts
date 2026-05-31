@@ -13,4 +13,5 @@ import { RouterLink } from '@angular/router';
 export class UploadSuccessComponent {
   @Input() orderId = '';
   @Input() shop: PrintShop | null = null;
+
 }

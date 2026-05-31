@@ -1,0 +1,62 @@
+<div class="owner-auth-page">
+  <div class="left-panel">
+    <div class="grid-lines"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="printer-wrap">
+      <div class="printer-body"><div class="printer-slot"></div></div>
+      <div class="printer-paper"></div>
+    </div>
+
+    <div class="ico-float ico1"><i class="bx bx-store" style="font-size:58px;color:white"></i></div>
+    <div class="ico-float ico2"><i class="bx bx-printer" style="font-size:52px;color:white"></i></div>
+    <div class="ico-float ico3"><i class="bx bx-chart-line" style="font-size:46px;color:white"></i></div>
+    <div class="ico-float ico4"><i class="bx bx-bell" style="font-size:40px;color:white"></i></div>
+    <div class="ico-float ico5"><i class="bx bx-cog" style="font-size:34px;color:white"></i></div>
+
+    <div id="owner-particles"></div>
+
+    <div class="left-content">
+      <a routerLink="/" class="lp-logo">
+        <div class="lp-logo-icon"><i class="bx bx-printer"></i></div>
+        <div>
+          <div class="lp-logo-text">SmartPrint</div>
+          <div class="lp-logo-sub">Partner Portal</div>
+        </div>
+      </a>
+
+      <div class="lp-hero">
+        <div class="lp-eyebrow">{{ eyebrow }}</div>
+        <h1 class="lp-heading">{{ heading }}<br><span class="hl">{{ headingHighlight }}</span></h1>
+        <p class="lp-subtext">{{ subtext }}</p>
+
+        <div class="benefits">
+          <div class="benefit" *ngFor="let b of benefits">
+            <div class="ben-icon" [style.background]="b.iconBg" [style.color]="b.iconColor">
+              <i [class]="b.icon"></i>
+            </div>
+            <div>
+              <div class="ben-title">{{ b.title }}</div>
+              <div class="ben-desc">{{ b.desc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-pill" *ngFor="let s of stats">
+          <div class="stat-num">{{ s.value }}</div>
+          <div class="stat-lbl">{{ s.label }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="form-wrap">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

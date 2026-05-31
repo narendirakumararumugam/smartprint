@@ -1,0 +1,195 @@
+<ng-template #topbarActions>
+  <div class="auto-toggle" (click)="toggleAutoApproval()">
+    <div class="toggle-sm" [class.on]="autoApproval"></div>
+    <span class="toggle-text">Auto-Approval</span>
+  </div>
+  <button class="top-btn"><i class="bx bx-export"></i> Export</button>
+</ng-template>
+
+<div class="orders-content">
+  <div class="stats-row">
+    @for (stat of statTiles; track stat.label) {
+      <div class="stat-tile">
+        <div class="stat-icon" [style.background]="stat.bg" [style.color]="stat.color">
+          <i [class]="stat.icon"></i>
+        </div>
+        <div class="stat-info">
+          <div class="stat-val">{{ getStatValue(stat.label) }}</div>
+          <div class="stat-lbl">{{ stat.label }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (selectedOrders.length > 0) {
+    <div class="bulk-bar">
+      <span class="bulk-count">{{ selectedOrders.length }} selected</span>
+      <div class="bulk-actions">
+        <button class="btn-bulk approve" (click)="bulkApprove()"><i class="bx bx-check"></i> Approve</button>
+        <button class="btn-bulk reject" (click)="bulkReject()"><i class="bx bx-x"></i> Reject</button>
+        <button class="btn-bulk assign" (click)="openPrinterModal()"><i class="bx bx-printer"></i> Assign Printer</button>
+      </div>
+    </div>
+  }
+
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+      <input type="text" placeholder="Search orders..." [(ngModel)]="searchQuery" (ngModelChange)="currentPage = 1" />
+    </div>
+    <div class="filter-group">
+      <app-dropdown
+        [options]="filterTypeOptions"
+        [selected]="filterType"
+        (selectionChange)="filterType = $event; currentPage = 1"
+        variant="borderless"
+        placeholder="All Types">
+      </app-dropdown>
+      <app-dropdown
+        [options]="sortOptions"
+        [selected]="sortBy"
+        (selectionChange)="sortBy = $event; currentPage = 1"
+        variant="borderless">
+      </app-dropdown>
+    </div>
+  </div>
+
+  <div class="order-tabs">
+    @for (tab of tabs; track tab.id) {
+      <button class="order-tab" [class.active]="activeTab === tab.id" (click)="switchTab(tab.id)">
+        {{ tab.label }} <span class="tab-count">{{ tab.count }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="table-card">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th class="th-check"><input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()" /></th>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Details</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of paginatedOrders; track order.id) {
+          <tr [class.selected-row]="order.selected">
+            <td><input type="checkbox" [checked]="order.selected" (change)="toggleSelect(order)" /></td>
+            <td class="td-order" (click)="openDrawer(order)">{{ order.id }}</td>
+            <td>
+              <div class="customer-cell">
+                <div class="cell-avatar" [style.background]="order.bg">{{ order.avatar }}</div>
+                <span>{{ order.customer }}</span>
+              </div>
+            </td>
+            <td class="td-detail">{{ order.pages }}p • {{ order.printType }} • {{ order.binding !== 'None' ? order.binding : '' }} {{ order.copies }}x</td>
+            <td class="td-amount">₹{{ order.total }}</td>
+            <td><span class="status-badge" [class]="getStatusClass(order.status)">{{ getStatusLabel(order.status) }}</span></td>
+            <td class="td-time">{{ order.time }}</td>
+            <td>
+              <div class="action-btns">
+                @if (order.status === 'pending') {
+                  <button class="act-btn approve" title="Approve" (click)="approveOrder(order)"><i class="bx bx-check"></i></button>
+                  <button class="act-btn reject" title="Reject" (click)="rejectOrder(order)"><i class="bx bx-x"></i></button>
+                }
+                @if (order.status === 'printing') {
+                  <button class="act-btn ready" title="Mark Ready" (click)="markReady(order)"><i class="bx bx-package"></i></button>
+                }
+                @if (order.status === 'ready') {
+                  <button class="act-btn complete" title="Complete" (click)="markCompleted(order)"><i class="bx bx-check-double"></i></button>
+                }
+                <button class="act-btn view" title="View" (click)="openDrawer(order)"><i class="bx bx-eye"></i></button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (totalPages > 1) {
+    <div class="pagination">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)"><i class="bx bx-chevron-left"></i></button>
+      @for (p of [].constructor(totalPages); track $index) {
+        <button class="page-btn" [class.active]="currentPage === $index + 1" (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
+      }
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)"><i class="bx bx-chevron-right"></i></button>
+    </div>
+  }
+</div>
+
+@if (showDrawer && drawerOrder) {
+  <div class="drawer-overlay" (click)="closeDrawer()"></div>
+  <div class="drawer open">
+    <div class="drawer-head">
+      <div class="drawer-title">Order #{{ drawerOrder.id }}</div>
+      <button class="drawer-close" (click)="closeDrawer()"><i class="bx bx-x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <div class="drawer-section-title">Customer</div>
+        <div class="drawer-customer">
+          <div class="drawer-avatar" [style.background]="drawerOrder.bg">{{ drawerOrder.avatar }}</div>
+          <div class="drawer-cname">{{ drawerOrder.customer }}</div>
+          <div class="drawer-csub">Regular Customer</div>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-section-title">Order Details</div>
+        <div class="drawer-kv">
+          <div class="kv-item"><div class="kv-key">Pages</div><div class="kv-val">{{ drawerOrder.pages }}</div></div>
+          <div class="kv-item"><div class="kv-key">Print Type</div><div class="kv-val">{{ drawerOrder.printType }}</div></div>
+          <div class="kv-item"><div class="kv-key">Binding</div><div class="kv-val">{{ drawerOrder.binding }}</div></div>
+          <div class="kv-item"><div class="kv-key">Copies</div><div class="kv-val">{{ drawerOrder.copies }}</div></div>
+          <div class="kv-item"><div class="kv-key">Total</div><div class="kv-val">₹{{ drawerOrder.total }}</div></div>
+          <div class="kv-item"><div class="kv-key">Status</div><div class="kv-val"><span [class]="getStatusClass(drawerOrder.status)">{{ getStatusLabel(drawerOrder.status) }}</span></div></div>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-section-title">Files</div>
+        <div class="drawer-file-list">
+          @for (file of drawerOrder.files; track file.name) {
+            <div class="file-item">
+              <div class="file-ic"><i class="bx bx-file"></i></div>
+              <div class="file-name">{{ file.name }}</div>
+              <div class="file-size">{{ file.size }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    @if (drawerOrder.status === 'pending') {
+      <div class="drawer-foot">
+        <button class="dfoot-approve" (click)="approveOrder(drawerOrder); closeDrawer()"><i class="bx bx-check"></i> Approve</button>
+        <button class="dfoot-reject" (click)="rejectOrder(drawerOrder); closeDrawer()"><i class="bx bx-x"></i> Reject</button>
+      </div>
+    }
+  </div>
+}
+
+@if (showPrinterModal) {
+  <div class="modal-overlay" (click)="closePrinterModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-title">Assign Printer</div>
+      <div class="modal-text">Select a printer for the selected orders</div>
+      <div class="printer-options">
+        @for (printer of printers; track printer) {
+          <label class="printer-option" [class.active]="selectedPrinter === printer">
+            <input type="radio" name="printer" [value]="printer" [(ngModel)]="selectedPrinter" />
+            <i class="bx bx-printer"></i>
+            <span>{{ printer }}</span>
+          </label>
+        }
+      </div>
+      <div class="modal-actions">
+        <button class="btn-outline-sm" (click)="closePrinterModal()">Cancel</button>
+        <button class="btn-primary-sm" (click)="closePrinterModal()"><i class="bx bx-check"></i> Assign</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,102 @@
+<app-admin-layout pageTitle="User Management">
+  <div class="topbar-actions">
+    <span class="user-count">{{ filteredUsers.length }} users</span>
+  </div>
+
+  <div class="filters-bar">
+    <div class="search-box">
+      <i class="bx bx-search"></i>
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="applyFilters()" />
+    </div>
+    
+    <app-dropdown
+      [options]="filterTypeOptions"
+      [selected]="filterType"
+      (selectionChange)="filterType = $any($event); applyFilters()"
+      variant="borderless"
+    ></app-dropdown>
+
+    <app-dropdown
+      [options]="filterStatusOptions"
+      [selected]="filterStatus"
+      (selectionChange)="filterStatus = $any($event); applyFilters()"
+      variant="borderless"
+    ></app-dropdown>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-chip"><i class="bx bx-group"></i> {{ users.length }} Total</div>
+    <div class="summary-chip"><i class="bx bx-user"></i> {{ totalCustomers }} Customers</div>
+    <div class="summary-chip"><i class="bx bx-store"></i> {{ totalOwners }} Owners</div>
+    <div class="summary-chip"><i class="bx bxs-shield"></i> {{ totalAdmins }} Admins</div>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Type</th>
+          <th>City</th>
+          <th>Orders</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of filteredUsers; track user.id) {
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">{{ user.name.charAt(0) }}</div>
+                <div>
+                  <div class="user-name">{{ user.name }}</div>
+                  <div class="user-email">{{ user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge" [class]="getTypeBadgeClass(user.type)">{{ getTypeLabel(user.type) }}</span></td>
+            <td>{{ user.city }}</td>
+            <td>{{ user.ordersCount }}</td>
+            <td>
+              <span class="status-pill" [class.active]="user.active" [class.inactive]="!user.active">
+                {{ user.active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>{{ user.joinedAt }}</td>
+            <td>
+              <div class="actions-cell">
+                <button class="action-btn" (click)="openDetail(user)" title="View"><i class="bx bx-eye"></i></button>
+                <button class="action-btn" [class.danger]="user.active" (click)="toggleUserStatus(user)" [title]="user.active ? 'Deactivate' : 'Activate'">
+                  <i [class]="user.active ? 'bx bx-block' : 'bx bx-check'"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    
+    @if (filteredUsers.length === 0) {
+      <div class="empty-state">
+        <i class="bx bx-search-alt"></i>
+        <p>No users match your filters.</p>
+      </div>
+    }
+  </div>
+
+  @if (showDetailModal && selectedUser) {
+    <div class="modal-overlay" (click)="closeDetail()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>User Details</h3>
+          <button class="modal-close" (click)="closeDetail()"><i class="bx bx-x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-row"><span><span class="detail-label">Name</span><span>{{ selectedUser.name }}</span></span></div>
+        </div>
+      </div>
+    </div>
+  }
+</app-admin-layout>

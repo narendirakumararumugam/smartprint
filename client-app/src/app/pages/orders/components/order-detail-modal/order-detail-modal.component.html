@@ -1,5 +1,5 @@
 <div class="modal-back" [class.open]="isOpen" (click)="onBackdropClick($event)">
-  <div class="modal" *ngIf="order as o">
+  <div class="order-details-modal" *ngIf="order as o">
     <div class="modal-hd">
       <div>
         <div class="modal-title">Order {{ o.id }}</div>
@@ -146,14 +146,14 @@
       </div>
 
       <div class="section-label" style="margin-top: 20pxpx">
-        <i class="bx bx-id-card"></i> Shop &amp; Contact
+        <i class="bx bx-address-book"></i> Shop &amp; Contact
       </div>
       <div class="info-row">
         <div
           class="info-icon"
           style="background: #d1fae5; color: var(--success)"
         >
-          <i class="bx bxs-store"></i>
+          <i class="bx bx-store"></i>
         </div>
         <div class="info-lbl">Shop</div>
         <div class="info-val">{{ o.shopName }}</div>
@@ -163,7 +163,7 @@
           class="info-icon"
           style="background: var(--primary-light); color: var(--primary)"
         >
-          <i class="bx bx-location-alt"></i>
+          <i class="bx bx-map"></i>
         </div>
         <div class="info-lbl">Address</div>
         <div class="info-val">{{ o.address }}</div>

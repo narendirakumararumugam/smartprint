@@ -1,7 +1,7 @@
 <nav class="navbar">
   <a class="nav-logo" routerLink="/">
-    <div class="nav-logo-icon"><i class="bxs bx-printer"></i></div>
-    Print<span>Hub</span>
+    <div class="nav-logo-icon"><i class="bx bxs-printer"></i></div>
+    Smart<span>Print</span>
   </a>
 
   <button
@@ -9,7 +9,7 @@
     (click)="openLocationPicker.emit()"
     aria-label="Change location"
   >
-    <i class="bx bx-location-alt" style="color: var(--danger)"></i>
+    <i class="bx bxs-map" style="color: var(--danger)"></i>
     <span *ngIf="locationService.location$ | async as loc; else defaultLoc">
       {{ loc.shortAddress }}
     </span>

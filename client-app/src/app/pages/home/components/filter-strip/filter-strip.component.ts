@@ -25,12 +25,12 @@ export class FilterStripComponent {
 
   readonly chips: Filterchip[] = [
     { id: 'all',    label: 'All Shops',    icon: 'bx bx-grid' },
-    { id: 'open',   label: 'Open Now',     icon: 'bx bx-clock', iconStyle: 'color:var(--success)' },
-    { id: 'top',    label: 'Rating 4+',    icon: 'bx bx-star', iconStyle: 'color:var(--accent)' },
-    { id: 'nearby', label: 'Within 1 km',  icon: 'bx bx-location-pin', iconStyle: 'color:var(--danger)' },
+    { id: 'open',   label: 'Open Now',     icon: 'bx bx-time', iconStyle: 'color:var(--success)' },
+    { id: 'top',    label: 'Rating 4+',    icon: 'bx bxs-star', iconStyle: 'color:var(--accent)' },
+    { id: 'nearby', label: 'Within 1 km',  icon: 'bx bx-map-pin', iconStyle: 'color:var(--danger)' },
     { id: 'color',  label: 'Color Print',  icon: 'bx bx-palette' },
     { id: 'bind',   label: 'Binding',      icon: 'bx bx-book-open' },
-    { id: 'large',  label: 'Large Format', icon: 'bx bx-maximize' },
+    { id: 'large',  label: 'Large Format', icon: 'bx bx-expand' },
   ];
 
   readonly sortOptions: { value: SortType; label: string }[] = [

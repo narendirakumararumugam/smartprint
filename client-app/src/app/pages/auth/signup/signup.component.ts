@@ -198,7 +198,7 @@ export class SignupComponent {
     }).subscribe({
       next: (res) => {
         this.isLoading = false;
-        if (res.accessToken) {
+        if (res.userType) {
           this.showSuccess = true;
           this.cdr.markForCheck();
           // Navigate to home after brief delay

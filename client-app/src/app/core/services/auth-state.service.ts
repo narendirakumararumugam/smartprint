@@ -13,8 +13,6 @@ export interface AuthUser {
   createdAt?: string; // ISO date string
 }
 
-const TOKEN_KEY = 'sp_access_token';
-const REFRESH_KEY = 'sp_refresh_token';
 const USER_KEY = 'sp_user';
 
 @Injectable({
@@ -29,7 +27,7 @@ export class AuthStateService {
   readonly user$ = this.userSubject.asObservable();
 
   get isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.currentUser;
   }
 
   get currentUser(): AuthUser | null {
@@ -40,23 +38,8 @@ export class AuthStateService {
     return this.currentUser?.userType ?? null;
   }
 
-  getToken(): string | null {
-    if (!this.isBrowser) return null;
-    return localStorage.getItem(TOKEN_KEY);
-  }
-
-  getRefreshToken(): string | null {
-    if (!this.isBrowser) return null;
-    return localStorage.getItem(REFRESH_KEY);
-  }
-
-  /**
-   * Store auth tokens + user info after successful login/signup.
-   */
-  setSession(accessToken: string, refreshToken: string, user: AuthUser): void {
+  setSession(user: AuthUser): void {
     if (!this.isBrowser) return;
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    localStorage.setItem(REFRESH_KEY, refreshToken);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.userSubject.next(user);
   }
@@ -66,8 +49,6 @@ export class AuthStateService {
    */
   logout(): void {
     if (this.isBrowser) {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(REFRESH_KEY);
       localStorage.removeItem(USER_KEY);
     }
     this.userSubject.next(null);

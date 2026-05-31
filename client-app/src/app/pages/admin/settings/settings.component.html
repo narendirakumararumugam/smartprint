@@ -1,0 +1,85 @@
+<app-admin-layout pageTitle="Platform Settings">
+    <div class="settings-grid">
+        <div class="settings-card">
+            <div class="sc-header">
+                <i class="bx bx-cog"></i>
+                <h3>General</h3>
+            </div>
+            
+            <div class="field">
+                <label>Platform Name</label>
+                <input type="text" [(ngModel)]="platformName" />
+            </div>
+            
+            <div class="field">
+                <label>Support Email</label>
+                <input type="email" [(ngModel)]="supportEmail" />
+            </div>
+            
+            <div class="field">
+                <label>Default City</label>
+                <input type="text" [(ngModel)]="defaultCity" />
+            </div>
+            
+            <div class="field">
+                <label>Order Number Prefix</label>
+                <input type="text" [(ngModel)]="orderPrefix" maxlength="4" />
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="sc-header">
+                <i class="bx bx-arrow-from-bottom-stroke"></i>
+                <h3>Uploads & Limits</h3>
+            </div>
+            
+            <div class="field">
+                <label>Max File Size</label>
+                <app-dropdown
+                    [options]="fileSizeOptions"
+                    [selected]="maxFileSize"
+                    (selectionChange)="maxFileSize = $event"
+                    variant="form">
+                </app-dropdown>
+            </div>
+            
+            <div class="field">
+                <label>Tax Rate (%)</label>
+                <input type="number" [(ngModel)]="taxRate" min="0" max="30" />
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="sc-header">
+                <i class="bx bx-toggle-left"></i>
+                <h3>Features</h3>
+            </div>
+            
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Auto-Verify New Shops</div>
+                    <div class="toggle-desc">Skip manual review for new shop registrations</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" [(ngModel)]="autoVerify" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Maintenance Mode</div>
+                    <div class="toggle-desc">Show maintenance page to all users</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" [(ngModel)]="maintenanceMode" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-bar">
+        <button class="save-btn">Save Changes</button>
+    </div>
+</app-admin-layout>

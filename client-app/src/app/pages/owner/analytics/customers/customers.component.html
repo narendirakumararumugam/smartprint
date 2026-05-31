@@ -1,0 +1,110 @@
+<ng-template #topbarActions>
+  <button class="top-btn"><i class="bx bx-download"></i> Export</button>
+</ng-template>
+
+<div class="customers-content">
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    @for (s of stats; track s.label) {
+      <app-stat-card
+        [icon]="s.icon" [iconBg]="s.iconBg" [iconColor]="s.iconColor"
+        [label]="s.label" [value]="s.value" [trend]="s.trend" [trendUp]="s.trendUp"
+      />
+    }
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid-2">
+    <!-- Top Customers -->
+    <app-chart-card title="Top Customers" subtitle="By order count">
+      <div class="top-list">
+        @for (c of topCustomersData; track c.name; let i = $index) {
+          <div class="top-row">
+            <span class="top-rank">{{ i + 1 }}</span>
+            <span class="top-name">{{ c.name }}</span>
+            <div class="top-bar-wrap">
+              <div class="top-bar" [style.width.%]="c.percent"></div>
+            </div>
+            <span class="top-val">{{ c.orders }}</span>
+          </div>
+        }
+      </div>
+    </app-chart-card>
+
+    <!-- Retention Rate -->
+    <app-chart-card title="Retention Rate" subtitle="Monthly repeat customers">
+      <div class="retention-chart">
+        @for (r of retentionData; track r.month) {
+          <div class="ret-col">
+            <div class="ret-val">{{ r.rate }}%</div>
+            <div class="ret-bar-track">
+              <div class="ret-bar-fill" [style.height.%]="r.rate"></div>
+            </div>
+            <div class="ret-label">{{ r.month }}</div>
+          </div>
+        }
+      </div>
+    </app-chart-card>
+  </div>
+
+  <!-- Customers Table -->
+  <div class="table-section">
+    <div class="table-toolbar">
+      <div class="search-box">
+        <i class="bx bx-search"></i>
+        <input type="text" placeholder="Search customers..." [(ngModel)]="searchQuery" />
+      </div>
+      <div class="filter-group">
+        <app-dropdown
+          [options]="filterStatusOptions"
+          [selected]="filterStatus"
+          (selectionChange)="filterStatus = $event"
+          variant="borderless"
+          placeholder="All Status"
+        />
+        <app-dropdown
+          [options]="sortOptions"
+          [selected]="sortBy"
+          (selectionChange)="sortBy = $event"
+          variant="borderless"
+        />
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table class="cust-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Orders</th>
+            <th>Total Spent</th>
+            <th>Last Visit</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of filteredCustomers; track c.email) {
+            <tr>
+              <td>
+                <div class="cust-cell">
+                  <div class="cust-avatar" [style.background]="c.bg">{{ c.avatar }}</div>
+                  <span class="cust-name">{{ c.name }}</span>
+                </div>
+              </td>
+              <td class="td-email">{{ c.email }}</td>
+              <td class="td-orders">{{ c.orders }}</td>
+              <td class="td-spent">₹{{ c.spent.toLocaleString() }}</td>
+              <td class="td-visit">{{ c.lastVisit }}</td>
+              <td class="td">
+                <span class="cust-status" [class]="getStatusClass(c.status)">
+                  {{ getStatusLabel(c.status) }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -74,7 +74,7 @@
             />
           </div>
           <div class="field-error" [class.show]="errors['firstName']">
-            <i class="bx bx-error-circle"></i
+            <i class="bx bx-alert-circle"></i
             ><span>{{ errors["firstName"] }}</span>
           </div>
         </div>
@@ -94,7 +94,7 @@
             />
           </div>
           <div class="field-error" [class.show]="errors['lastName']">
-            <i class="bx bx-error-circle"></i
+            <i class="bx bx-alert-circle"></i
             ><span>{{ errors["lastName"] }}</span>
           </div>
         </div>
@@ -115,7 +115,7 @@
           />
         </div>
         <div class="field-error" [class.show]="errors['email']">
-          <i class="bx bx-error-circle"></i><span>{{ errors["email"] }}</span>
+          <i class="bx bx-alert-circle"></i><span>{{ errors["email"] }}</span>
         </div>
       </div>
 
@@ -139,7 +139,7 @@
       <div class="form-group">
         <label class="fg-label">Password</label>
         <div class="input-wrap">
-          <i class="input-icon bx bx-lock-alt"></i>
+          <i class="input-icon bx bx-lock"></i>
           <input
             class="form-input"
             [class.error]="errors['password']"
@@ -152,8 +152,8 @@
           <span class="pw-toggle" (click)="togglePassword()"
             ><i
               class="bx"
-              [class.bx-show]="!showPassword"
-              [class.bx-hide]="showPassword"
+              [class.bx-eye]="!showPassword"
+              [class.bx-eye-slash]="showPassword"
             ></i
           ></span>
         </div>
@@ -182,7 +182,7 @@
           <div class="pws-txt">{{ passwordStrength.label }}</div>
         </div>
         <div class="field-error" [class.show]="errors['password']">
-          <i class="bx bx-error-circle"></i
+          <i class="bx bx-alert-circle"></i
           ><span>{{ errors["password"] }}</span>
         </div>
       </div>
@@ -190,7 +190,7 @@
       <div class="form-group">
         <label class="fg-label">Confirm Password</label>
         <div class="input-wrap">
-          <i class="input-icon bx bx-lock-alt"></i>
+          <i class="input-icon bx bx-lock"></i>
           <input
             class="form-input"
             [class.error]="errors['confirmPassword']"
@@ -203,13 +203,13 @@
           <span class="pw-toggle" (click)="toggleConfirmPassword()"
             ><i
               class="bx"
-              [class.bx-show]="!showConfirmPassword"
-              [class.bx-hide]="showConfirmPassword"
+              [class.bx-eye]="!showConfirmPassword"
+              [class.bx-eye-slash]="showConfirmPassword"
             ></i
           ></span>
         </div>
         <div class="field-error" [class.show]="errors['confirmPassword']">
-          <i class="bx bx-error-circle"></i
+          <i class="bx bx-alert-circle"></i
           ><span>{{ errors["confirmPassword"] }}</span>
         </div>
       </div>
@@ -247,7 +247,7 @@
           </div>
         </div>
         <div class="field-error" [class.show]="errors['avatar']">
-          <i class="bx bx-error-circle"></i><span>{{ errors["avatar"] }}</span>
+          <i class="bx bx-alert-circle"></i><span>{{ errors["avatar"] }}</span>
         </div>
       </div>
 
@@ -266,7 +266,7 @@
           />
         </div>
         <div class="field-error" [class.show]="errors['username']">
-          <i class="bx bx-error-circle"></i
+          <i class="bx bx-alert-circle"></i
           ><span>{{ errors["username"] }}</span>
         </div>
       </div>
@@ -426,7 +426,7 @@
         [class.show]="errors['terms']"
         style="margin-top: -6px; margin-bottom: 14px"
       >
-        <i class="bx bx-error-circle"></i><span>{{ errors["terms"] }}</span>
+        <i class="bx bx-alert-circle"></i><span>{{ errors["terms"] }}</span>
       </div>
 
       <div class="btn-row">
@@ -478,7 +478,7 @@
             class="sp-perk-icon"
             style="background: #d1fae5; color: var(--success)"
           >
-            <i class="bx bx-upload"></i>
+            <i class="bx bx-arrow-from-bottom-stroke"></i>
           </div>
           <div>
             <div class="sp-perk-text">Upload & print instantly</div>

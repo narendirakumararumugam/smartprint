@@ -1,0 +1,436 @@
+<ng-template #topbarActions>
+  @if (isDirty) {
+    <span class="unsaved-pill"><i class="bx bx-alert-circle"></i> Unsaved changes</span>
+    <button class="btn-discard" (click)="discardChanges()"><i class="bx bx-undo"></i> Discard</button>
+    <button class="btn-save" (click)="saveSettings()"><i class="bx bx-save"></i> Save Changes</button>
+  }
+</ng-template>
+
+<div class="settings-content">
+  <div class="settings-tabs">
+    @for (tab of tabs; track tab.id) {
+      <button 
+        class="settings-tab" 
+        [class.active]="activeTab === tab.id"
+        [class.danger-tab]="tab.id === 'danger'"
+        (click)="switchTab(tab.id)">
+        <i [class]="tab.icon"></i> {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  @if (activeTab === 'profile') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-image"></i> Shop Logo & Photos</div>
+        <div class="logo-upload-area">
+          <div class="logo-preview"><i class="bx bx-store"></i></div>
+          <div class="logo-upload-info">
+            <div class="logo-upload-title">Upload shop logo</div>
+            <div class="logo-upload-sub">PNG, JPG up to 2MB. Recommended 200x200px</div>
+            <button class="btn-outline-sm"><i class="bx bx-arrow-from-bottom-stroke"></i> Choose File</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-info-circle"></i> Basic Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Shop Name</label>
+            <input class="form-input" [(ngModel)]="shopName" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tagline</label>
+            <input class="form-input" [(ngModel)]="shopTagline" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input class="form-input" [(ngModel)]="shopPhone" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <app-dropdown 
+              [options]="categoryOptions" 
+              [selected]="shopCategory" 
+              (selectionChange)="shopCategory = $event; markDirty()" 
+              variant="form">
+            </app-dropdown>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" rows="3" [(ngModel)]="shopDescription" (ngModelChange)="markDirty()"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">Google Maps Link</label>
+            <input class="form-input" [(ngModel)]="shopMapsLink" (ngModelChange)="markDirty()" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-map"></i> Address</div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="form-label">Street Address</label>
+            <input class="form-input" [(ngModel)]="shopAddress" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input class="form-input" [(ngModel)]="shopCity" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <input class="form-input" [(ngModel)]="shopState" (ngModelChange)="markDirty()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">PIN Code</label>
+            <input class="form-input" [(ngModel)]="shopPincode" (ngModelChange)="markDirty()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'services') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-checklist"></i> Available Services</div>
+        <div class="form-card-sub">Toggle the services your shop offers</div>
+        <div class="chips-grid">
+          @for (service of services; track service.name) {
+            <div class="service-chip" [class.active]="service.enabled" (click)="toggleService(service)">
+              <i [class]="service.icon"></i>
+              <span>{{ service.name }}</span>
+              <i class="bx" [class.bx-check]="service.enabled" [class.bx-plus]="!service.enabled"></i>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-file"></i> Paper Sizes</div>
+        <div class="chips-grid">
+          @for (size of paperSizes; track size) {
+            <div class="paper-chip" [class.active]="isPaperSelected(size)" (click)="togglePaperSize(size)">
+              {{ size }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-arrow-from-bottom-stroke"></i> File Upload Limits</div>
+        <div class="form-group" style="max-width: 200px;">
+          <label class="form-label">Max File Size</label>
+          <app-dropdown 
+            [options]="fileSizeOptions" 
+            [selected]="maxFileSize" 
+            (selectionChange)="maxFileSize = $event; markDirty()" 
+            variant="form">
+          </app-dropdown>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'pricing') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-purchase-tag"></i> Per-Page Pricing (₹)</div>
+        <div class="pricing-table-wrap">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>Paper</th>
+                <th>B&W Single</th>
+                <th>B&W Double</th>
+                <th>Color Single</th>
+                <th>Color Double</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of priceRows; track row; let i = $index) {
+                <tr>
+                  <td><input class="price-input" [(ngModel)]="row.type" (ngModelChange)="markDirty()" placeholder="e.g. A4" /></td>
+                  <td><input class="price-input" type="number" [(ngModel)]="row.bwSingle" (ngModelChange)="markDirty()" /></td>
+                  <td><input class="price-input" type="number" [(ngModel)]="row.bwDouble" (ngModelChange)="markDirty()" /></td>
+                  <td><input class="price-input" type="number" [(ngModel)]="row.colorSingle" (ngModelChange)="markDirty()" /></td>
+                  <td><input class="price-input" type="number" [(ngModel)]="row.colorDouble" (ngModelChange)="markDirty()" /></td>
+                  <td>
+                    <button class="icon-btn-del" title="Remove row" (click)="removePriceRow(i)">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <button class="btn-outline-sm" style="margin-top: 10px;" (click)="addPriceRow()">
+          <i class="bx bx-plus"></i> Add Row
+        </button>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-plus-circle"></i> Add-on Charges</div>
+        <div class="addon-list">
+          @for (addon of addOns; track addon; let i = $index) {
+            <div class="addon-row">
+              <input class="price-input" [(ngModel)]="addon.name" (ngModelChange)="markDirty()" placeholder="Service name" />
+              <div class="addon-price-wrap">
+                <span class="rupee-prefix">₹</span>
+                <input class="price-input sm" type="number" [(ngModel)]="addon.price" (ngModelChange)="markDirty()" />
+              </div>
+              <button class="icon-btn-del" title="Remove" (click)="removeAddon(i)">
+                <i class="bx bx-trash"></i>
+              </button>
+            </div>
+          }
+        </div>
+        <button class="btn-outline-sm" style="margin-top: 10px;" (click)="addAddon()">
+          <i class="bx bx-plus"></i> Add Add-on
+        </button>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-trending-down"></i> Bulk Discounts</div>
+        <div class="bulk-list">
+          @for (tier of bulkDiscounts; track tier; let i = $index) {
+            <div class="bulk-row">
+              <div class="bulk-range-inputs">
+                <input class="price-input sm" type="number" [(ngModel)]="tier.min" (ngModelChange)="markDirty()" placeholder="Min pages" />
+                <span class="break-dash">-</span>
+                <input class="price-input sm" type="number" [(ngModel)]="tier.max" (ngModelChange)="markDirty()" placeholder="Max (0=∞)" />
+                <span class="pct-suffix">pages</span>
+              </div>
+              <div class="addon-price-wrap">
+                <input class="price-input sm" type="number" [(ngModel)]="tier.discount" (ngModelChange)="markDirty()" />
+                <span class="pct-suffix">% off</span>
+              </div>
+              <button class="icon-btn-del" title="Remove" (click)="removeBulkDiscount(i)">
+                <i class="bx bx-trash"></i>
+              </button>
+            </div>
+          }
+        </div>
+        <button class="btn-outline-sm" style="margin-top: 10px;" (click)="addBulkDiscount()">
+          <i class="bx bx-plus"></i> Add Tier
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'hours') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-time"></i> Operating Hours</div>
+        <div class="hours-actions">
+          <button class="btn-outline-sm" (click)="copyMondayToAll()"><i class="bx bx-copy"></i> Copy Monday to All</button>
+        </div>
+        <div class="hours-table-wrap">
+          <table class="hours-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Open</th>
+                <th>Close</th>
+                <th>Break</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of hours; track entry.day) {
+                <tr [class.day-closed]="entry.closed">
+                  <td class="day-name">{{ entry.day }}</td>
+                  <td>
+                    <input class="time-input" type="time" [(ngModel)]="entry.open" [disabled]="entry.closed" (ngModelChange)="markDirty()" />
+                  </td>
+                  <td>
+                    <input class="time-input" type="time" [(ngModel)]="entry.close" [disabled]="entry.closed" (ngModelChange darkness)="markDirty()" />
+                  </td>
+                  <td class="break-cell">
+                    <input class="time-input sm" type="time" [(ngModel)]="entry.breakStart" [disabled]="entry.closed" (ngModelChange)="markDirty()" />
+                    <span class="break-dash">-</span>
+                    <input class="time-input sm" type="time" [(ngModel)]="entry.breakEnd" [disabled]="entry.closed" (ngModelChange)="markDirty()" />
+                  </td>
+                  <td>
+                    <div class="toggle-wrap" (click)="toggleDayClosed(entry)">
+                      <div class="toggle" [class.on]="!entry.closed"></div>
+                      <span class="toggle-label">{{ entry.closed ? 'Closed' : 'Open' }}</span>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-time"></i> Minimum Prep Time</div>
+        <div class="form-group" style="max-width: 200px;">
+          <label class="form-label">Minutes</label>
+          <input class="form-input" type="number" [(ngModel)]="minPrepTime" (ngModelChange)="markDirty()" />
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'approval') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bxs-shield"></i> Order Approval Mode</div>
+        <div class="approval-cards">
+          <div class="approval-card" [class.selected]="approvalMode === 'auto'" (click)="setApprovalMode('auto')">
+            <div class="approval-icon auto"><i class="bx bx-bolt-circle"></i></div>
+            <div class="approval-card-title">Auto-Approval</div>
+            <div class="approval-card-desc">Orders are automatically approved and sent to the printer queue</div>
+            @if (approvalMode === 'auto') {
+              <div class="approval-check"><i class="bx bx-check"></i></div>
+            }
+          </div>
+          <div class="approval-card amber" [class.selected]="approvalMode === 'manual'" (click)="setApprovalMode('manual')">
+            <div class="approval-icon manual"><i class="bx bx-eye"></i></div>
+            <div class="approval-card-title">Manual Review</div>
+            <div class="approval-card-desc">You review and approve/reject each order manually before printing</div>
+            @if (approvalMode === 'manual') {
+              <div class="approval-check"><i class="bx bx-check"></i></div>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (approvalMode === 'auto') {
+        <div class="form-card">
+          <div class="form-card-title"><i class="bx bx-printer"></i> Auto-Approval Settings</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Default Printer</label>
+              <app-dropdown 
+                [options]="printerOptions" 
+                [selected]="defaultPrinter" 
+                (selectionChange)="defaultPrinter = $event; markDirty()" 
+                variant="form">
+              </app-dropdown>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Pages per Order</label>
+              <input class="form-input" type="number" [(ngModel)]="maxOrderPages" (ngModelChange)="markDirty()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Daily Orders</label>
+              <input class="form-input" type="number" [(ngModel)]="maxDailyOrders" (ngModelChange)="markDirty()" />
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'closure') {
+    <div class="tab-panel">
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-power-off"></i> Temporary Closure</div>
+        <div class="closure-toggle-card" [class.active]="!shopOpen">
+          <div class="closure-icon" [class.red]="!shopOpen">
+            <i class="bx" [class.bx-store]="shopOpen" [class.bx-door-open]="!shopOpen"></i>
+          </div>
+          <div class="closure-info">
+            <div class="closure-title">{{ shopOpen ? 'Shop is Open' : 'Shop is Closed' }}</div>
+            <div class="closure-sub">{{ shopOpen ? 'Customers can place orders normally' : 'No new orders accepted' }}</div>
+          </div>
+          <div class="toggle-wrap" (click)="toggleShopClosure()">
+            <div class="toggle" [class.on]="!shopOpen"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="bx bx-calendar-x"></i> Scheduled Closures</div>
+        <div class="closure-list">
+          @if (closures.length === 0) {
+            <div class="empty-state">No scheduled closures. Add a holiday or planned day off.</div>
+          }
+          @for (closure of closures; track closure.date; let i = $index) {
+            <div class="closure-item">
+              <div class="closure-item-icon"><i class="bx bx-calendar-x"></i></div>
+              <div class="closure-item-info">
+                <div class="closure-date">{{ formatDate(closure.date) }}</div>
+                <div class="closure-reason">
+                  {{ closure.reason }}
+                  @if (closure.recurring) {
+                    <span class="yearly-tag">Yearly</span>
+                  }
+                </div>
+              </div>
+              <button class="closure-del" (click)="removeClosure(i)"><i class="bx bx-trash"></i></button>
+            </div>
+          }
+        </div>
+        <button class="btn-outline-sm" style="margin-top: 12px;" (click)="toggleAddClosure()">
+          <i class="bx bx-plus"></i> Add Closure
+        </button>
+
+        @if (showAddClosure) {
+          <div class="add-closure-form">
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input class="form-input" type="date" [(ngModel)]="newClosureDate" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Reason</label>
+              <input class="form-input" [(ngModel)]="newClosureReason" placeholder="e.g. Diwali" />
+            </div>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="newClosureRecurring" /> Recurring yearly
+            </label>
+            <button class="btn-primary-sm" (click)="addClosure()"><i class="bx bx-check"></i> Add</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'danger') {
+    <div class="tab-panel">
+      <div class="form-card danger-card">
+        <div class="form-card-title danger"><i class="bx bx-error"></i> Danger Zone</div>
+        <div class="danger-actions">
+          <div class="danger-row">
+            <div>
+              <div class="danger-action-title">Deactivate Shop</div>
+              <div class="danger-action-desc">Hide your shop from customer listings. You can reactivate later.</div>
+            </div>
+            <button class="btn btn-outline-danger" (click)="openDangerModal('deactivate')">Deactivate</button>
+          </div>
+          
+          <div class="danger-row">
+            <div>
+              <div class="danger-action-title">Delete Shop</div>
+              <div class="danger-action-desc">Permanently delete this shop and all its data. This cannot be undone.</div>
+            </div>
+            <button class="btn btn-danger" (click)="openDangerModal('delete')"><i class="bx bx-trash"></i> Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+@if (showDangerModal) {
+  <div class="modal-overlay" (click)="closeDangerModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon" [class.red]="dangerAction === 'delete'">
+        <i class="bx" [class.bx-trash]="dangerAction === 'delete'" [class.bx-eye-slash]="dangerAction === 'deactivate'"></i>
+      </div>
+      <div class="modal-title">{{ dangerTitle }}</div>
+      <div class="modal-text">{{ dangerText }}</div>
+      <input class="form-input" [(ngModel)]="dangerInput" [placeholder]="dangerPlaceholder" />
+      <div class="modal-actions">
+        <button class="btn btn-outline-sm" (click)="closeDangerModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDanger()">Confirm</button>
+      </div>
+    </div>
+  </div>
+}

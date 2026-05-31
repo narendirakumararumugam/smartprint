@@ -3,8 +3,7 @@ import { BaseApiService } from "./base-api.service";
 import { API_ENDPOINTS, RESOURCE_PATHS } from "../constants/api-endpoints";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { Printer } from "@apollo/client/link/http/selectHttpOptionsAndBody";
-import { PrinterCreateRequest, PrinterStats, PrinterUpdateRequest, PrintJob } from "../../models/printer.model";
+import { Printer, PrinterCreateRequest, PrinterStats, PrinterUpdateRequest, PrintJob } from "../../models/printer.model";
 
 @Injectable({ providedIn: 'root' })
 export class OwnerPrinterService extends BaseApiService {

@@ -1,0 +1,54 @@
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="bx bxs-shield-quarter"></i></div>
+    <div>
+      <div class="logo-title">SmartPrint</div>
+      <div class="logo-subtitle">Admin Panel</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (section of sections; track section.title) {
+      <div class="nav-section">
+        <div class="nav-section-title">{{ section.title }}</div>
+        @for (link of section.links; track link.route) {
+          <a 
+            class="nav-link"
+            [class.active]="isActive(link.route)"
+            [routerLink]="link.route"
+          >
+            <i [class]="link.icon"></i>
+            <span>{{ link.label }}</span>
+            @if (link.label === 'Verifications' && pendingVerifications > 0) {
+              <span class="nav-badge warning">{{ pendingVerifications }}</span>
+            }
+            @if (link.badge && link.badge > 0 && link.label !== 'Verifications') {
+              <span class="nav-badge">{{ link.badge }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </nav>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">A</div>
+    <div class="user-info">
+      <div class="user-name">{{ adminName }}</div>
+      <div class="user-email">{{ adminEmail }}</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main-area">
+  <header class="topbar">
+    <h1 class="topbar-title">{{ pageTitle }}</h1>
+    <div class="topbar-actions">
+      <ng-content select="[topbar-actions]"></ng-content>
+    </div>
+  </header>
+
+  <div class="page-content">
+    <ng-content></ng-content>
+  </div>
+</main>

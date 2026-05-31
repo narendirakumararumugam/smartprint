@@ -1,0 +1,83 @@
+<ng-template #topbarActions>
+  <div class="period-tabs">
+    <button class="period-tab" [class.active]="period === 'week'" (click)="switchPeriod('week')">Week</button>
+    <button class="period-tab" [class.active]="period === 'month'" (click)="switchPeriod('month')">Month</button>
+    <button class="period-tab" [class.active]="period === 'year'" (click)="switchPeriod('year')">Year</button>
+  </div>
+  <button class="top-btn"><i class="bx bx-download"></i> Export</button>
+</ng-template>
+
+<div class="revenue-content">
+  <div class="stats-grid">
+    @for (s of stats; track s.label) {
+      <app-stat-card
+        [icon]="s.icon" [iconBg]="s.iconBg" [iconColor]="s.iconColor"
+        [label]="s.label" [value]="s.value" [trend]="s.trend" [trendUp]="s.trendUp"
+      />
+    }
+  </div>
+
+  <div class="grid-2">
+    <app-chart-card title="Daily Revenue" subtitle="Last 7 days">
+      <div class="bar-chart">
+        @for (d of dailyRevenue; track d.day) {
+          <div class="bar-col">
+            <div class="bar-value">₹{{ d.amount }}</div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.height]="getBarHeight(d.amount)"></div>
+            </div>
+            <div class="bar-label">{{ d.day }}</div>
+          </div>
+        }
+      </div>
+    </app-chart-card>
+
+    <app-chart-card title="Revenue by Service" subtitle="This week">
+      <div class="services-list">
+        @for (svc of topServices; track svc.name) {
+          <div class="service-row">
+            <div class="service-info">
+              <div class="service-dot" [style.background]="svc.color"></div>
+              <div>
+                <div class="service-name">{{ svc.name }}</div>
+                <div class="service-meta">{{ svc.orders }} orders</div>
+              </div>
+            </div>
+            <div class="service-stats">
+              <div class="service-amount">₹{{ svc.revenue.toLocaleString() }}</div>
+              <div class="service-bar-track">
+                <div class="service-bar-fill" [style.width.%]="svc.percent" [style.background]="svc.color"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </app-chart-card>
+  </div>
+
+  <app-chart-card title="Recent Transactions" subtitle="Today's payments">
+    <div class="transactions-table">
+      <div class="txn-head">
+        <span class="txn-h-id">Order</span>
+        <span class="txn-h-cust">Customer</span>
+        <span class="txn-h-method">Method</span>
+        <span class="txn-h-amount">Amount</span>
+        <span class="txn-h-time">Time</span>
+      </div>
+      @for (txn of recentTransactions; track txn.id) {
+        <div class="txn-row">
+          <span class="txn-id">{{ txn.id }}</span>
+          <span class="txn-cust">
+            <span class="txn-avatar" [style.background]="txn.bg">{{ txn.avatar }}</span>
+            {{ txn.customer }}
+          </span>
+          <span class="txn-method">
+            <span class="method-chip">{{ txn.method }}</span>
+          </span>
+          <span class="txn-amount">₹{{ txn.amount }}</span>
+          <span class="txn-time">{{ txn.time }}</span>
+        </div>
+      }
+    </div>
+  </app-chart-card>
+</div>

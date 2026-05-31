@@ -1,0 +1,112 @@
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.si-green { background: #d1fae5; color: #059669; }
+.si-blue { background: #dbeafe; color: #2563eb; }
+.si-purple { background: #ede9fe; color: #7c3aed; }
+.si-amber { background: #fef3c7; color: #d97706; }
+
+.stat-info { flex: 1; }
+.stat-value { font-size: 18px; font-weight: 800; color: #111827; }
+.stat-label { font-size: 11px; color: #9ca3af; font-weight: 500; margin-top: 2px; }
+
+.stat-change {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.sc-green { background: #d1fae5; color: #059669; }
+.sc-blue { background: #dbeafe; color: #2563eb; }
+.sc-purple { background: #ede9fe; color: #7c3aed; }
+.sc-amber { background: #fef3c7; color: #d97706; }
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.card-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 18px; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #9ca3af;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+  padding: 10px;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.rank { font-weight: 700; color: #7c3aed; width: 30px; }
+.shop-name { font-weight: 600; }
+.revenue { font-weight: 600; color: #059669; }
+
+.city-list { display: flex; flex-direction: column; gap: 16px; }
+
+.city-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.city-name { font-size: 13px; font-weight: 600; color: #374151; }
+.city-revenue { font-size: 13px; color: #059669; font-weight: 600; }
+
+.progress-bar {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 8px;
+  transition: width 0.3s;
+}
+
+@media (max-width: 900px) {
+    .analytics-grid {grid-template-columns: 1fr;}
+}

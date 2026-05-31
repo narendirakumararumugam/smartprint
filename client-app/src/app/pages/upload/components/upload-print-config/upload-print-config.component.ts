@@ -41,7 +41,7 @@ export class UploadPrintConfigComponent {
   readonly paperSizeOptions: DropdownOption[] = [
     { label: 'A4 (Standard)', value: 'A4', icon: 'bx bx-file' },
     { label: 'A3 (Large)', value: 'A3', icon: 'bx bx-expand' },
-    { label: 'A5 (Small)', value: 'A5', icon: 'bx bx-file-blank' },
+    { label: 'A5 (Small)', value: 'A5', icon: 'bx bxs-file-blank' },
     { label: 'Letter (US)', value: 'Letter', icon: 'bx bx-news' },
   ];
 

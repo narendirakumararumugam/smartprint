@@ -1,0 +1,241 @@
+<div class="stat-strip">
+  <div class="ss-tile">
+    <div class="ss-icon" style="background: #d1fae5;color:var(--emerald)"><i class="bx bx-printer"></i></div>
+    <div><div class="ss-val">{{ stats.totalPrinters }}</div><div class="ss-lbl">Total Printers</div></div>
+  </div>
+  <div class="ss-tile">
+    <div class="ss-icon" style="background: #dbeafe;color:var(--blue)"><i class="bx bxs-circle"></i></div>
+    <div><div class="ss-val">{{ stats.online }}</div><div class="ss-lbl">Online</div></div>
+  </div>
+  <div class="ss-tile">
+    <div class="ss-icon" style="background: #fef3c7;color:var(--amber)"><i class="bx bx-printer"></i></div>
+    <div><div class="ss-val">{{ stats.printing }}</div><div class="ss-lbl">Currently Printing</div></div>
+  </div>
+  <div class="ss-tile">
+    <div class="ss-icon" style="background:var(--teal-light);color:var(--teal)"><i class="bx bx-file"></i></div>
+    <div><div class="ss-val">{{ stats.pagesToday | number }}</div><div class="ss-lbl">Pages Today</div></div>
+  </div>
+</div>
+
+<div class="printer-grid">
+  @for (printer of printers; track printer.id) {
+    <div class="printer-card" [class.default-card]="printer.isDefault">
+      
+      <div class="pc-head">
+        <div class="pc-icon-wrap">
+          <div class="pc-icon" [ngStyle]="{
+            background: printer.status === 'offline' ? 'var(--bg-subtle)' : printer.status === 'low-ink' ? '#efef3c7' : '#edbeafe',
+            color: printer.status === 'offline' ? 'var(--text-300)' : printer.status === 'low-ink' ? 'var(--amber)' : 'var(--blue)'
+          }">
+            @if (printer.status === 'printing') {
+              <div class="printer-anim"><div class="pa-body"></div><div class="pa-slot"></div><div class="pa-paper"></div></div>
+            } @else {
+              <i class="bx bx-printer"></i>
+            }
+          </div>
+        </div>
+        @if (printer.isDefault) {
+          <div class="pc-default-badge" title="Default printer"><i class="bx bxs-star" style="font-size:8px"></i></div>
+        }
+      </div>
+
+      <div class="pc-info">
+        <div class="pc-name">
+          {{ printer.name }}
+          @if (printer.isDefault) {
+            <span class="default-tag">Default</span>
+          }
+        </div>
+        <div class="pc-model">{{ printer.model }}</div>
+        <div class="pc-chips">
+          <span class="pc-chip conn-chip"><i class="bx {{ getConnIcon(printer.connectionType) }}" style="font-size:11px"></i>{{ printer.connectionType }}</span>
+          @if (printer.ipAddress) {
+            <span class="pc-chip ip-chip">{{ printer.ipAddress }}</span>
+          }
+          <span class="pc-chip priority-chip">P{{ printer.priority }}</span>
+        </div>
+      </div>
+      <div class="pc-status-badge {{ getStatusInfo(printer.status).class }}">
+        <div class="status-dot {{ getStatusInfo(printer.status).dotClass }}"></div>
+        {{ getStatusInfo(printer.status).label }}
+      </div>
+
+      <div class="pc-body">
+        <div class="pc-metrics">
+          <div class="pc-metric"><div class="pc-metric-val">{{ printer.pagesToday | number }}</div><div class="pc-metric-lbl">Pages today</div></div>
+          <div class="pc-metric"><div class="pc-metric-val">{{ printer.jobsToday }}</div><div class="pc-metric-lbl">Jobs today</div></div>
+          <div class="pc-metric"><div class="pc-metric-val">{{ (printer.pagesTotal / 1000).toFixed(1) }}k</div><div class="pc-metric-lbl">Total pages</div></div>
+        </div>
+
+        <div class="ink-row">
+          <div class="ink-title">Ink / Toner Levels</div>
+          <div class="ink-bars">
+            @for (ink of printer.inkLevels; track ink.label) {
+              <div class="ink-bar-row">
+                <div class="ink-color-dot" [style.background]="ink.color"></div>
+                <div class="ink-label">{{ ink.label }}</div>
+                <div class="ink-track">
+                  <div class="ink-fill" [style.background]="ink.percentage < 20 ? 'var(--red)' : ink.color" [style.width.%]="ink.percentage"></div>
+                </div>
+                <div class="ink-pct" [style.color]="ink.percentage < 20 ? 'var(--red)' : 'var(--text-500)'">{{ ink.percentage }}%</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="queue-mini">
+          <div class="qm-head">
+            <div class="qm-title"><i class="bx bx-list-ul" style="color:var(--teal);margin-right:5px"></i>Print Queue</div>
+            <div class="qm-count">{{ printer.queue.length }} job{{ printer.queue.length !== 1 ? 's' : '' }}</div>
+          </div>
+          @if (printer.queue.length === 0) {
+            <div class="qm-empty"><i class="bx bx-smile" style="font-size:20px;margin-bottom:5px;display:block;color:var(--text-300)"></i>No jobs in queue</div>
+          } @else {
+            @for (job of printer.queue; track job.id) {
+              <div class="qm-item">
+                <div class="qm-av" style="background: #2563eb">{{ (job.customerName || 'U').charAt(0) }}</div>
+                <div class="qm-info">
+                  <div class="qm-order">#{{ job.jobNumber }}</div>
+                  <div class="qm-pages">{{ job.pages }} pages • {{ job.printType }}</div>
+                </div>
+                <span class="qm-status" style="background: #dbeafe;color:var(--blue)">{{ job.status }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="pc-foot">
+        <button class="btn btn-outline btn-sm" (click)="openDrawer(printer)"><i class="bx bx-eye"></i> Details</button>
+        <button class="btn btn-outline btn-sm" (click)="openEditModal(printer)"><i class="bx bx-edit"></i> Edit</button>
+        <button class="btn btn-outline btn-sm" (click)="testPrint(printer)"><i class="bx bx-printer"></i> Test Print</button>
+        @if (!printer.isDefault) {
+          <button class="btn btn-outline btn-sm btn-set-default" (click)="setDefault(printer)"><i class="bx bx-star"></i> Set Default</button>
+        }
+        <button class="btn btn-outline btn-sm btn-remove" (click)="openRemoveModal(printer)"><i class="bx bx-trash"></i></button>
+      </div>
+
+    </div>
+  }
+
+  <div class="add-printer-card" (click)="openAddModal()">
+    <div class="apc-icon"><i class="bx bx-plus"></i></div>
+    <div class="apc-label">Add New Printer</div>
+    <div class="apc-sub">Connect via USB, LAN, Wi-Fi, or Cloud</div>
+  </div>
+</div>
+
+<div class="history-card">
+  <div class="history-head">
+    <div class="history-title"><i class="bx bx-history"></i> Recent Print Jobs</div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Job ID</th><th>Customer</th><th>Pages</th><th>Type</th><th>Duration</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (job of jobs; track job.id) {
+        <tr>
+          <td class="job-id-cell">{{ job.jobNumber }}</td>
+          <td>{{ job.customerName }}</td>
+          <td>{{ job.pages }}</td>
+          <td>
+            <span class="type-badge" [class.type-bw]="job.printType === 'B&W'" [class.type-color]="job.printType === 'Color'" [class.type-photo]="job.printType === 'Photo'">{{ job.printType }}</span>
+          </td>
+          <td class="duration-cell">{{ job.duration }}</td>
+          <td>
+            <span class="job-status-badge" [class.job-done]="job.status === 'done'" [class.job-printing]="job.status === 'printing'">{{ job.status === 'done' ? 'Completed' : job.status }}</span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div class="modal-title">{{ editingPrinter ? 'Edit Printer' : 'Add New Printer' }}</div>
+        <div class="modal-close" (click)="closeAddModal()"><i class="bx bx-x"></i></div>
+      </div>
+      <div class="modal-body">
+        <div class="section-divider">Printer Details</div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <div class="form-label">Printer Name <span class="req">*</span></div>
+            <input class="form-input" [(ngModel)]="form.name" placeholder="e.g. HP LaserJet #2" />
+          </div>
+          <div class="form-group">
+            <div class="form-label">Model / Make</div>
+            <input class="form-input" [(ngModel)]="form.model" placeholder="e.g. HP LaserJet M401n" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Printer Type</div>
+          <app-dropdown [options]="printerTypeOptions" [selected]="form.printerType" (selectionChange)="form.printerType = $event" variant="form"></app-dropdown>
+        </div>
+
+        <div class="section-divider">Connection</div>
+        <div class="form-label" style="margin-bottom:8px">Connection Type <span class="req">*</span></div>
+        <div class="conn-type-grid">
+          @for (ct of connectionTypes; track ct) {
+            <div class="ct-card" [class.selected]="connType === ct" (click)="selectConn(ct)">
+              <div class="ct-icon">
+                @switch (ct) {
+                  @case ('USB') { 🔌 }
+                  @case ('LAN') { 🔘 }
+                  @case ('Wi-Fi') { 🔲 }
+                  @case ('Cloud') { ☁️ }
+                }
+              </div>
+              <div class="ct-label">{{ ct }}</div>
+            </div>
+          }
+        </div>
+
+        @if (connType === 'LAN' || connType === 'Wi-Fi') {
+          <div class="form-grid-2" style="margin-top:12px">
+            <div class="form-group">
+              <div class="form-label">IP Address</div>
+              <input class="form-input" [(ngModel)]="form.ipAddress" placeholder="192.168.1.100" />
+            </div>
+            <div class="form-group">
+              <div class="form-label">Port</div>
+              <input class="form-input" [(ngModel)]="form.port" placeholder="9100" />
+            </div>
+          </div>
+        }
+
+        @if (connType === 'Cloud') {
+          <div class="form-group" style="margin-top:12px">
+            <div class="form-label">Cloud Print Service</div>
+            <input class="form-input" [(ngModel)]="form.cloudService" placeholder="e.g. HP Smart" />
+          </div>
+        }
+
+        <div class="section-divider">Queue Settings</div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <div class="form-label">Queue Priority</div>
+            <app-dropdown [options]="priorityOptions" [selected]="'' + form.priority" (selectionChange)="form.priority = +$event" variant="form"></app-dropdown>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Max Pages per Job</div>
+            <input class="form-input" [(ngModel)]="form.maxPagesPerJob" type="number" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Set as Default Printer</div>
+          <app-dropdown [options]="defaultPrinterOptions" [selected]="form.isDefault ? 'yes' : 'no'" (selectionChange)="form.isDefault = $event === 'yes'" variant="form"></app-dropdown>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="modal-cancel" (click)="closeAddModal()">Cancel</button>
+        <button class="modal-save" (click)="savePrinter()"><i class="bx bx-save"></i> Save Printer</button>
+      </div>
+    </div>
+  </div>
+}

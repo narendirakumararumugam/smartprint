@@ -32,10 +32,10 @@ export interface Shop {
   icon: string;
   badges: string[];
   isVerified: boolean;
-  services: string[];
-  gallery: string[];
-  prices: PriceItem[];
-  hours: WorkingHour[];
+  services?: string[];
+  gallery?: string[];
+  prices?: PriceItem[];
+  hours?: WorkingHour[];
   latitude?:number;
   longitude?:number;
   distanceKm?:number;

@@ -10,7 +10,7 @@ import { ToastService } from '../../../../core/services/toast.service';
   standalone: true,
   imports: [CommonModule, StarRatingComponent],
   templateUrl: './shop-card.component.html',
-  styleUrl: './shop-card.component.css'
+  styleUrl: './shop-card.component.css',
 })
 export class ShopCardComponent {
   @Input() shop!: Shop;
@@ -19,17 +19,28 @@ export class ShopCardComponent {
 
   savedSet = new Set<number>();
 
-  constructor(public _shopService: ShopService, private _toastService: ToastService) {}
+  constructor(
+    public _shopService: ShopService,
+    private _toastService: ToastService,
+  ) {}
 
   get visibleServices(): string[] {
-    return this.shop.services.slice(0, 3);
+    if (this.shop.services) {
+      return this.shop.services.slice(0, 3);
+    }
+    return [];
   }
 
   get extraServicesCount(): number {
-    return this.shop.services.length - 3;
+    if (this.shop.services) {
+      return this.shop.services.length - 3;
+    }
+    return 0;
   }
 
-  isSaved(id: number): boolean { return this.savedSet.has(id); }
+  isSaved(id: number): boolean {
+    return this.savedSet.has(id);
+  }
 
   toggleSave(event: MouseEvent): void {
     event.stopPropagation();
@@ -38,7 +49,10 @@ export class ShopCardComponent {
       this._toastService.show('Removed from favourites.', 'info');
     } else {
       this.savedSet.add(this.shop.id);
-      this._toastService.show(`${this.shop.name} saved to favourites!`, 'success');
+      this._toastService.show(
+        `${this.shop.name} saved to favourites!`,
+        'success',
+      );
     }
   }
 

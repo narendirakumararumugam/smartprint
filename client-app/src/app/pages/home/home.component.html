@@ -10,7 +10,7 @@
     <section class="featured-sec" *ngIf="featuredShops.length">
       <div class="sec-hd">
         <h2 class="sec-title">
-          <i class="bxs bx-hot" style="color:var(--accent)"></i>
+          <i class="bx bxs-hot" style="color:var(--accent)"></i>
           Featured Shops
         </h2>
         <span class="sec-sub">Highly rated near you</span>
@@ -27,7 +27,7 @@
     <section class="shops-sec">
       <div class="sec-hd">
         <h2 class="sec-title">
-          <i class="bxs bx-store" style="color:var(--primary)"></i>
+          <i class="bx bxs-store" style="color:var(--primary)"></i>
           All Print Shops
         </h2>
         <div class="sec-actions">
@@ -39,7 +39,7 @@
             </button>
             <button type="button" class="vt-btn" [class.active]="viewMode === 'map'"
               (click)="setViewMode('map')" role="tab" [attr.aria-selected]="viewMode === 'map'">
-              <i class="bx bx-location-alt"></i> Map
+              <i class="bx bx-map"></i> Map
             </button>
           </div>
         </div>
@@ -79,6 +79,7 @@
 <app-shop-modal
   *ngIf="isModalOpen && selectedShop"
   [shop]="selectedShop"
+  (proceedToOrder)="onProceedToOrder($event)"
   (closed)="closeModal()">
 </app-shop-modal>
 

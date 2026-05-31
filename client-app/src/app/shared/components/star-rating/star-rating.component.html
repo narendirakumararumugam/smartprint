@@ -1,7 +1,7 @@
 <div class="stars" [class.stars-lg]="size === 'lg'">
   <ng-container *ngFor="let state of rating | stars">
-    <i *ngIf="state === 'full'" class="fa-solid fa-star star f"></i>
-    <i *ngIf="state === 'half'" class="fa-solid fa-star-half-stroke star f"></i>
-    <i *ngIf="state === 'empty'" class="fa-regular fa-star star"></i>
+    <i *ngIf="state === 'full'" class="bx bxs-star f"></i>
+    <i *ngIf="state === 'half'" class="bx bxs-star-half star f"></i>
+    <i *ngIf="state === 'empty'" class="bx bx-star star"></i>
   </ng-container>
 </div>

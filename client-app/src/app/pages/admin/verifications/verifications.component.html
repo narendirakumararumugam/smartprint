@@ -1,0 +1,79 @@
+<app-admin-layout pageTitle="Shop Verifications" [pendingVerifications]="getPendingCount()">
+<div topbar-actions>
+    <span class="pending-badge">{{ getPendingCount() }} pending</span>
+</div>
+
+<div class="tabs-bar">
+    <button class="tab-btn" [class.active]="filterStatus === 'all'" (click)="filterStatus = 'all'; applyFilter()">All</button>
+    <button class="tab-btn" [class.active]="filterStatus === 'pending'" (click)="filterStatus = 'pending'; applyFilter()">Pending</button>
+    <button class="tab-btn" [class.active]="filterStatus === 'approved'" (click)="filterStatus = 'approved'; applyFilter()">Approved</button>
+    <button class="tab-btn" [class.active]="filterStatus === 'rejected'" (click)="filterStatus = 'rejected'; applyFilter()">Rejected</button>
+</div>
+
+<div class="verifications-grid">
+    @for (v of filteredList; track v.id) {
+    <div class="verification-card">
+        <div class="vc-header">
+            <div class="vc-icon"><i class="bx bx-store"></i></div>
+            <div class="vc-info">
+                <div class="vc-name">{{ v.shopName }}</div>
+                <div class="vc-owner">{{ v.ownerName }} • {{ v.city }}</div>
+            </div>
+            <span class="status-pill" [class]="getStatusClass(v.status)">{{ v.status }}</span>
+        </div>
+        
+        <div class="vc-services">
+            @for (s of v.services; track s) {
+                <span class="service-chip">{{ s }}</span>
+            }
+        </div>
+        
+        <div class="vc-footer">
+            <span class="vc-time"><i class="bx bx-time"></i> {{ v.submittedAt }}</span>
+            @if (v.status === 'pending') {
+                <button class="review-btn" (click)="openDetail(v)">Review</button>
+            }
+        </div>
+    </div>
+    }
+</div>
+
+@if (filteredList.length === 0) {
+    <div class="empty-state">
+        <i class="bx bx-check-shield"></i>
+        <p>No verification requests match this filter.</p>
+    </div>
+}
+
+@if (showModal && selectedItem) {
+    <div class="modal-overlay" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Review: {{ selectedItem.shopName }}</h3>
+                <button class="modal-close" (click)="closeModal()"><i class="bx bx-x"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="detail-row"><span class="dl">Owner</span><span>{{ selectedItem.ownerName }}</span></div>
+                <div class="detail-row"><span class="dl">Email</span><span>{{ selectedItem.ownerEmail }}</span></div>
+                <div class="detail-row"><span class="dl">City</span><span>{{ selectedItem.city }}</span></div>
+                <div class="detail-row"><span class="dl">Address</span><span>{{ selectedItem.address }}</span></div>
+                <div class="detail-row">
+                    <span class="dl">Services</span>
+                    <span>{{ selectedItem.services.join(', ') }}</span>
+                </div>
+                
+                <div class="reject-section">
+                    <label>Rejection reason (optional)</label>
+                    <textarea [(ngModel)]="rejectReason" placeholder="Enter reason if rejecting..."></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-reject" (click)="reject()"><i class="bx bx-x"></i> Reject</button>
+                <button class="btn-approve" (click)="approve()"><i class="bx bx-check"></i> Approve</button>
+            </div>
+        </div>
+    </div>
+}
+</app-admin-layout>

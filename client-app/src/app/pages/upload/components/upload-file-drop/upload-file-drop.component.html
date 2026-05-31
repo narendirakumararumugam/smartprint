@@ -53,7 +53,8 @@
     <div class="file-info">
       <div class="file-name">{{ file.name }}</div>
       <div class="file-meta">
-        {{ file.size }}&nbsp;•&nbsp;{{ file.pages }} pages
+        {{ file.size }}&nbsp;•&nbsp;{{ file.pages }}
+        {{ file.pages === 1 ? "page" : "pages" }}
       </div>
       <div class="file-progress" *ngIf="file.prog < 100">
         <div class="file-prog-fill" [style.width.%]="file.prog"></div>

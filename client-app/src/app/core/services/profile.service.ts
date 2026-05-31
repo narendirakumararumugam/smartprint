@@ -50,6 +50,6 @@ export class ProfileService {
   }
 
   changePassword(request: ChangePasswordRequest): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/change-password`, request);
+    return this.http.put<void>(`${this.baseUrl}/password`, request);
   }
 }

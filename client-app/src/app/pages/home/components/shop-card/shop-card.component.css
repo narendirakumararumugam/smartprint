@@ -1,0 +1,161 @@
+.shop-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all var(--transition);
+  animation: staggerIn .5s ease both;
+}
+
+.shop-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: transparent;
+}
+
+.shop-card:hover .cv-overlay { opacity: 1; }
+.shop-card:hover .cv-view { opacity: 1; transform: translateX(-50%) translateY(0); }
+.shop-card:hover .cv-img { transform: scale(1.06); }
+
+/* — Cover — */
+.card-cover { height: 184px; position: relative; overflow: hidden; }
+
+.cv-img {
+  width: 100%; height: 100%;
+  transition: transform .5s ease;
+}
+
+.cv-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,23,42,.75) 0%, rgba(15,23,42,.15) 50%, transparent 100%);
+  opacity: .55; transition: opacity var(--transition);
+}
+
+.cv-badges {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; gap: 5px; flex-wrap: wrap;
+}
+
+.badge {
+  padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 600; backdrop-filter: blur(8px);
+  display: flex; align-items: center; gap: 5px;
+}
+
+.b-open { background: rgba(16,185,129,.85); color: #fff; }
+.b-closed { background: rgba(239,68,68,.85); color: #fff; }
+.b-top { background: rgba(245,158,11,.9); color: #fff; animation: pulseBadge 2s infinite; }
+.b-new { background: rgba(124,58,237,.85); color: #fff; }
+.b-blue { background: rgba(37,99,235,.82); color: #fff; }
+
+.cv-dist {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(15,23,42,.65); backdrop-filter: blur(8px);
+  color: #fff; padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 11.5px; font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+}
+
+.cv-view {
+  position: absolute; bottom: 12px; left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #fff; color: var(--primary);
+  padding: 7px 20px; border-radius: var(--radius-full);
+  font-size: 13px; font-weight: 600;
+  opacity: 0; transition: all var(--transition);
+  white-space: nowrap; display: flex; align-items: center; gap: 6px;
+}
+
+/* — Body — */
+.card-body { padding: 16px 18px 18px; }
+
+.ch {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.c-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.c-name .vi { color: var(--primary); font-size: 13px; }
+
+.c-fav {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--bg-page);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-400); font-size: 14px; flex-shrink: 0;
+  transition: all var(--transition-fast);
+  border: none; cursor: pointer; font-family: inherit;
+}
+
+.c-fav:hover { background: #fef2f2; color: var(--danger); transform: scale(1.1); }
+.c-fav:active { background: #fef2f2; color: var(--danger); }
+
+.c-addr {
+  font-size: 12.5px; color: var(--text-500);
+  display: flex; align-items: flex-start; gap: 5px;
+  margin-bottom: 9px;
+  overflow: hidden;
+
+  & i{
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  & .addr-text{
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.c-rat {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 11px;
+}
+
+.rat-score { font-size: 13.5px; font-weight: 700; }
+.rat-cnt { font-size: 12px; color: var(--text-400); }
+
+.c-svcs {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin-bottom: 13px;
+}
+
+.svc-chip {
+  padding: 3px 10px; background: var(--primary-light);
+  color: var(--primary); border-radius: var(--radius-full);
+  font-size: 11.5px; font-weight: 500;
+}
+
+.svc-chip.more { background: var(--bg-page); color: var(--text-500); }
+
+.c-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px; border-top: 1px solid var(--border);
+}
+
+.c-price {
+  font-size: 12.5px; color: var(--text-500);
+}
+
+.c-price strong { color: var(--success); font-size: 14px; font-weight: 700; }
+
+.price-na{
+    font-size: 12px;
+    color: var(--text-400);
+    font-style: italic;
+}
+
+.c-wait {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--text-500);
+}
+
+.c-wait i { color: var(--accent); }

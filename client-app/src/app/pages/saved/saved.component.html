@@ -102,14 +102,14 @@
             <div class="card-logo" [style.background]="shop.gradient">{{ shop.icon }}</div>
             <div>
               <div class="card-name">{{ shop.name }}</div>
-              <div class="card-addr"><i class="bx bx-location-alt" style="color:var(--text-danger);font-size:10px;"></i> {{ shop.address }}</div>
+              <div class="card-addr"><i class="bx bx-map" style="color:var(--text-danger);font-size:10px;"></i> {{ shop.address }}</div>
             </div>
           </div>
           
           <div class="card-meta">
             <div class="meta-pill"><i class="bx bxs-star" style="color:var(--accent)"></i> {{ shop.rating }} <span style="color:var(--text-300)">({{ shop.reviews }})</span></div>
-            <div class="meta-pill"><i class="bx bx-location-alt" style="color:var(--text-danger)"></i> {{ shop.distance }} km</div>
-            <div class="meta-pill"><i class="bx bx-time-five" style="color:var(--primary)"></i> {{ shop.wait }} mins</div>
+            <div class="meta-pill"><i class="bx bx-map" style="color:var(--text-danger)"></i> {{ shop.distance }} km</div>
+            <div class="meta-pill"><i class="bx bx-time" style="color:var(--primary)"></i> {{ shop.wait }} mins</div>
           </div>
           
           <div class="card-services">
@@ -130,7 +130,7 @@
               <i class="bx bx-printer"></i> Print Here
             </a>
             <button class="ca-btn ghost" (click)="openModal(shop); $event.stopPropagation()">
-              <i class="bx bx-show"></i> Details
+              <i class="bx bx-eye"></i> Details
             </button>
             <button class="ca-btn remove" (click)="unsaveShop(shop, $event)" title="Remove">
               <i class="bx bx-trash"></i>
@@ -148,11 +148,11 @@
         
         <div class="lc-info">
           <div class="lc-name">{{ shop.name }}</div>
-          <div class="lc-addr"><i class="bx bx-location-alt" style="color:var(--text-danger);font-size:10px;"></i> {{ shop.address }}</div>
+          <div class="lc-addr"><i class="bx bx-map" style="color:var(--text-danger);font-size:10px;"></i> {{ shop.address }}</div>
           <div class="lc-meta">
             <span class="meta-pill"><i class="bx bxs-star" style="color:var(--accent)"></i> {{ shop.rating }}</span>
-            <span class="meta-pill"><i class="bx bx-location-alt" style="color:var(--text-danger)"></i> {{ shop.distance }} km</span>
-            <span class="meta-pill"><i class="bx bx-time-five" style="color:var(--primary)"></i> {{ shop.wait }} mins</span>
+            <span class="meta-pill"><i class="bx bx-map" style="color:var(--text-danger)"></i> {{ shop.distance }} km</span>
+            <span class="meta-pill"><i class="bx bx-time" style="color:var(--primary)"></i> {{ shop.wait }} mins</span>
             <span [style.color]="shop.isOpen ? 'var(--success)' : 'var(--text-danger)'" style="font-size:12px;font-weight:600">
               • {{ shop.isOpen ? 'Open' : 'Closed' }}
             </span>
@@ -164,7 +164,7 @@
         
         <div class="lc-actions">
           <a class="ca-btn primary btn-sm" routerLink="/customer/upload" (click)="$event.stopPropagation()"><i class="bx bx-printer"></i> Print</a>
-          <button class="ca-btn ghost btn-sm" (click)="openModal(shop); $event.stopPropagation()"><i class="bx bx-show"></i></button>
+          <button class="ca-btn ghost btn-sm" (click)="openModal(shop); $event.stopPropagation()"><i class="bx bx-eye"></i></button>
           <button class="ca-btn ghost btn-sm" style="color:var(--text-danger)" (click)="unsaveShop(shop, $event)"><i class="bx bx-heart"></i></button>
         </div>
       </div>
@@ -200,7 +200,7 @@
       <div class="sm-logo" [style.background]="selectedShop.gradient">{{ selectedShop.icon }}</div>
       <div>
         <div class="sm-name">{{ selectedShop.name }}</div>
-        <div class="sm-addr"><i class="bx bx-location-alt" style="color:var(--danger);font-size:11px"></i> {{ selectedShop.address }}</div>
+        <div class="sm-addr"><i class="bx bx-map" style="color:var(--danger);font-size:11px"></i> {{ selectedShop.address }}</div>
       </div>
     </div>
 
@@ -241,7 +241,7 @@
       </div>
 
       <div class="sm-section">
-        <div class="sm-sec-title"><i class="bx bx-time-five"></i> Operating Hours</div>
+        <div class="sm-sec-title"><i class="bx bx-time"></i> Operating Hours</div>
         <div class="sm-hours-grid">
           <div *ngFor="let entry of selectedShop.hours | keyvalue" class="sm-hour-row" [class.today]="entry.key === getTodayKey()">
             <span class="day">{{ entry.key === getTodayKey() ? entry.key + ' (Today)' : entry.key }}</span>
@@ -260,7 +260,7 @@
         <a routerLink="/customer/upload" style="flex:1">
           <button class="btn btn-primary" style="width:100%"><i class="bx bx-printer"></i> Print at This Shop</button>
         </a>
-        <button class="btn btn-ghost" (click)="shareShop(selectedShop)"><i class="bx bx-share-alt"></i> Share</button>
+        <button class="btn btn-ghost" (click)="shareShop(selectedShop)"><i class="bx bx-share"></i> Share</button>
         <button class="btn btn-ghost" style="color:var(--danger)" (click)="closeModal(); unsaveShop(selectedShop)">
           <i class="bx bx-heart"></i> Unsave
         </button>

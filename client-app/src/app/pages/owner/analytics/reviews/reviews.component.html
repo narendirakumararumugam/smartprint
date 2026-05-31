@@ -1,0 +1,88 @@
+<ng-template #topbarActions>
+  @if (unrepliedCount > 0) {
+    <span class="unreplied-badge">{{ unrepliedCount }} unreplied</span>
+  }
+  <button class="top-btn"><i class="bx bx-download"></i> Export</button>
+</ng-template>
+
+<div class="reviews-content">
+  <div class="stats-grid">
+    @for (s of stats; track s.label) {
+      <app-stat-card
+        [icon]="s.icon" [iconBg]="s.iconBg" [iconColor]="s.iconColor"
+        [label]="s.label" [value]="s.value" [trend]="s.trend" [trendUp]="s.trendUp"
+      />
+    }
+  </div>
+
+  <div class="grid-sidebar">
+    <div class="dist-card">
+      <app-chart-card title="Rating Distribution">
+        <div class="overall-rating">
+          <div class="overall-val">4.6</div>
+          <div class="overall-stars">
+            @for (s of getStarsArray(5); track $index) {
+              <i class="bx bxs-star" [class.dim]="$index >= 4"></i>
+            }
+          </div>
+          <div class="overall-count">186 reviews</div>
+        </div>
+
+        <div class="dist-list">
+          @for (d of ratingDistribution; track d.stars) {
+            <button class="dist-row" [class.active]="filterRating === d.stars" (click)="setFilter(d.stars)">
+              <span class="dist-stars">{{ d.stars }} <i class="bx bxs-star"></i></span>
+              <div class="dist-bar-track">
+                <div class="dist-bar-fill" [style.width.%]="d.percent"></div>
+              </div>
+              <span class="dist-count">{{ d.count }}</span>
+            </button>
+          }
+        </div>
+      </app-chart-card>
+    </div>
+
+    <div class="reviews-list">
+      @for (review of filteredReviews; track review.id) {
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-user">
+              <div class="review-avatar" [style.background]="review.bg">{{ review.avatar }}</div>
+              <div>
+                <div class="review-name">{{ review.customer }}</div>
+                <div class="review-date">{{ review.date }}</div>
+              </div>
+            </div>
+            <div class="review-stars">
+              @for (s of getStarsArray(review.rating); track $index) {
+                <i class="bx bxs-star" [class.filled]="s === 1" [class.empty]="s === 0"></i>
+              }
+            </div>
+          </div>
+          <div class="review-comment">{{ review.comment }}</div>
+
+          @if (review.replied && review.reply) {
+            <div class="review-reply">
+              <div class="reply-label"><i class="bx bx-reply"></i> Your Reply</div>
+              <div class="reply-text">{{ review.reply }}</div>
+            </div>
+          }
+
+          @if (!review.replied && replyingTo !== review.id) {
+            <button class="reply-btn" (click)="startReply(review.id)"><i class="bx bx-reply"></i> Reply</button>
+          }
+
+          @if (replyingTo === review.id) {
+            <div class="reply-form">
+              <textarea class="reply-input" [(ngModel)]="replyText" placeholder="Write your reply..." rows="3"></textarea>
+              <div class="reply-actions">
+                <button class="btn-cancel" (click)="cancelReply()">Cancel</button>
+                <button class="btn-send" (click)="submitReply(review)"><i class="bx bx-send"></i> Send</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -41,7 +41,7 @@
 </div>
 <div class="sec-card" *ngIf="activeSection === 'addresses'">
     <div class="sc-header">
-        <div class="sc-title"><i class="bx bx-location-alt blue"></i> Saved Addresses</div>
+        <div class="sc-title"><i class="bx bx-map blue"></i> Saved Addresses</div>
         <button class="btn btn-primary btn-sm" (click)="addAddress.emit()"><i class="bx bx-plus"></i> Add New</button>
     </div>
     <div class="sc-body">
@@ -50,7 +50,7 @@
                 *ngFor="let addr of addresses; trackBy: trackByAddress"
                 [class.default-addr]="addr.isDefault">
                 <div class="addr-type">
-                    <i class="bx bx-location-alt"></i> {{ addr.type }}
+                    <i class="bx bx-map"></i> {{ addr.type }}
                     <span class="default-badge" *ngIf="addr.isDefault">Default</span>
                 </div>
                 <div class="addr-name">{{ addr.name }}</div>
@@ -76,7 +76,7 @@
 
 <ng-template #emptyAddr>
     <div class="empty-state">
-        <div class="empty-icon"><i class="bx bx-location-alt"></i></div>
+        <div class="empty-icon"><i class="bx bx-map"></i></div>
         <div class="empty-title">No saved addresses yet</div>
         <div class="empty-sub">Add an address to speed up your next print order.</div>
         <button class="btn btn-primary btn-sm" style="margin-top:14px;" (click)="addAddress.emit()">
@@ -87,7 +87,7 @@
 
 <div class="sec-card" *ngIf="activeSection === 'security'">
     <div class="sc-header">
-        <div class="sc-title"><i class="bx bx-shield green"></i> Security Settings</div>
+        <div class="sc-title"><i class="bx bxs-shield green"></i> Security Settings</div>
     </div>
     <div class="sc-body">
         <div class="security-item" *ngFor="let item of securityItems; trackBy: trackByIdx">
@@ -130,8 +130,8 @@
 
 <div class="sec-card" *ngIf="activeSection === 'favourites'">
     <div class="sc-header">
-        <div class="sc-title"><i class="bxf bx-heart" style="color:var(--danger)"></i> Favourite Shops</div>
-        <a routerLink="/"><button class="btn btn-ghost btn-sm"><i class="bxf bx-store"></i> Explore Shops</button></a>
+        <div class="sc-title"><i class="bx bxs-heart" style="color:var(--danger)"></i> Favourite Shops</div>
+        <a routerLink="/"><button class="btn btn-ghost btn-sm"><i class="bx bxs-store"></i> Explore Shops</button></a>
     </div>
     <div class="sc-body">
         <div class="fav-shop-row" *ngFor="let shop of favShops; let i = index; trackBy: trackByIdx">

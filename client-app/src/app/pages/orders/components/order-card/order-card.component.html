@@ -69,7 +69,7 @@
 
   <div class="oc-footer">
     <div class="oc-date">
-      <i class="bx bx-time-five"></i>
+      <i class="bx bx-time"></i>
       <span
         *ngIf="order.status === 'ready'"
         style="color: var(--success); font-weight: 600"
@@ -91,7 +91,7 @@
         class="oc-btn oc-btn-outline"
         (click)="viewOrder.emit(order); $event.stopPropagation()"
       >
-        <i class="bx bx-show"></i> View
+        <i class="bx bx-eye"></i> View
       </button>
       <button
         class="oc-btn oc-btn-success"

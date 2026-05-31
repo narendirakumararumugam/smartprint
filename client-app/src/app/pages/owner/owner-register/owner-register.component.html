@@ -1,0 +1,785 @@
+<app-owner-auth-layout>
+  <div class="owner-badge">
+    <i class="bx bx-store"></i> Shop Owner Registration
+  </div>
+
+  <div class="stepper" *ngIf="!showSuccess">
+    <div class="st-step">
+      <div
+        class="st-circle"
+        [class.active]="currentStep === 1"
+        [class.done]="currentStep > 1"
+      >
+        <i class="bx bx-check" *ngIf="currentStep > 1"></i>
+        <span *ngIf="currentStep <= 1">1</span>
+      </div>
+      <span
+        class="st-label"
+        [class.active]="currentStep === 1"
+        [class.done]="currentStep > 1"
+        >Account</span
+      >
+    </div>
+    <div class="st-line" [class.done]="currentStep > 1"></div>
+
+    <div class="st-step">
+      <div
+        class="st-circle"
+        [class.active]="currentStep === 2"
+        [class.done]="currentStep > 2"
+      >
+        <i class="bx bx-check" *ngIf="currentStep > 2"></i>
+        <span *ngIf="currentStep <= 2">2</span>
+      </div>
+      <span
+        class="st-label"
+        [class.active]="currentStep === 2"
+        [class.done]="currentStep > 2"
+        >Shop Details</span
+      >
+    </div>
+    <div class="st-line" [class.done]="currentStep > 2"></div>
+
+    <div class="st-step">
+      <div
+        class="st-circle"
+        [class.active]="currentStep === 3"
+        [class.done]="currentStep > 3"
+      >
+        <i class="bx bx-check" *ngIf="currentStep > 3"></i>
+        <span *ngIf="currentStep <= 3">3</span>
+      </div>
+      <span
+        class="st-label"
+        [class.active]="currentStep === 3"
+        [class.done]="currentStep > 3"
+        >Setup</span
+      >
+    </div>
+  </div>
+
+  <div class="step-panel" [class.active]="currentStep === 1 && !showSuccess">
+    <div class="step-header">
+      <div class="step-badge teal"><i class="bx bx-user"></i> Step 1 of 3</div>
+      <h2 class="step-heading">Create your owner account</h2>
+      <p class="step-sub">
+        Already registered? <a routerLink="/login">Sign in to your dashboard</a>
+      </p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="fg-label">First Name</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-user"></i>
+          <input
+            class="form-input"
+            [class.error]="hasError('firstName')"
+            type="text"
+            [(ngModel)]="firstName"
+            (input)="clearError('firstName')"
+            placeholder="Suresh"
+          />
+        </div>
+        <div class="field-error" *ngIf="hasError('firstName')">
+          <i class="bx bx-alert-circle"></i> {{ errors["firstName"] }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="fg-label">Last Name</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-user"></i>
+          <input
+            class="form-input"
+            [class.error]="hasError('lastName')"
+            type="text"
+            [(ngModel)]="lastName"
+            (input)="clearError('lastName')"
+            placeholder="Kumar"
+          />
+        </div>
+        <div class="field-error" *ngIf="hasError('lastName')">
+          <i class="bx bx-alert-circle"></i> {{ errors["lastName"] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Business Email</label>
+      <div class="input-wrap">
+        <i class="input-icon bx bx-envelope"></i>
+        <input
+          class="form-input"
+          [class.error]="hasError('email')"
+          type="email"
+          [(ngModel)]="email"
+          (input)="clearError('email')"
+          placeholder="owner@myshop.com"
+        />
+      </div>
+      <div class="field-error" *ngIf="hasError('email')">
+        <i class="bx bx-alert-circle"></i> {{ errors["email"] }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="fg-label">Mobile Number</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-phone"></i>
+          <input
+            class="form-input"
+            [class.error]="hasError('phone')"
+            type="tel"
+            [(ngModel)]="phone"
+            (input)="clearError('phone')"
+            placeholder="+91 98765 43210"
+          />
+        </div>
+        <div class="field-error" *ngIf="hasError('phone')">
+          <i class="bx bx-alert-circle"></i> {{ errors["phone"] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Password</label>
+      <div class="input-wrap">
+        <i class="input-icon bx bx-lock"></i>
+        <input
+          class="form-input"
+          [class.error]="hasError('password')"
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="password"
+          (input)="clearError('password')"
+          placeholder="Create a strong password"
+        />
+        <span class="pw-toggle" (click)="showPassword = !showPassword">
+          <i
+            class="bx"
+            [class.bx-eye-slash]="!showPassword"
+            [class.bx-eye]="showPassword"
+          ></i>
+        </span>
+      </div>
+      <div class="pw-strength" *ngIf="password">
+        <div class="pws-bars">
+          <div
+            class="pws-bar"
+            *ngFor="let i of [1, 2, 3, 4]"
+            [class]="i <= passwordStrength.level ? passwordStrength.cls : ''"
+          ></div>
+        </div>
+        <div class="pws-txt" [class]="passwordStrength.cls">
+          {{ passwordStrength.label }}
+        </div>
+      </div>
+      <div class="field-error" *ngIf="hasError('password')">
+        <i class="bx bx-alert-circle"></i> {{ errors["password"] }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Confirm Password</label>
+      <div class="input-wrap">
+        <i class="input-icon bx bx-lock"></i>
+        <input
+          class="form-input"
+          [class.error]="hasError('confirmPassword')"
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          [(ngModel)]="confirmPassword"
+          (input)="clearError('confirmPassword')"
+          placeholder="Re-enter password"
+        />
+        <span
+          class="pw-toggle"
+          (click)="showConfirmPassword = !showConfirmPassword"
+        >
+          <i
+            class="bx"
+            [class.bx-eye-slash]="!showConfirmPassword"
+            [class.bx-eye]="showConfirmPassword"
+          ></i>
+        </span>
+      </div>
+      <div class="field-error" *ngIf="hasError('confirmPassword')">
+        <i class="bx bx-alert-circle"></i> {{ errors["confirmPassword"] }}
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" (click)="nextStep()">
+        <i class="bx bx-store"></i> Continue to Shop Details
+        <i class="bx bx-right-arrow-alt"></i>
+      </button>
+    </div>
+    <div class="signin-row">
+      Already a partner? <a routerLink="/owner/dashboard">Go to Dashboard</a>
+    </div>
+  </div>
+
+  <div class="step-panel" [class.active]="currentStep === 2 && !showSuccess">
+    <div class="step-header">
+      <div class="step-badge teal"><i class="bx bx-store"></i> Step 2 of 3</div>
+      <h2 class="step-heading">Tell us about your shop</h2>
+      <p class="step-sub">
+        This info is shown to customers searching for print shops nearby.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Shop Name</label>
+      <div class="input-wrap">
+        <i class="input-icon bx bx-store"></i>
+        <input
+          class="form-input"
+          [class.error]="hasError('shopName')"
+          type="text"
+          [(ngModel)]="shopName"
+          (input)="clearError('shopName')"
+          placeholder="e.g. QuickPrint Express"
+        />
+      </div>
+      <div class="field-error" *ngIf="hasError('shopName')">
+        <i class="bx bx-alert-circle"></i> {{ errors["shopName"] }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label"
+        >Shop Tagline <span class="opt">(optional)</span></label
+      >
+      <div class="input-wrap">
+        <i class="input-icon bx bx-quote-left"></i>
+        <input
+          class="form-input"
+          type="text"
+          [(ngModel)]="tagline"
+          placeholder="e.g. Fast prints, always on time"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Full Address</label>
+      <div class="input-wrap">
+        <i class="input-icon top bx bx-map"></i>
+        <textarea
+          class="form-textarea"
+          [class.error]="hasError('address')"
+          [(ngModel)]="address"
+          (input)="clearError('address')"
+          placeholder="Shop No., Street, Area, City, PIN"
+        ></textarea>
+      </div>
+      <div class="field-error" *ngIf="hasError('address')">
+        <i class="bx bx-alert-circle"></i> {{ errors["address"] }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="fg-label">City</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-buildings"></i>
+          <input
+            class="form-input"
+            [class.error]="hasError('city')"
+            type="text"
+            [(ngModel)]="city"
+            (input)="clearError('city')"
+            placeholder="New Delhi"
+          />
+        </div>
+        <div class="field-error" *ngIf="hasError('city')">
+          <i class="bx bx-alert-circle"></i> {{ errors["city"] }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="fg-label">PIN Code</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-map-pin"></i>
+          <input
+            class="form-input"
+            [class.error]="hasError('pinCode')"
+            type="text"
+            [(ngModel)]="pinCode"
+            (input)="clearError('pinCode')"
+            placeholder="110001"
+            maxlength="6"
+          />
+        </div>
+        <div class="field-error" *ngIf="hasError('pinCode')">
+          <i class="bx bx-alert-circle"></i> {{ errors["pinCode"] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Pin Your Shop on the Map</label>
+      <app-inline-map-picker
+        [initialCenter]="{ lat: 26.1445, lng: 91.7362 }"
+        height="320px"
+        (locationPicked)="onLocationPicked($event)"
+      ></app-inline-map-picker>
+      <div class="field-hint" *ngIf="latitude != null && longitude != null">
+        <i class="bx bxs-map-pin" style="color: #16a34a"></i> Pinned at
+        <strong>{{ latitude.toFixed(5) }}, {{ longitude.toFixed(5) }}</strong>
+      </div>
+      <div class="field-error" *ngIf="hasError('location')">
+        <i class="bx bx-alert-circle"></i> {{ errors["location"] }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label" style="margin-bottom: 10px"
+        >Services Offered
+        <span class="opt">(select all that apply)</span></label
+      >
+      <div class="service-grid">
+        <div
+          class="svc-chip"
+          *ngFor="let svc of services; trackBy: trackByIndex"
+          [class.selected]="svc.selected"
+          (click)="toggleService(svc)"
+        >
+          <i [class]="svc.icon"></i> {{ svc.label }}
+        </div>
+      </div>
+      <div class="field-error" *ngIf="hasError('services')">
+        <i class="bx bx-alert-circle"></i> {{ errors["services"] }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label" style="margin-bottom: 10px"
+        >Operating Hours</label
+      >
+      <div class="hours-grid">
+        <div
+          class="hour-row"
+          *ngFor="let h of hours; let i = index; trackBy: trackByIndex"
+        >
+          <span class="hour-day">{{ getDayShort(h.day) }}</span>
+          <input
+            class="hour-input"
+            type="time"
+            [(ngModel)]="h.open"
+            [disabled]="h.isClosed"
+          />
+          <span class="hour-sep">-</span>
+          <input
+            class="hour-input"
+            type="time"
+            [(ngModel)]="h.close"
+            [disabled]="h.isClosed"
+          />
+          <label class="toggle-sm">
+            <input
+              type="checkbox"
+              [checked]="h.isClosed"
+              (change)="toggleDayClosed(h)"
+            />
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+      </div>
+      <div class="field-hint">
+        <i class="bx bx-info-circle"></i> Toggle closed days on the right.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label">Pricing (per page, ₹)</label>
+      <div class="pricing-table">
+        <div class="pt-header">
+          <span>Type</span><span>B&W</span><span>Color</span>
+        </div>
+
+        <div class="pt-row">
+          <span class="pt-label">A4 Single Side</span>
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a4BWSingle"
+          />
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a4ColorSingle"
+          />
+        </div>
+
+        <div class="pt-row">
+          <span class="pt-label">A4 Double Side</span>
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a4BWDouble"
+          />
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a4ColorDouble"
+          />
+        </div>
+
+        <div class="pt-row">
+          <span class="pt-label">A3</span>
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a3BW"
+          />
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.a3Color"
+          />
+        </div>
+
+        <div class="pt-row">
+          <span class="pt-label">Photo Print</span>
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.photoBW"
+          />
+          <input
+            class="pt-input"
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="pricing.photoColor"
+          />
+        </div>
+      </div>
+      <div class="field-hint">Customers see these rates on your shop card.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" (click)="prevStep()">
+        <i class="bx bx-left-arrow-alt"></i> Back
+      </button>
+      <button class="btn-next" (click)="nextStep()">
+        Continue to Setup <i class="bx bx-right-arrow-alt"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="step-panel" [class.active]="currentStep === 3 && !showSuccess">
+    <div class="step-header">
+      <div class="step-badge teal"><i class="bx bx-cog"></i> Step 3 of 3</div>
+      <h2 class="step-heading">Printer & approval setup</h2>
+      <p class="step-sub">
+        Configure how orders are handled and connect your printer.
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label" style="margin-bottom: 12px"
+        >Order Approval Mode</label
+      >
+
+      <div
+        class="auto-card"
+        [class.selected]="approvalMode === 'manual'"
+        (click)="selectApprovalMode('manual')"
+      >
+        <div class="ac-header">
+          <div class="ac-left">
+            <div class="ac-icon" style="background: #fef3c7; color: #d97706">
+              <i class="bx bx-hand"></i>
+            </div>
+            <div class="ac-title">Manual Approval</div>
+            <div class="ac-desc">
+              You review each order and approve or reject it before printing
+              begins.
+            </div>
+          </div>
+          <div
+            class="radio-dot"
+            [class.selected]="approvalMode === 'manual'"
+          ></div>
+        </div>
+        <div class="ac-features">
+          <span class="ac-feat amber"
+            ><i class="bx bx-eye"></i> Full control</span
+          >
+          <span class="ac-feat amber"
+            ><i class="bx bx-time"></i> Review before print</span
+          >
+          <span class="ac-feat amber"
+            ><i class="bx bx-block"></i> Can reject orders</span
+          >
+        </div>
+      </div>
+
+      <div
+        class="auto-card"
+        [class.selected]="approvalMode === 'auto'"
+        (click)="selectApprovalMode('auto')"
+      >
+        <div class="ac-header">
+          <div class="ac-left">
+            <div class="ac-icon" style="background: #d1fae5; color: #059669">
+              <i class="bx bx-bolt-circle"></i>
+            </div>
+            <div class="ac-title">
+              Auto-Approval <span class="recommended-tag">Recommended</span>
+            </div>
+            <div class="ac-desc">
+              Orders are automatically approved and files are sent directly to
+              your connected printer.
+            </div>
+          </div>
+          <div
+            class="radio-dot"
+            [class.selected]="approvalMode === 'auto'"
+          ></div>
+        </div>
+        <div class="ac-features">
+          <span class="ac-feat green"
+            ><i class="bx bx-bolt-circle"></i> Instant print</span
+          >
+          <span class="ac-feat green"
+            ><i class="bx bx-printer"></i> Direct to printer</span
+          >
+          <span class="ac-feat green"
+            ><i class="bx bx-time"></i> Zero wait time</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="approvalMode === 'auto'" class="auto-extras">
+      <div class="printer-card">
+        <div class="pc-title">
+          <i class="bx bx-printer"></i> Connected Printer
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom: 0">
+            <label class="fg-label">Printer Make / Model</label>
+            <div class="input-wrap">
+              <i class="input-icon bx bx-printer"></i>
+              <input
+                class="form-input"
+                type="text"
+                [(ngModel)]="printerModel"
+                placeholder="e.g. HP LaserJet M401n"
+              />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0">
+            <label class="fg-label">Connection Type</label>
+            <div class="input-wrap">
+              <i class="input-icon bx bx-network-chart"></i>
+              <app-dropdown
+                [options]="connectionTypeOptions"
+                [selected]="printerConnection"
+                (selectionChange)="printerConnection = $event"
+                variant="form"
+                placeholder="Select..."
+              ></app-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px">
+          <label class="fg-label"
+            >IP Address / Hostname
+            <span class="opt">(for network printers)</span></label
+          >
+          <div class="input-wrap">
+            <i class="input-icon bx bx-server"></i>
+            <input
+              class="form-input"
+              type="text"
+              [(ngModel)]="printerIP"
+              placeholder="e.g. 192.168.1.50 or DESKTOP-HP"
+            />
+          </div>
+        </div>
+        <div class="field-hint" style="margin-top: 8px">
+          <i class="bx bx-info-circle"></i> You can add and configure printers
+          in detail from the Owner Dashboard later.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="fg-label">Maximum file size per order</label>
+        <div class="input-wrap">
+          <i class="input-icon bx bx-cloud-upload"></i>
+          <app-dropdown
+            [options]="fileSizeOptions"
+            [selected]="maxFileSize"
+            (selectionChange)="maxFileSize = $event"
+            variant="form"
+          ></app-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="fg-label" style="margin-bottom: 12px"
+        >Order Notification Channels</label
+      >
+      <div class="notif-list">
+        <div class="notif-row">
+          <div class="notif-left">
+            <div class="notif-icon" style="background: #dbeafe; color: #2563eb">
+              <i class="bx bx-envelope"></i>
+            </div>
+            <div>
+              <div class="notif-title">Email Alerts</div>
+              <div class="notif-sub">Receive order notifications via email</div>
+            </div>
+          </div>
+          <label class="toggle-lg">
+            <input type="checkbox" [(ngModel)]="notifications.email" />
+            <div class="tl-track"></div>
+            <div class="tl-thumb"></div>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-left">
+            <div class="notif-icon" style="background: #fef9c3; color: #ca8a04">
+              <i class="bx bx-bell"></i>
+            </div>
+            <div>
+              <div class="notif-title">Browser Push</div>
+              <div class="notif-sub">
+                Desktop notifications when dashboard is open
+              </div>
+            </div>
+          </div>
+          <label class="toggle-lg">
+            <input type="checkbox" [(ngModel)]="notifications.push" />
+            <div class="tl-track"></div>
+            <div class="tl-thumb"></div>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-left">
+            <div class="notif-icon" style="background: #f3e8ff; color: #7c3aed">
+              <i class="bx bx-bar-chart-big"></i>
+            </div>
+            <div>
+              <div class="notif-title">Daily Summary</div>
+              <div class="notif-sub">End-of-day revenue and order report</div>
+            </div>
+          </div>
+          <label class="toggle-lg">
+            <input type="checkbox" [(ngModel)]="notifications.dailySummary" />
+            <div class="tl-track"></div>
+            <div class="tl-thumb"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="terms-row">
+      <label class="custom-check">
+        <input
+          type="checkbox"
+          [(ngModel)]="agreeTerms"
+          (change)="clearError('terms')"
+        />
+        <div class="check-box"></div>
+        <span class="check-label"
+          >I agree to SmartPrint's <a href="#">Partner Terms</a>,
+          <a href="#">Privacy Policy</a> and confirm that I am the authorised
+          owner of this business.</span
+        >
+      </label>
+    </div>
+
+    <div
+      class="field-error"
+      *ngIf="hasError('terms')"
+      style="margin-top: -8px; margin-bottom: 14px"
+    >
+      <i class="bx bx-alert-circle"></i> {{ errors["terms"] }}
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" (click)="prevStep()">
+        <i class="bx bx-left-arrow-alt"></i> Back
+      </button>
+      <button
+        class="btn-next"
+        [class.loading]="isLoading"
+        (click)="submit()"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading"
+          ><i class="bx bx-rocket"></i> Launch My Shop</span
+        >
+        <span *ngIf="isLoading" class="loader-text"
+          ><i class="bx bx-loader-alt bx-spin"></i> Setting up...</span
+        >
+      </button>
+    </div>
+  </div>
+
+  <div class="success-screen" *ngIf="showSuccess">
+    <div class="success-icon"><i class="bx bx-store"></i></div>
+    <div class="success-title">{{ registeredShopName }} is live! 🎉</div>
+    <div class="success-sub">
+      Your shop is now live on SmartPrint. Here's what happens next:
+    </div>
+    <div class="success-next">
+      <div class="sn-item">
+        <div class="sn-num">1</div>
+        <div class="sn-text">
+          Verification in progress
+          <div class="sn-sub">
+            Our team reviews your listing - usually within 2 hours
+          </div>
+        </div>
+      </div>
+      <div class="sn-item">
+        <div class="sn-num">2</div>
+        <div class="sn-text">
+          Shop goes live on the map
+          <div class="sn-sub">
+            Customers nearby can discover and order from you
+          </div>
+        </div>
+      </div>
+      <div class="sn-item" *ngIf="approvalMode === 'auto'">
+        <div class="sn-num">3</div>
+        <div class="sn-text">
+          Printer sync underway
+          <div class="sn-sub">
+            Auto-approval is enabled - test print coming your way shortly
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-dashboard" (click)="goToDashboard()">
+      <i class="bx bx-tachometer"></i> Open Owner Dashboard
+    </button>
+  </div>
+  <app-toast-container></app-toast-container>
+</app-owner-auth-layout>

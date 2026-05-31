@@ -6,20 +6,43 @@
         <i class="bx bx-x"></i>
       </button>
     </div>
-  </div>
+    <div class="picker-body">
+      <app-inline-map-picker
+        [initialCenter]="initialCenter"
+        height="360px"
+        (locationPicked)="onLocationPicked($event)"
+      ></app-inline-map-picker>
+    </div>
+    <div class="picker-footer">
+      <div class="picker-pin-info" *ngIf="pendingLocation; else placeholder">
+        <i class="bx bx-map"></i>
+        <div class="pin-text">
+          <div class="pin-short">{{ pendingLocation.shortAddress }}</div>
+          <div
+            class="pin-city"
+            *ngIf="pendingLocation.city || pendingLocation.pincode"
+          >
+            {{ pendingLocation.city }}
+            <span *ngIf="pendingLocation.pincode">
+              - {{ pendingLocation.pincode }}</span
+            >
+          </div>
+        </div>
+      </div>
+      <ng-template #placeholder>
+        <div class="picker-hint">
+          <i class="bx bx-info-circle"> </i>Use te search above, GPS pr tap the
+          map to pick a location
+        </div>
+      </ng-template>
 
-  <div class="picker-body">
-    <app-inline-map-picker
-      [initialCenter]="initialCenter"
-      height="360px"
-      (locationPicked)="onLocationPicked($event)"
-    ></app-inline-map-picker>
-  </div>
-
-  <div class="picker-footer">
-    <div class="picker-pin-info">
-        <i class="bx bx-location-alt"></i>
-        <div class="pin-text"></div>
+      <button
+        class="btn-confirm"
+        [disabled]="!pendingLocation"
+        (click)="confirm()"
+      >
+        Confirm Location
+      </button>
     </div>
   </div>
 </div>

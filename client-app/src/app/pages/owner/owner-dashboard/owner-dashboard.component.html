@@ -1,0 +1,321 @@
+<ng-template #topbarActions>
+  @if (autoApproval) {
+    <span class="auto-badge"><i class="bx bx-bolt-circle"></i> Auto-Approval ON</span>
+  }
+  <button 
+    class="shop-toggle"
+    [class.open-state]="shopOpen"
+    [class.closed-state]="!shopOpen"
+    (click)="toggleShopStatus()">
+    <span class="status-dot-sm" [class.closed]="!shopOpen"></span>
+    <span>{{ shopOpen ? 'Shop Open' : 'Shop Closed' }}</span>
+    <i class="bx bx-chevron-down"></i>
+  </button>
+
+  <button class="top-btn" (click)="toggleNotifPanel()">
+    <i class="bx bx-bell"></i>
+    @if (unreadNotifCount > 0) {
+      <span class="notif-dot"></span>
+    }
+  </button>
+  <button class="top-btn accent"><i class="bx bx-plus"></i></button>
+</ng-template>
+
+<div class="dashboard-content">
+  <div class="today-row">
+    <div class="td-tile">
+      <div class="td-val">{{ todayStats.orders }}</div>
+      <div class="td-lbl"><i class="bx bx-inbox" style="color: #0d9488"></i> Today's Orders</div>
+    </div>
+    <div class="td-tile">
+      <div class="td-val">{{ todayStats.revenue }}</div>
+      <div class="td-lbl"><i class="bx bx-rupee" style="color: #059669"></i> Today's Revenue</div>
+    </div>
+    <div class="td-tile">
+      <div class="td-val">{{ todayStats.pages }}</div>
+      <div class="td-lbl"><i class="bx bx-file" style="color: #d97706"></i> Pages Printed Today</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    @for (tile of statTiles; track tile.label) {
+      <div class="stat-tile">
+        <div class="st-header">
+          <div class="st-icon" [style.background]="tile.iconBg" [style.color]="tile.iconColor">
+            <i [class]="tile.icon"></i>
+          </div>
+          <span class="st-tag" [style.background]="tile.tagBg" [style.color]="tile.tagColor">{{ tile.tagText }}</span>
+        </div>
+        <div class="st-val">{{ tile.value }}</div>
+        <div class="st-lbl">{{ tile.label }}</div>
+        <div class="st-trend" [class.trend-up]="tile.trendUp" [class.trend-down]="!tile.trendUp">
+          <i [class]="tile.trendIcon"></i> {{ tile.trendText }}
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-inbox"></i> Live Order Queue</div>
+        <span class="pending-badge">{{ pendingCount }} pending</span>
+        <span class="card-action">View all</span>
+      </div>
+      <div class="card-body">
+        <div class="order-list">
+          @for (order of orders; track order.id) {
+            <div 
+              class="order-item"
+              [class.new-order]="order.status === 'new'"
+              [class.printing]="order.status === 'printing'"
+              (click)="openDrawer(order, $event)">
+              
+              @if (order.status === 'new') {
+                <div class="new-ping"></div>
+              }
+              <div class="oi-avatar" [style.background]="order.bg">{{ order.avatar }}</div>
+              <div class="oi-main">
+                <div class="oi-name">{{ order.name }}</div>
+                <div class="oi-detail">
+                  {{ order.pages }} pages • {{ order.color }}{{ order.binding !== 'None' ? ' • ' + order.binding : '' }} • {{ order.copies }}x copy
+                </div>
+                @if (order.status === 'new') {
+                  <div class="order-actions">
+                    <button class="btn-approve" (click)="approveOrder(order.id, $event); $event.stopPropagation()"><i class="bx bx-check"></i> Approve</button>
+                    <button class="btn-reject" (click)="rejectOrder(order.id, $event); $event.stopPropagation()"><i class="bx bx-x"></i> Reject</button>
+                    <button class="btn-view" (click)="openDrawer(order, $event)">View</button>
+                  </div>
+                } @else {
+                  <div class="oi-status" [class.status-printing]="order.status === 'printing'" [class.status-ready]="order.status === 'ready'">
+                    {{ getStatusLabel(order.status) }}
+                  </div>
+                }
+              </div>
+              <div class="oi-right">
+                <div class="oi-price">₹{{ order.price }}</div>
+                <div class="oi-time">{{ order.time }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-printer"></i> Printer Status</div>
+        <span class="card-action">Manage</span>
+      </div>
+      <div class="card-body">
+        <div class="printer-row">
+          @for (printer of printers; track printer.name) {
+            <div class="pr-item">
+              <div class="pr-icon" [style.background]="getPrinterBg(printer.status)" [style.color]="getPrinterColor(printer.status)">
+                <i [class]="getPrinterIcon(printer.status)"></i>
+              </div>
+              <div class="pr-info">
+                <div class="pr-name">{{ printer.name }}</div>
+                <div class="pr-model">{{ printer.model }} - {{ printer.job }}</div>
+                @if (printer.progress > 0) {
+                  <div class="pr-progress">
+                    <div class="pr-bar" [style.width.%]="printer.progress"></div>
+                  </div>
+                }
+              </div>
+              <span class="pr-status" [style.background]="getPrinterBg(printer.status)" [style.color]="getPrinterColor(printer.status)">
+                {{ printer.statusLabel }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card span-2">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-bar-chart-big"></i> Weekly Revenue</div>
+        <div class="chart-tabs">
+          <span class="card-action active">This week</span>
+          <span class="card-action">Last week</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-bars">
+          @for (d of chartData; track d.day) {
+            <div class="ch-bar-wrap">
+              <div class="ch-val">₹{{ formatChartVal(d.cur) }}</div>
+              <div class="ch-bars-inner">
+                <div class="ch-bar prev" [style.height.px]="getChartBarHeight(d.prev)"></div>
+                <div class="ch-bar cur" [style.height.px]="getChartBarHeight(d.cur)"></div>
+              </div>
+              <div class="ch-label">{{ d.day }}</div>
+            </div>
+          }
+        </div>
+        <div class="chart-legend d-flex gap-3">
+          <div class="leg-item"><div class="leg-dot teal"></div> This week</div>
+          <div class="leg-item"><div class="leg-dot gray"></div> Last week</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-pie-chart-alt"></i> Order Types</div>
+      </div>
+      <div class="card-body">
+        <div class="donut-wrap">
+          <div class="donut-container">
+            <svg class="donut-svg" width="120" height="120" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="40" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle cx="45" cy="45" r="40" fill="none" stroke="#0d9488" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="63" stroke-linecap="round"/>
+              <circle cx="45" cy="45" r="40" fill="none" stroke="#059669" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="138" stroke-linecap="round" style="opacity: .65;"/>
+              <circle cx="45" cy="45" r="40" fill="none" stroke="#d97706" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="188" stroke-linecap="round" style="opacity: .5;"/>
+            </svg>
+            <div class="donut-center">
+              <div class="donut-val">342</div>
+              <div class="donut-sub">orders</div>
+            </div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          @for (d of donutData; track d.label) {
+            <div class="dl-row">
+              <div class="dl-dot" [style.background]="d.color"></div>
+              <div class="dl-lbl">{{ d.label }}</div>
+              <div class="dl-bar-bg">
+                <div class="dl-bar" [style.background]="d.color" [style.width.%]="d.pct"></div>
+              </div>
+              <div class="dl-pct">{{ d.pct }}%</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-bolt-circle"></i> Quick Actions</div>
+      </div>
+      <div class="card-body">
+        <div class="qa-grid">
+          @for (qa of quickActions; track qa.label) {
+            <div class="qa-btn">
+              <div class="qa-icon" [style.background]="qa.iconBg" [style.color]="qa.iconColor">
+                <i [class]="qa.icon"></i>
+              </div>
+              <div class="qa-label">{{ qa.label }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="bx bx-history"></i> Recent Activity</div>
+      </div>
+      <div class="card-body no-pad-x">
+        <div class="activity-list">
+          @for (act of activities; track act.time) {
+            <div class="act-item">
+              <div class="act-dot" [style.background]="act.color"></div>
+              <div class="act-text" [innerHTML]="act.text"></div>
+              <div class="act-time">{{ act.time }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (notifPanelOpen) {
+  <div class="notif-overlay" (click)="toggleNotifPanel()"></div>
+  <div class="notif-panel">
+    <div class="np-head">
+      <div class="np-title">Notifications <span class="np-count">{{ unreadNotifCount }}</span></div>
+      <span class="np-clear" (click)="clearNotifs()">Mark all read</span>
+    </div>
+    <div class="np-list">
+      @for (notif of notifications; track notif.time) {
+        <div class="np-item" [class.unread]="notif.unread" (click)="markNotifRead(notif)">
+          @if (notif.unread) {
+            <div class="np-dot"></div>
+          } @else {
+            <div class="np-dot-placeholder"></div>
+          }
+          <div>
+            <div class="np-text" [innerHTML]="notif.text"></div>
+            <div class="np-time">{{ notif.time }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (drawerOpen && drawerOrder) {
+  <div class="drawer-overlay" (click)="closeDrawer()"></div>
+  <div class="drawer open">
+    <div class="drawer-head">
+      <div class="drawer-title">Order #{{ drawerOrder.id }}</div>
+      <button class="drawer-close" (click)="closeDrawer()"><i class="bx bx-x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <div class="drawer-section-title">Customer</div>
+        <div class="drawer-customer">
+          <div class="drawer-avatar" [style.background]="drawerOrder.bg">{{ drawerOrder.avatar }}</div>
+          <div>
+            <div class="drawer-cname">{{ drawerOrder.name }}</div>
+            <div class="drawer-cdetail">Regular Customer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Order Details</div>
+        <div class="drawer-kv">
+          <div class="kv-item"><div class="kv-key">Pages</div><div class="kv-val">{{ drawerOrder.pages }}</div></div>
+          <div class="kv-item"><div class="kv-key">Print Type</div><div class="kv-val">{{ drawerOrder.color }}</div></div>
+          <div class="kv-item"><div class="kv-key">Binding</div><div class="kv-val">{{ drawerOrder.binding }}</div></div>
+          <div class="kv-item"><div class="kv-key">Copies</div><div class="kv-val">{{ drawerOrder.copies }}</div></div>
+          <div class="kv-item"><div class="kv-key">Total</div><div class="kv-val">₹{{ drawerOrder.price }}</div></div>
+          <div class="kv-item"><div class="kv-key">Status</div><div class="kv-val">{{ getStatusLabel(drawerOrder.status) }}</div></div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">Files</div>
+        <div class="file-list">
+          @for (file of drawerOrder.files; track file.name) {
+            <div class="file-item">
+              <div class="file-ic"><i class="bx bx-file"></i></div>
+              <div>
+                <div class="file-name">{{ file.name }}</div>
+                <div class="file-size">{{ file.size }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (drawerOrder.status === 'new') {
+      <div class="drawer-foot">
+        <button class="dfoot-approve" (click)="approveOrder(drawerOrder.id, $event); closeDrawer()">
+          <i class="bx bx-check"></i> Approve & Print
+        </button>
+        <button class="dfoot-reject" (click)="rejectOrder(drawerOrder.id, $event); closeDrawer()">
+          <i class="bx bx-x"></i> Reject
+        </button>
+      </div>
+    }
+  </div>
+}

@@ -1,7 +1,7 @@
 <div class="profile-hero">
   <div class="hero-inner">
     <div class="ph-breadcrumb mt-2">
-      <a routerLink="/"><i class="bxs bx-home"></i> Home</a>
+      <a routerLink="/"><i class="bx bxs-home"></i> Home</a>
       <i class="bx bx-chevron-right" style="font-size:10px;"></i>
       <span style="color: rgba(255,255,255,.8)">My Profile</span>
     </div>
@@ -19,13 +19,7 @@
       <div class="hero-email">{{ email }}</div>
       <div class="hero-tags">
         <div class="hero-tag" *ngIf="memberSince">
-          <i class="bxs bx-star" style="color: var(--accent)"></i> {{ memberSince }}
-        </div>
-        <div class="hero-tag green">
-          <i class="bxs bx-check-circle"></i> Verified Account
-        </div>
-        <div class="hero-tag">
-          <i class="bxs bx-trophy" style="color: #fbbf24"></i> Gold Member
+          <i class="bx bxs-star" style="color: var(--accent)"></i> {{ memberSince }}
         </div>
       </div>
     </div>
@@ -34,7 +28,7 @@
 
 <div class="stats-row">
   <div class="stat-card" style="animation-delay: .05s">
-    <div class="stat-icon" style="background: #dbeafe; color: var(--primary)"><i class="bxs bx-box"></i></div>
+    <div class="stat-icon" style="background: #dbeafe; color: var(--primary)"><i class="bx bxs-box"></i></div>
     <div class="stat-val">{{ totalOrders }}</div>
     <div class="stat-lbl">Total Orders</div>
   </div>
@@ -52,7 +46,7 @@
   </div>
 
   <div class="stat-card" style="animation-delay: .2s">
-    <div class="stat-icon" style="background: #fef3c7; color: var(--accent-dark)"><i class="bxs bx-heart"></i></div>
+    <div class="stat-icon" style="background: #fef3c7; color: var(--accent-dark)"><i class="bx bxs-heart"></i></div>
     <div class="stat-val">{{ savedShops }}</div>
     <div class="stat-lbl">Saved Shops</div>
   </div>

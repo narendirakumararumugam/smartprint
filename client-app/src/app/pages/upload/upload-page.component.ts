@@ -34,6 +34,10 @@ import {
 import { MESSAGES } from '../../core/constants/messages';
 import { estimateTotal, totalPages } from '../../utils/pricing.utils';
 import { environment } from '../../environment/environment';
+import { ShopService } from '../../core/services/shop.service';
+import { take } from 'rxjs';
+import { isStringObject } from 'util/types';
+import { Shop } from '../../models/shop.model';
 
 /** Max number of files a user can upload at once */
 const MAX_FILE_COUNT = 10;
@@ -72,12 +76,12 @@ export class UploadPageComponent implements OnInit, OnDestroy {
   activeFileCfg = 0;
   selectedAddons = new Set<string>();
   specialNote = '';
-  orderPlaying = false; // Note: Visual overlap makes this appear as 'orderPlacing' or 'orderPlaying' depending on contextual usage below
   orderPlacing = false;
   orderPlaced = false;
   orderId = '';
   confettiPieces: ConfettiPiece[] = [];
   isLocationPickerOpen = false;
+  isShopLoading = true;
 
   private nextFileId = 0;
   private progressTimers: ReturnType<typeof setInterval>[] = [];
@@ -90,26 +94,46 @@ export class UploadPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly orderService = inject(CustomerOrderService);
 
+  constructor(private shopService: ShopService) {}
+
   ngOnInit(): void {
     this.title.setTitle('Upload & Print \u2014 SmartPrint');
 
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.pipe(take(1)).subscribe((params) => {
       const id = params['shopId'] != null ? +params['shopId'] : null;
-      if (id != null && !isNaN(id)) {
-        const shop = PRINT_SHOPS.find((s) => s.id === id);
-        if (shop) {
-          this.selectedShop = shop;
-          this.toastService.show(
-            MESSAGES.UPLOAD.UPLOADING(shop.name),
-            'success',
-          );
-          this.cdr.markForCheck();
-          return;
-        }
+      if (id == null || Number.isNaN(id)) {
+        this.isShopLoading = false;
+        this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
+        this.router.navigate(['/']);
+        return;
       }
-      // No valid shop selected ⬥ redirect back to home
-      this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
-      this.router.navigate(['/']);
+
+      this.shopService
+        .getShopDetail(id)
+        .pipe(take(1))
+        .subscribe({
+          next: (shop) => {
+            const mapped = this.toPrintShop(shop);
+            if (!mapped) {
+              this.isShopLoading = false;
+              this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
+              this.router.navigate(['/']);
+              return;
+            }
+
+            this.selectedShop = mapped;
+            this.isShopLoading = false;
+            this.toastService.show(
+              MESSAGES.UPLOAD.UPLOADING(mapped.name),
+              'success',
+            );
+          },
+          error: () => {
+            this.isShopLoading = false;
+            this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
+            this.router.navigate(['/']);
+          },
+        });
     });
   }
 
@@ -167,7 +191,7 @@ export class UploadPageComponent implements OnInit, OnDestroy {
         ? `${(file.size / 1_048_576).toFixed(1)} MB`
         : `${Math.round(file.size / 1024)} KB`;
 
-    const pages = Math.floor(Math.random() * 80 + 10);
+    const pages = this.estimatePages(file, ext);
     const color = ['jpg', 'jpeg', 'png'].includes(ext);
     const id = this.nextFileId++;
 
@@ -249,8 +273,17 @@ export class UploadPageComponent implements OnInit, OnDestroy {
   /* * -- NAVIGATION -- * */
 
   nextStep(): void {
+    if (!this.selectedShop) {
+      this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
+      this.router.navigate(['/']);
+      return;
+    }
     if (this.currentStep === 1 && this.uploadedFiles.length === 0) {
       this.toastService.show(MESSAGES.UPLOAD.UPLOAD_REQUIRED, 'warning');
+      return;
+    }
+    if (this.currentStep === 3) {
+      this.placeOrder();
       return;
     }
     this.currentStep++;
@@ -283,8 +316,15 @@ export class UploadPageComponent implements OnInit, OnDestroy {
   /* * -- ORDER -- * */
 
   placeOrder(): void {
+    if (!this.selectedShop) {
+      this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.orderPlacing = true;
     this.cdr.markForCheck();
+    console.log(this.selectedShop);
 
     if (!environment.useMockData && this.selectedShop) {
       const request: OrderCreateRequest = {
@@ -300,6 +340,7 @@ export class UploadPageComponent implements OnInit, OnDestroy {
         addonIds: [...this.selectedAddons],
         specialNote: this.specialNote || undefined,
       };
+      console.log(request);
       this.orderService.createOrder(request).subscribe({
         next: (res) => {
           this.orderPlaced = true;
@@ -362,5 +403,41 @@ export class UploadPageComponent implements OnInit, OnDestroy {
 
   trackByIndex(index: number): number {
     return index;
+  }
+
+  private estimatePages(file: File, ext: string): number {
+    if (['jpg', 'jpeg', 'png'].includes(ext)) return 1;
+
+    const bytesPerPage =
+      ext == 'pdf'
+        ? 120_000
+        : ['docx', 'doc'].includes(ext)
+          ? 30_000
+          : ['ppt', 'pptx'].includes(ext)
+            ? 80_000
+            : 100_000;
+
+    return Math.max(1, Math.min(400, Math.round(file.size / bytesPerPage)));
+  }
+
+  private toPrintShop(shop: Shop | null | undefined): PrintShop | null {
+    if (!shop || shop.id == null || !shop.name) return null;
+
+    const badge =
+      shop.badges?.[0] || (shop.isVerified ? 'Verified' : 'Trusted');
+    return {
+      id: shop.id,
+      name: shop.name,
+      addr: [shop.address, shop.city].filter(Boolean).join(','),
+      dist: shop.distance || '-',
+      rating: shop.rating ?? 0,
+      isOpen: shop.isOpen,
+      wait: shop.wait || '~15 min',
+      grad: shop.gradient || 'linear-gradient(135deg,#1e3a8a,#2563eb)',
+      icon: shop.icon,
+      badge,
+      badgeBg: shop.isVerified ? '#d1fae5' : '#dbeafe',
+      badgeColor: shop.isVerified ? '#166534' : '#1d4ed8',
+    };
   }
 }

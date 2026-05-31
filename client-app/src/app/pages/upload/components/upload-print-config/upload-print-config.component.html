@@ -31,7 +31,7 @@
               [class.selected]="!f.color"
               (click)="setCfg('color', false)"
             >
-              <i class="bx bxs-check-circle" style="color: #555"></i>
+              <i class="bx bxs-circle" style="color: #555"></i>
               B&amp;W<br /><small class="opt-price">₹1.5/page</small>
             </div>
             <div
@@ -39,7 +39,7 @@
               [class.selected]="f.color"
               (click)="setCfg('color', true)"
             >
-              <i class="bx bxs-check-circle" style="color: var(--primary)"></i>
+              <i class="bx bxs-circle" style="color: var(--primary)"></i>
               Color<br /><small class="opt-price">₹10/page</small>
             </div>
           </div>
@@ -47,7 +47,7 @@
 
         <div class="cfg-group">
           <label class="cfg-label"
-            ><i class="bx bx-file-blank"></i> Sides</label
+            ><i class="bx bxs-file-blank"></i> Sides</label
           >
           <div class="toggle-group">
             <div
@@ -62,7 +62,7 @@
               [class.selected]="f.sides === 'double'"
               (click)="setCfg('sides', 'double')"
             >
-              <i class="bx bx-file-blank"></i> Double
+              <i class="bx bxs-file-blank"></i> Double
             </div>
           </div>
         </div>

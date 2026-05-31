@@ -1,0 +1,83 @@
+<app-admin-layout pageTitle="Dashboard" [pendingVerifications]="pendingVerifications.length">
+  <div class="stats-grid">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-card">
+        <div class="stat-icon" [style.background]="stat.iconBg">
+          <i [class]="stat.icon" [style.color]="stat.iconColor"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">{{ stat.label }}</div>
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-change" [class.up]="stat.changeUp" [class.down]="!stat.changeUp">
+            <i [class]="stat.changeUp ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt'"></i>
+            {{ stat.change }} from last month
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Orders Today</h3>
+        <a routerLink="/admin/orders" class="card-link">View All</a>
+      </div>
+      <div class="orders-overview">
+        <div class="order-stat">
+          <div class="order-stat-value text-green">{{ ordersToday.completed }}</div>
+          <div class="order-stat-label">Completed</div>
+        </div>
+        <div class="order-stat">
+          <div class="order-stat-value text-blue">{{ ordersToday.active }}</div>
+          <div class="order-stat-label">Active</div>
+        </div>
+        <div class="order-stat">
+          <div class="order-stat-value text-amber">{{ ordersToday.processing }}</div>
+          <div class="order-stat-label">Processing</div>
+        </div>
+        <div class="order-stat">
+          <div class="order-stat-value text-red">{{ ordersToday.cancelled }}</div>
+          <div class="order-stat-label">Cancelled</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Pending Verifications</h3>
+        <a routerLink="/admin/verifications" class="card-link">View All</a>
+      </div>
+      <div class="verification-list">
+        @for (v of pendingVerifications; track v.shopName) {
+          <div class="verification-item">
+            <div class="verification-icon"><i class="bx bx-store"></i></div>
+            <div class="verification-info">
+              <div class="verification-name">{{ v.shopName }}</div>
+              <div class="verification-meta">{{ v.ownerName }} • {{ v.city }}</div>
+            </div>
+            <div class="verification-time">{{ v.submittedAt }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Activity</h3>
+      <a routerLink="/admin/audit-log" class="card-link">View All</a>
+    </div>
+    <div class="activity-list">
+      @for (a of recentActivity; track a.text) {
+        <div class="activity-item">
+          <div class="activity-icon" [style.background]="a.iconBg">
+            <i [class]="a.icon"></i>
+          </div>
+          <div class="activity-text">{{ a.text }}</div>
+          <div class="activity-time">{{ a.time }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</app-admin-layout>

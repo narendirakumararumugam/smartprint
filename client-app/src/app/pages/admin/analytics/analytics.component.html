@@ -1,0 +1,59 @@
+<app-admin-layout pageTitle="Platform Analytics">
+  <div class="stats-row">
+    @for (s of stats; track s.label) {
+      <div class="stat-card">
+        <div class="stat-icon" [class]="'si-' + s.color"><i [class]="s.icon"></i></div>
+        <div class="stat-info">
+          <div class="stat-value">{{ s.value }}</div>
+          <div class="stat-label">{{ s.label }}</div>
+        </div>
+        <span class="stat-change" [class]="'sc-' + s.color">{{ s.change }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="analytics-grid">
+    <div class="card">
+      <h3 class="card-title">Top Performing Shops</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Shop</th>
+            <th>City</th>
+            <th>Orders</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (shop of topShops; track shop.name; let i = $index) {
+            <tr>
+              <td class="rank">{{ i + 1 }}</td>
+              <td class="shop-name">{{ shop.name }}</td>
+              <td>{{ shop.city }}</td>
+              <td>{{ shop.orders }}</td>
+              <td class="revenue">{{ shop.revenue }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Revenue by City</h3>
+      <div class="city-list">
+        @for (c of revenueByCity; track c.city) {
+          <div class="city-row">
+            <div class="city-info">
+              <span class="city-name">{{ c.city }}</span>
+              <span class="city-revenue">{{ c.revenue }}</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="c.percent"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</app-admin-layout>

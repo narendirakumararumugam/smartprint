@@ -1,0 +1,76 @@
+.revenue-content { animation: fadeInUp 0.4s ease both; }
+
+/* --- PERIOD TABS --- */
+.period-tabs { display: flex; background: #f1f5f9; border-radius: 8px; padding: 3px; }
+.period-tab {
+  padding: 6px 14px; border-radius: 6px; border: none; background: transparent;
+  font-size: 12px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.15s;
+}
+.period-tab.active { background: #fff; color: #0f172a; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+
+.top-btn {
+  padding: 7px 14px; border-radius: 8px; border: 1.5px solid #e2e8f0; background: #fff;
+  color: #334155; font-size: 13px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: 0.15s;
+}
+.top-btn:hover { border-color: #0d9488; color: #0d9488; }
+
+/* --- STATS GRID --- */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+
+/* --- GRID --- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+/* --- BAR CHART --- */
+.bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 180px; padding-top: 12px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+.bar-value { font-size: 10.5px; font-weight: 700; color: #64748b; }
+.bar-track { flex: 1; width: 100%; background: #f1f5f9; border-radius: 6px; position: relative; overflow: hidden; }
+.bar-chart { display: flex; align-items: flex-end; }
+.bar-fill {
+  width: 100%; background: linear-gradient(180deg, #14b8a6, #0d9488); border-radius: 6px; transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1); min-height: 4px;
+}
+.bar-label { font-size: 11px; font-weight: 600; color: #94a3b8; }
+
+/* --- SERVICES LIST --- */
+.services-list { display: flex; flex-direction: column; gap: 14px; }
+.service-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.service-info { display: flex; align-items: center; gap: 10px; }
+.service-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.service-name { font-size: 13px; font-weight: 700; color: #0f172a; }
+.service-meta { font-size: 11px; color: #94a3b8; }
+.service-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 120px; }
+.service-amount { font-size: 13px; font-weight: 800; color: #0f172a; }
+.service-bar-track { width: 100%; height: 5px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+.service-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+/* --- TRANSACTIONS TABLE --- */
+.transactions-table { display: flex; flex-direction: column; }
+.txn-head, .txn-row { display: grid; grid-template-columns: 1.2fr 2fr 1fr 1fr 1fr; align-items: center; padding: 10px 0; }
+.txn-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; border-bottom: 1px solid #e2e8f0; }
+.txn-row { border-bottom: 1px solid #f1f5f9; }
+.txn-row:last-child { border-bottom: none; }
+.txn-id { font-size: 12.5px; font-weight: 700; color: #0d9488; }
+.txn-cust { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #334155; }
+.txn-avatar { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.txn-method { font-size: 12px; }
+.method-chip { padding: 3px 8px; border-radius: 6px; background: #f1f5f9; font-size: 11px; font-weight: 700; color: #64748b; }
+.txn-amount { font-size: 13px; font-weight: 800; color: #0f172a; }
+.txn-time { font-size: 12px; color: #94a3b8; }
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .txn-head, .txn-row { grid-template-columns: 1fr 1.5fr 0.8fr 0.8fr; }
+  .txn-h-time, .txn-time { display: none; }
+}

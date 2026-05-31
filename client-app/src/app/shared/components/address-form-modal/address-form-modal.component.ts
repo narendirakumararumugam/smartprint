@@ -34,6 +34,7 @@ export class AddressFormModalComponent implements OnChanges {
   ];
 
   ngOnChanges(c: SimpleChanges): void {
+    console.log(this.show)
     if (c['show'] && this.show) {
       this.form = this.initial ? { ...this.initial } : this.empty();
       this.errors = {};

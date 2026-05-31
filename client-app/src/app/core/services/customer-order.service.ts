@@ -44,11 +44,20 @@ export interface OrderAddonResponse {
   price: number;
 }
 
+export interface OrderShopSummary{
+  id: number;
+  name:string;
+  icon?:string;
+  gradient?:string;
+  address?:string;
+  phone?:string;
+}
+
 export interface OrderResponse {
   id: string;
   orderNumber: string;
-  shopName: string;
-  shopId: number;
+  shop?: OrderShopSummary;
+  statusLabel?: string;
   status: string;
   subtotal: number;
   tax: number;
@@ -58,6 +67,10 @@ export interface OrderResponse {
   items: OrderItemResponse[];
   addons: OrderAddonResponse[];
   timeline: OrderTimelineEntry[];
+  progress?:number;
+  progressLabel?:string;
+  canCancel?:boolean;
+  canReorder?:boolean;
   createdAt: string;
 }
 

@@ -25,8 +25,8 @@ export interface SignupRequest {
 }
 
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+  accessToken?: string;
+  refreshToken?: string;
   email: string;
   fullName: string;
   userType: string;
@@ -69,16 +69,14 @@ export class AuthService extends BaseApiService {
       MOCK_LOGIN_RESPONSE,
     ).pipe(
       tap((res) => {
-        if (res.accessToken) {
-          this.authState.setSession(res.accessToken, res.refreshToken, {
-            email: res.email,
-            fullName: res.fullName,
-            userType: res.userType,
-            username: res.username,
-            avatar: res.avatar,
-            createdAt: res.createdAt,
-          });
-        }
+        this.authState.setSession({
+          email: res.email,
+          fullName: res.fullName,
+          userType: res.userType,
+          username: res.username,
+          avatar: res.avatar,
+          createdAt: res.createdAt,
+        });
       }),
     );
   }
@@ -90,8 +88,7 @@ export class AuthService extends BaseApiService {
       MOCK_SIGNUP_RESPONSE,
     ).pipe(
       tap((res) => {
-        if (res.accessToken) {
-          this.authState.setSession(res.accessToken, res.refreshToken, {
+          this.authState.setSession({
             email: res.email,
             fullName: res.fullName,
             userType: res.userType,
@@ -99,13 +96,16 @@ export class AuthService extends BaseApiService {
             avatar: res.avatar,
             createdAt: res.createdAt,
           });
-        }
       }),
     );
   }
 
   logout(): void {
-    this.authState.logout();
+    this.apiPost<{message: string}>(API_ENDPOINTS.AUTH.LOGOUT, {}, {message: 'Logged out'})
+    .subscribe({
+      next: () => this.authState.logout(),
+      error: () => this.authState.logout()
+    })
   }
 
   forgotPassword(

@@ -151,15 +151,16 @@ export class OrdersComponent implements OnInit {
 
   private mapOrderResponse(o: OrderResponse): Order {
     const date = new Date(o.createdAt);
+    const status = (o.status as Order['status']) || 'active';
     return {
       id: o.orderNumber || o.id,
-      shopName: o.shopName || 'Unknown Shop',
-      shopIcon: '',
-      shopGrad: 'linear-gradient(135deg,#1e3a8a,#2563eb)',
-      status: (o.status as any) || 'active',
-      statusLabel: o.status
-        ? o.status.charAt(0).toUpperCase() + o.status.slice(1)
-        : 'Active',
+      shopName: o.shop?.name || 'Unknown Shop',
+      shopIcon: o.shop?.icon || '',
+      shopGrad: o.shop?.gradient || 'linear-gradient(135deg,#1e3a8a,#2563eb)',
+      status,
+      statusLabel: o.statusLabel || (status 
+        ? status.charAt(0).toUpperCase() + status.slice(1)
+        : 'Active'),
       date: date.toLocaleDateString('en-IN', {
         month: 'short',
         day: 'numeric',
@@ -184,8 +185,8 @@ export class OrdersComponent implements OnInit {
       files: (o.items || []).map((i) => i.fileName),
       pages: (o.items || []).reduce((sum, i) => sum + i.pages, 0),
       copies: (o.items || []).reduce((sum, i) => sum + i.copies, 0),
-      address: '',
-      phone: '',
+      address: o.shop?.address || '',
+      phone: o.shop?.phone || '',
       steps: (o.timeline || []).map((t) => ({
         label: t.label,
         time: t.eventTime || '',
@@ -193,27 +194,29 @@ export class OrdersComponent implements OnInit {
         state: t.state as any,
       })),
       progress:
-        o.status === 'completed'
+        o.progress ?? (status === 'completed'
           ? 100
-          : o.status === 'ready'
+          : status === 'ready'
             ? 75
-            : o.status === 'active'
+            : status === 'active'
               ? 50
-              : 0,
-      progressLabel:
-        o.status === 'completed'
+              : 0),
+      progressLabel: o.progressLabel || (status === 'completed'
           ? 'Completed'
-          : o.status === 'ready'
+          : status === 'ready'
             ? 'Ready for pickup'
-            : 'In progress',
-      canCancel: o.status === 'active' || o.status === 'processing',
-      canReorder: o.status === 'completed' || o.status === 'cancelled',
+            : 'In progress'),
+      canCancel: o.canCancel ?? (status === 'active' || status === 'processing'),
+      canReorder: o.canReorder ?? (status === 'completed' || status === 'cancelled'),
     };
   }
 
   /* -- Counts -- */
   getCount(tab: TabType): number {
     if (tab === 'all') return this.orders.length;
+    if(tab === 'active'){
+      return this.orders.filter(o => o.status === 'active' || o.status === 'processing').length;
+    }
     return this.orders.filter((o) => o.status === tab).length;
   }
 
@@ -233,7 +236,10 @@ export class OrdersComponent implements OnInit {
   applyFilters(): void {
     let list = this.orders;
 
-    if (this.activeTab !== 'all') {
+    if(this.activeTab === 'active'){
+      list = list.filter(o => o.status === 'active' || o.status === 'processing');
+    }
+    else if (this.activeTab !== 'all') {
       list = list.filter((o) => o.status === this.activeTab);
     }
 

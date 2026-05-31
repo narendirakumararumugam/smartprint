@@ -9,13 +9,9 @@
       >
         <div class="wstep-dot">
           @if (currentStep > i + 1) {
-            <ng-container orderPlaced>
-              <i class="bx bx-check" style="font-size: 15px"></i>
-            </ng-container>
+            <i class="bx bx-check" style="font-size: 15px"></i>
           } @else {
-            <ng-container stepNum>
-              <i class="bx bx-check" style="font-size: 15px"></i>
-            </ng-container>
+            {{ i + 1 }}
           }
           <ng-template #stepNum>{{ i + 1 }}</ng-template>
         </div>

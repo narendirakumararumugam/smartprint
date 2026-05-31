@@ -9,6 +9,8 @@ import { DropdownComponent, DropdownOption } from '../../../shared/components/dr
 import { ActivityItem, FavShop, SecurityItem } from '../profile.component';
 import { Address } from '../../../models/address.model';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 export interface PrefChangeEvent {
   key: string;
@@ -18,7 +20,7 @@ export interface PrefChangeEvent {
 @Component({
   selector: 'app-profile-sections',
   standalone: true,
-  imports: [CommonModule, DropdownComponent],
+  imports: [CommonModule, DropdownComponent, FormsModule, RouterLink],
   templateUrl: './profile-sections.component.html',
   styleUrl: './profile-sections.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

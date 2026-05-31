@@ -80,7 +80,7 @@ export const AVAILABLE_SERVICES: ServiceOption[] = [
   { icon: 'bx bx-cut', label: 'Lamination', selected: false },
   { icon: 'bx bx-image', label: 'Photo Prints', selected: false },
   { icon: 'bx bx-scan', label: 'Scanning', selected: false },
-  { icon: 'bx bx-id-card', label: 'ID / Passport Photos', selected: false },
+  { icon: 'bx bx-address-book', label: 'ID / Passport Photos', selected: false },
   { icon: 'bx bx-landscape', label: 'Banner / Poster', selected: false },
   { icon: 'bx bx-package', label: 'Courier Services', selected: false },
 ];

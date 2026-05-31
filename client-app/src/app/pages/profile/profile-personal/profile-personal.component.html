@@ -28,23 +28,6 @@
                 <input class="form-input" type="tel" [ngModel]="phone" (ngModelChange)="phoneChange.emit($event)" [readonly]="!isEditing" placeholder="+91 _" />
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">WhatsApp Number</label>
-                <input class="form-input" type="tel" [ngModel]="whatsapp" (ngModelChange)="whatsappChange.emit($event)" [readonly]="!isEditing" placeholder="Optional" />
-            </div>
-            <div class="form-group">
-                <label class="form-label">Gender</label>
-                <app-dropdown
-                    [options]="genderOptions"
-                    [selected]="gender"
-                    (selectionChange)="onGenderSelected($event)"
-                    [disabled]="!isEditing"
-                    variant="form"
-                    placeholder="Select gender">
-                </app-dropdown>
-            </div>
-        </div>
         <div class="form-actions" *ngIf="isEditing">
             <button class="btn btn-primary" (click)="save.emit()"><i class="bx bx-check"></i> Save Changes</button>
             <button class="btn btn-ghost" (click)="cancel.emit()"><i class="bx bx-x"></i> Cancel</button>

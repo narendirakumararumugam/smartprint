@@ -48,7 +48,7 @@ export class SavedComponent implements OnInit {
   readonly filters: { key: SavedFilterType; label: string; icon: string; iconColor?: string }[] = [
     { key: 'all', label: 'All', icon: 'bx bx-border-all' },
     { key: 'open', label: 'Open Now', icon: 'bx bxs-circle', iconColor: 'var(--success)' },
-    { key: 'nearby', label: 'Nearby', icon: 'bx bx-current-location' },
+    { key: 'nearby', label: 'Nearby', icon: 'bx bx-target' },
     { key: 'top', label: 'Top Rated', icon: 'bx bxs-star' },
   ];
 
@@ -142,8 +142,8 @@ export class SavedComponent implements OnInit {
   /* -- Actions -- */
   unsaveShop(shop: SavedShop, event?: MouseEvent): void {
     event?.stopPropagation();
-    this.savedShopService.unsaveShop(shop.id).subscribe(() => {
-      this.savedShops = this.savedShops.filter(s => s.id !== shop.id);
+    this.savedShopService.unsaveShop(shop.shopId).subscribe(() => {
+      this.savedShops = this.savedShops.filter(s => s.shopId !== shop.shopId);
       this.applyFilters();
       this.toastService.show(MESSAGES.SHOPS.REMOVED(shop.name), 'info');
       this.cdr.markForCheck();

@@ -25,12 +25,12 @@ export abstract class BaseApiService {
   protected apiGet<T>(endpoint: string, mockData: T): Observable<T> {
     const url = this.buildUrl(endpoint);
     if (environment.useMockData) {
-      return this.http.get<T>(url).pipe(
+      return this.http.get<T>(url, {withCredentials: true}).pipe(
         map(res => this.isEmpty(res) ? mockData : res),
         catchError(() => of(mockData))
       );
     }
-    return this.http.get<T>(url);
+    return this.http.get<T>(url, {withCredentials: true});
   }
 
   /**
@@ -39,12 +39,12 @@ export abstract class BaseApiService {
   protected apiPost<T>(endpoint: string, body: unknown, mockData: T): Observable<T> {
     const url = this.buildUrl(endpoint);
     if (environment.useMockData) {
-      return this.http.post<T>(url, body).pipe(
+      return this.http.post<T>(url, body, {withCredentials: true}).pipe(
         map(res => this.isEmpty(res) ? mockData : res),
         catchError(() => of(mockData))
       );
     }
-    return this.http.post<T>(url, body);
+    return this.http.post<T>(url, body, {withCredentials: true});
   }
 
   /**
@@ -53,12 +53,12 @@ export abstract class BaseApiService {
   protected apiPut<T>(endpoint: string, body: unknown, mockData: T): Observable<T> {
     const url = this.buildUrl(endpoint);
     if (environment.useMockData) {
-      return this.http.put<T>(url, body).pipe(
+      return this.http.put<T>(url, body, {withCredentials: true}).pipe(
         map(res => this.isEmpty(res) ? mockData : res),
         catchError(() => of(mockData))
       );
     }
-    return this.http.put<T>(url, body);
+    return this.http.put<T>(url, body, {withCredentials: true});
   }
 
   /**
@@ -67,12 +67,12 @@ export abstract class BaseApiService {
   protected apiDelete<T>(endpoint: string, mockData: T): Observable<T> {
     const url = this.buildUrl(endpoint);
     if (environment.useMockData) {
-      return this.http.delete<T>(url).pipe(
+      return this.http.delete<T>(url, {withCredentials: true}).pipe(
         map(res => this.isEmpty(res) ? mockData : res),
         catchError(() => of(mockData))
       );
     }
-    return this.http.delete<T>(url);
+    return this.http.delete<T>(url, {withCredentials: true});
   }
 
   private isEmpty(value: unknown): boolean {

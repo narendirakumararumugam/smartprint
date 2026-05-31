@@ -39,8 +39,8 @@ export class OwnerAuthService extends BaseApiService {
       },
     ).pipe(
       tap((res) => {
-        if (res.success && res.accessToken) {
-          this.authState.setSession(res.accessToken, res.refreshToken!, {
+        if (res.success) {
+          this.authState.setSession({
             email: request.email,
             fullName: `${request.firstName} ${request.lastName}`,
             userType: 'owner',

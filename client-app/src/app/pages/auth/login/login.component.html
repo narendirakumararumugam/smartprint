@@ -53,7 +53,7 @@
           />
         </div>
         <div class="field-error" [class.show]="emailError">
-          <i class="bx bx-error-circle"></i><span>{{ emailError }}</span>
+          <i class="bx bx-alert-circle"></i><span>{{ emailError }}</span>
         </div>
       </div>
 
@@ -63,7 +63,7 @@
           <a href="javascript:void(0)">Forgot password?</a>
         </div>
         <div class="input-wrap">
-          <i class="input-icon bx bx-lock-alt"></i>
+          <i class="input-icon bx bx-lock"></i>
           <input
             class="form-input"
             [class.error]="passwordError"
@@ -74,16 +74,17 @@
             [(ngModel)]="password"
             name="password"
           />
+          <span class="pw-toggle" (click)="togglePassword()">
+            <i
+              class="bx"
+              [class.bx-eye]="!showPassword"
+              [class.bx-eye-slash]="showPassword"
+            ></i>
+          </span>
         </div>
-        <span class="pw-toggle" (click)="togglePassword()">
-          <i
-            class="bx"
-            [class.bx-show]="!showPassword"
-            [class.bx-hide]="showPassword"
-          ></i>
-        </span>
+
         <div class="field-error" [class.show]="passwordError">
-          <i class="bx bx-error-circle"></i><span>{{ passwordError }}</span>
+          <i class="bx bx-alert-circle"></i><span>{{ passwordError }}</span>
         </div>
       </div>
 
@@ -116,7 +117,7 @@
     </div>
 
     <div class="privacy-note">
-      <i class="bx bx-shield-quarter"></i>
+      <i class="bx bxs-shield-quarter"></i>
       <span
         >Your data is encrypted and never shared. By signing in you agree to our
         <a href="javascript:void(0)">Terms</a> and

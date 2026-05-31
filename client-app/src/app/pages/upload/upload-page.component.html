@@ -9,8 +9,12 @@
       <i class="bx bx-upload" style="margin-right: 10px"></i>Upload &amp; Print
     </div>
     <div class="ph-sub">
-      Uploading for <strong>{{ selectedShop?.name }}</strong> &mdash; configure
-      settings and place your order in 3 easy steps.
+      @if (isShopLoading) {
+        Loading selected shop details&hellip;
+      } @else {
+        Uploading for <strong>{{ selectedShop?.name }}</strong> &mdash;
+        configure settings and place your order in 3 easy steps.
+      }
     </div>
   </div>
 </div>
@@ -65,43 +69,43 @@
     >
     </app-upload-order-review>
   </div>
-</div>
 
-<div class="wizard-footer" *ngIf="!orderPlaced">
-  <div class="wf-left">
-    <i class="bx bxs-shield" style="color: var(--success)"></i> Secure &amp;
-    Encrypted Upload
-    <span class="wf-file-count" *ngIf="uploadedFiles.length">
-      &bull; {{ uploadedFiles.length }}/{{ maxFileCount }} files
-    </span>
-  </div>
-  <div class="wf-btns">
-    <button
-      class="btn btn-ghost"
-      type="button"
-      *ngIf="currentStep > 1"
-      (click)="prevStep()"
-    >
-      <i class="bx bx-left-arrow-alt"></i> Back
-    </button>
-    <button
-      class="btn"
-      type="button"
-      [class.btn-primary]="currentStep < 3"
-      [class.btn-success]="currentStep === 3"
-      [disabled]="orderPlacing"
-      (click)="nextStep()"
-    >
-      <ng-container *ngIf="orderPlacing">
-        <i class="bx bx-loader-alt bx-spin"></i> Placing Order&hellip;
-      </ng-container>
-      <ng-container *ngIf="!orderPlacing && currentStep < 3">
-        Next <i class="bx bx-right-arrow-alt"></i>
-      </ng-container>
-      <ng-container *ngIf="!orderPlacing && currentStep === 3">
-        <i class="bx bx-check"></i> Place Order
-      </ng-container>
-    </button>
+  <div class="wizard-footer" *ngIf="!orderPlaced">
+    <div class="wf-left">
+      <i class="bx bxs-shield" style="color: var(--success)"></i> Secure &amp;
+      Encrypted Upload
+      <span class="wf-file-count" *ngIf="uploadedFiles.length">
+        &bull; {{ uploadedFiles.length }}/{{ maxFileCount }} files
+      </span>
+    </div>
+    <div class="wf-btns">
+      <button
+        class="btn btn-ghost"
+        type="button"
+        *ngIf="currentStep > 1"
+        (click)="prevStep()"
+      >
+        <i class="bx bx-left-arrow-alt"></i> Back
+      </button>
+      <button
+        class="btn"
+        type="button"
+        [class.btn-primary]="currentStep < 3"
+        [class.btn-success]="currentStep === 3"
+        [disabled]="orderPlacing || isShopLoading || !selectedShop"
+        (click)="nextStep()"
+      >
+        <ng-container *ngIf="orderPlacing">
+          <i class="bx bx-loader-alt bx-spin"></i> Placing Order&hellip;
+        </ng-container>
+        <ng-container *ngIf="!orderPlacing && currentStep < 3">
+          <i class="bx bx-right-arrow-alt"></i>Next
+        </ng-container>
+        <ng-container *ngIf="!orderPlacing && currentStep === 3">
+          <i class="bx bx-check"></i> Place Order
+        </ng-container>
+      </button>
+    </div>
   </div>
 </div>
 

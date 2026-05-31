@@ -28,10 +28,7 @@ import {
   ChangePasswordPayload,
 } from '../../shared/components/change-password-modal/change-password-modal.component';
 import { Title } from '@angular/platform-browser';
-
-// ============================================================================
-// INTERFACES & TYPES (Image 1 & 2)
-// ============================================================================
+import { AuthService } from '../../core/services/auth.service';
 
 export interface SecurityItem {
   icon: string;
@@ -71,9 +68,6 @@ export type SectionType =
   | 'favourites'
   | 'danger';
 
-// ============================================================================
-// COMPONENT DECORATOR & CONFIGURATION (Image 2)
-// ============================================================================
 
 const PREFS_STORAGE_KEY = 'smartprint.print-prefs';
 
@@ -98,9 +92,6 @@ const PREFS_STORAGE_KEY = 'smartprint.print-prefs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent implements OnInit {
-  // ============================================================================
-  // DEPENDENCY INJECTIONS (Image 2 & 3)
-  // ============================================================================
   private readonly toastService = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
@@ -109,9 +100,6 @@ export class ProfileComponent implements OnInit {
   private readonly authState = inject(AuthStateService);
   private readonly title = inject(Title);
 
-  // ============================================================================
-  // STATE PROPERTIES (Image 3 & 4)
-  // ============================================================================
   activeSection: SectionType = 'personal';
   isEditing = false;
   showLogoutModal = false;
@@ -155,7 +143,7 @@ export class ProfileComponent implements OnInit {
   addresses: Address[] = [];
   securityItems: SecurityItem[] = [
     {
-      icon: 'bxf bx-lock',
+      icon: 'bx bxs-lock-alt',
       iconBg: '#dbeafe',
       iconClr: '#2563eb',
       name: 'Password',
@@ -177,16 +165,15 @@ export class ProfileComponent implements OnInit {
   }[] = [
     { key: 'personal', icon: 'bx bx-user', label: 'Personal Info' },
     { key: 'prefs', icon: 'bx bx-slider', label: 'Print Preferences' },
-    { key: 'addresses', icon: 'bx bx-location-alt', label: 'Saved Addresses' },
+    { key: 'addresses', icon: 'bx bx-map', label: 'Saved Addresses' },
     { key: 'security', icon: 'bx bx-shield', label: 'Security' },
     { key: 'activity', icon: 'bx bx-history', label: 'Activity Log' },
-    { key: 'favourites', icon: 'bxf bx-heart', label: 'Favourite Shops' },
-    { key: 'danger', icon: 'bx bx-alert-triangle', label: 'Danger Zone', danger: true },
+    { key: 'favourites', icon: 'bx bxs-heart', label: 'Favourite Shops' },
+    { key: 'danger', icon: 'bx bx-error', label: 'Danger Zone', danger: true },
   ];
 
-  // ============================================================================
-  // LIFECYCLE HOOKS & INITIALIZATION (Image 5, 6 & 7)
-  // ============================================================================
+  constructor(private authService: AuthService){}
+
   ngOnInit(): void {
     this.title.setTitle('My Profile - SmartPrint');
     this.loadStoredPrefs();
@@ -282,13 +269,9 @@ export class ProfileComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // ============================================================================
-  // DATA LOADING METHODS (Image 6 & 7)
-  // ============================================================================
   private loadProfile(): void {
     this.profileService.getProfile().subscribe({
       next: (p) => {
-console.log(p);
         this.firstName = p.firstName || this.firstName;
         this.lastName = p.lastName || this.lastName;
         this.email = p.email || this.email;
@@ -329,9 +312,6 @@ console.log(p);
     }
   }
 
-  // ============================================================================
-  // UTILITY METHODS (Image 7)
-  // ============================================================================
   private formatMemberSince(iso?: string): string {
     if (!iso) return '';
     const d = new Date(iso);
@@ -339,9 +319,6 @@ console.log(p);
     return `Member since ${d.toLocaleString('en-US', { month: 'short', year: 'numeric' })}`;
   }
 
-  // ============================================================================
-  // INTERACTION HANDLERS (Image 7, 8, 9 & 10)
-  // ============================================================================
   showSection(section: SectionType): void {
     this.activeSection = section;
     this.cdr.markForCheck();
@@ -458,9 +435,6 @@ console.log(p);
     this.editingAddress = null;
     this.cdr.markForCheck();
   }
-  // ============================================================================
-  // ADDRESS SAVING & DELETION HANDLERS (Image b4a6242d & 600531bd)
-  // ============================================================================
   onAddressSaved(addr: Address): void {
     if (environment.useMockData) {
       if (this.editingAddress?.id) {
@@ -539,9 +513,6 @@ console.log(p);
     });
   }
 
-  // ============================================================================
-  // FAVORITES & LOGOUT MODAL MANAGEMENT (Image 600531bd & 0aa47b24)
-  // ============================================================================
   removeFav(index: number): void {
     this.favShops.splice(index, 1);
     this.toastService.show(MESSAGES.PROFILE.SHOP_REMOVED, 'info');
@@ -567,12 +538,9 @@ console.log(p);
   doLogout(): void {
     this.closeLogoutModal();
     this.toastService.show(MESSAGES.AUTH.LOGOUT, 'info');
-    this.authState.logout();
+    this.authService.logout();
   }
 
-  // ============================================================================
-  // PASSWORD MANAGEMENT HANDLERS (Image 0aa47b24 & 2491ff90)
-  // ============================================================================
   openPasswordModal(): void {
     this.passwordServerError = '';
     this.showPasswordModal = true;
@@ -622,9 +590,6 @@ console.log(p);
     }
   }
 
-  // ============================================================================
-  // DANGER ZONE & WINDOW INTERACTIONS (Image 2491ff90, 87411371 & b6d6ff10)
-  // ============================================================================
   openDeleteModal(): void {
     this.showDeleteModal = true;
     if (isPlatformBrowser(this.platformId)) {
@@ -670,9 +635,6 @@ console.log(p);
     }
   }
 
-  // ============================================================================
-  // GETTERS & TRACKBY OPTIMIZATIONS (Image b6d6ff10)
-  // ============================================================================
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }

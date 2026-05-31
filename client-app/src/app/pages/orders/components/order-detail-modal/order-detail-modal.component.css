@@ -18,7 +18,7 @@
   pointer-events: all;
 }
 
-.modal {
+.order-details-modal{
   background: var(--bg-white);
   border-radius: var(--radius-xl);
   width: 100%;
@@ -35,7 +35,7 @@
     opacity 0.25s ease;
 }
 
-.modal-back.open .modal {
+.modal-back.open .order-details-modal{
   transform: scale(1) translateY(0);
   opacity: 1;
 }

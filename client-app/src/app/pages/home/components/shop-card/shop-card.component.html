@@ -16,16 +16,18 @@
         [class.b-open]="shop.isOpen"
         [class.b-closed]="!shop.isOpen"
       >
-        <i class="fa-solid fa-circle" style="font-size: 7px"></i>
+        <i class="bx bxs-circle" style="font-size: 7px"></i>
         {{ shop.isOpen ? "Open" : "Closed" }}
       </span>
     </div>
 
-    <div class="cv-dist">
-      <i class="fa-solid fa-location-dot"></i> {{ shop.distance }}
-    </div>
+    @if (shop.distance) {
+      <div class="cv-dist">
+        <i class="bx bxs-map-2"></i> {{ shop.distance }}
+      </div>
+    }
 
-    <div class="cv-view"><i class="fa-solid fa-eye"></i> View Details</div>
+    <div class="cv-view"><i class="bx bx-eye"></i> View Details</div>
   </div>
   <div class="card-body">
     <div class="ch">
@@ -33,7 +35,7 @@
         {{ shop.name }}
         <i
           *ngIf="shop.isVerified"
-          class="fa-solid fa-circle-check vi"
+          class="bx bxs-check-circle vi"
           title="Verified"
         ></i>
       </div>
@@ -43,17 +45,13 @@
         (click)="toggleSave($event)"
         [attr.aria-label]="isSaved(shop.id) ? 'Remove from saved' : 'Save shop'"
       >
-        <i
-          [class]="
-            isSaved(shop.id) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'
-          "
-        ></i>
+        <i [class]="isSaved(shop.id) ? 'bx bxs-heart' : 'bx bx-heart'"></i>
       </button>
     </div>
 
     <div class="c-addr">
-      <i class="fa-solid fa-location-dot"></i>
-      {{ shop.address }}
+      <i class="bx bxs-map-2"></i>
+      <span class="addr-text">{{ shop.address }}</span>
     </div>
 
     <div class="c-rat">
@@ -63,9 +61,10 @@
     </div>
 
     <div class="c-svcs">
-      <span *ngFor="let svc of visibleServices" class="svc-chip">{{
-        svc
-      }}</span>
+      @for (svc of visibleServices; track svc) {
+        <span class="svc-chip">{{ svc }}</span>
+      }
+
       <span *ngIf="extraServicesCount > 0" class="svc-chip more"
         >+{{ extraServicesCount }} more</span
       >
@@ -73,11 +72,20 @@
 
     <div class="c-foot">
       <div class="c-price">
-        From <strong>₹{{ _shopService.lowestPrice(shop) }}/pg</strong>
+        <ng-container
+          *ngIf="_shopService.lowestPrice(shop) !== null; else noPrice"
+        >
+          From <strong>₹{{ _shopService.lowestPrice(shop) }}/pg</strong>
+        </ng-container>
+        <ng-template #noPrice>
+          <span class="price-na">Ask for price</span>
+        </ng-template>
       </div>
-      <div class="c-wait">
-        <i class="fa-regular fa-clock"></i> Wait: {{ shop.wait }}
-      </div>
+      @if (shop.wait) {
+        <div class="c-wait">
+          <i class="bx bx-time"></i> Wait: {{ shop.wait }}
+        </div>
+      }
     </div>
   </div>
 </article>
