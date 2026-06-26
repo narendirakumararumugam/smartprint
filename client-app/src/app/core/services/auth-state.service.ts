@@ -11,6 +11,8 @@ export interface AuthUser {
   username?: string;
   avatar?: string;
   createdAt?: string; // ISO date string
+  shopId?: number;
+  shopName?: string;
 }
 
 const USER_KEY = 'sp_user';

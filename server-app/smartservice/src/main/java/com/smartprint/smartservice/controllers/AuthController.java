@@ -29,14 +29,6 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse){
         AuthResponse authResponse = authService.login(request);
         authCookieService.addAuthCookies(httpResponse, authResponse.getAccessToken(), authResponse.getRefreshToken(), httpRequest.isSecure());
-
-//        ResponseCookie resCookie = ResponseCookie.from("jwtToken", authResponse.getAccessToken())
-//                .httpOnly(true)
-//                .path("/")
-//                .maxAge(3600)
-//                .sameSite("Strict")
-//                .build();
-//        response.setHeader(HttpHeaders.SET_COOKIE, resCookie.toString());
         return ResponseEntity.ok(authResponse);
     }
 

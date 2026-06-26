@@ -1,13 +1,34 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, inject, ViewChild, TemplateRef, ChangeDetectionStrategy, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  inject,
+  ViewChild,
+  TemplateRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DropdownComponent, DropdownOption } from '../../../shared/components/dropdown/dropdown.component';
+import {
+  DropdownComponent,
+  DropdownOption,
+} from '../../../shared/components/dropdown/dropdown.component';
 import { OwnerTopbarService } from '../../../core/services/owner-topbar.service';
 import { environment } from '../../../environment/environment';
+import {
+  OrderResponse,
+  OwnerOrdersService,
+} from '../../../core/services/owner-orders.service';
+import { AuthStateService } from '../../../core/services/auth-state.service';
 
 interface OrderItem {
   id: string;
+  orderId?: string;
   customer: string;
+  phone?: string;
   avatar: string;
   bg: string;
   pages: number;
@@ -15,7 +36,7 @@ interface OrderItem {
   binding: string;
   copies: number;
   total: number;
-  status: 'pending' | 'printing' | 'ready' | 'completed' | 'cancelled';
+  status: string;
   time: string;
   date: string;
   files: { name: string; size: string }[];
@@ -74,14 +95,39 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
   orders: OrderItem[] = [];
   printers = ['HP LaserJet M401n', 'Canon iR2625', 'Epson L3252'];
 
+  constructor(
+    private readonly ownerOrdersService: OwnerOrdersService,
+    private readonly authState: AuthStateService,
+  ) {}
+
   get tabs(): OrderTab[] {
     return [
       { id: 'all', label: 'All', count: this.orders.length },
-      { id: 'pending', label: 'Pending', count: this.orders.filter(o => o.status === 'pending').length },
-      { id: 'printing', label: 'Printing', count: this.orders.filter(o => o.status === 'printing').length },
-      { id: 'ready', label: 'Ready', count: this.orders.filter(o => o.status === 'ready').length },
-      { id: 'completed', label: 'Completed', count: this.orders.filter(o => o.status === 'completed').length },
-      { id: 'cancelled', label: 'Cancelled', count: this.orders.filter(o => o.status === 'cancelled').length },
+      {
+        id: 'pending',
+        label: 'Pending',
+        count: this.orders.filter((o) => o.status === 'pending').length,
+      },
+      {
+        id: 'printing',
+        label: 'Printing',
+        count: this.orders.filter((o) => o.status === 'printing').length,
+      },
+      {
+        id: 'ready',
+        label: 'Ready',
+        count: this.orders.filter((o) => o.status === 'ready').length,
+      },
+      {
+        id: 'completed',
+        label: 'Completed',
+        count: this.orders.filter((o) => o.status === 'completed').length,
+      },
+      {
+        id: 'cancelled',
+        label: 'Cancelled',
+        count: this.orders.filter((o) => o.status === 'cancelled').length,
+      },
     ];
   }
 
@@ -89,18 +135,20 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     let result = [...this.orders];
 
     if (this.activeTab !== 'all') {
-      result = result.filter(o => o.status === this.activeTab);
+      result = result.filter((o) => o.status === this.activeTab);
     }
 
     if (this.searchQuery) {
       const q = this.searchQuery.toLowerCase();
-      result = result.filter(o => 
-        o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q)
+      result = result.filter(
+        (o) =>
+          o.id.toLowerCase().includes(q) ||
+          o.customer.toLowerCase().includes(q),
       );
     }
 
     if (this.filterType) {
-      result = result.filter(o => o.printType === this.filterType);
+      result = result.filter((o) => o.printType === this.filterType);
     }
 
     if (this.sortBy === 'newest') {
@@ -126,180 +174,325 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get selectedOrders(): OrderItem[] {
-    return this.orders.filter(o => o.selected);
+    return this.orders.filter((o) => o.selected);
   }
 
   get pendingRevenue(): number {
-    return this.orders.filter(o => o.status === 'pending').reduce((sum, o) => sum + o.total, 0);
+    return this.orders
+      .filter((o) => o.status === 'pending')
+      .reduce((sum, o) => sum + o.total, 0);
   }
 
   get todayRevenue(): number {
-    return this.orders.filter(o => o.status === 'completed' && o.date === '2026-01-15').reduce((sum, o) => sum + o.total, 0);
+    return this.orders
+      .filter((o) => o.status === 'completed' && o.date === '2026-01-15')
+      .reduce((sum, o) => sum + o.total, 0);
   }
 
   statTiles = [
     { label: 'Pending', icon: 'bx bx-time', color: '#d97706', bg: '#fef3c7' },
-    { label: 'Printing', icon: 'bx bx-printer', color: '#2563eb', bg: '#dbeafe' },
-    { label: 'Ready', icon: 'bx bxs-check-circle', color: '#059669', bg: '#d1fae5' },
-    { label: 'Completed', icon: 'bx bx-check-double', color: '#0d9488', bg: '#ccfbf1' },
+    {
+      label: 'Printing',
+      icon: 'bx bx-printer',
+      color: '#2563eb',
+      bg: '#dbeafe',
+    },
+    {
+      label: 'Ready',
+      icon: 'bx bxs-check-circle',
+      color: '#059669',
+      bg: '#d1fae5',
+    },
+    {
+      label: 'Completed',
+      icon: 'bx bx-check-double',
+      color: '#0d9488',
+      bg: '#ccfbf1',
+    },
     { label: 'Revenue', icon: 'bx bx-rupee', color: '#7c3aed', bg: '#f3e8ff' },
   ];
 
   ngOnInit(): void {
-    if (environment.useMockData) {
-      this.orders = [
-        { id: 'PH-2026-0044', customer: 'Arjun Mehta', avatar: 'AM', bg: '#0d9488', pages: 42, printType: 'B&W', binding: 'Spiral', copies: 1, total: 126, status: 'pending', time: '2 min ago', date: '2026-01-15', files: [{ name: 'Thesis_Final.pdf', size: '4.2 MB' }] },
-        { id: 'PH-2026-0043', customer: 'Priya Sharma', avatar: 'PS', bg: '#7c3aed', pages: 18, printType: 'Color', binding: 'None', copies: 2, total: 288, status: 'pending', time: '8 min ago', date: '2026-01-15', files: [{ name: 'Project_Report.pdf', size: '2.1 MB' }] },
-        { id: 'PH-2026-0042', customer: 'Rahul Verma', avatar: 'RV', bg: '#2563eb', pages: 6, printType: 'B&W', binding: 'None', copies: 1, total: 12, status: 'printing', time: '15 min ago', date: '2026-01-15', files: [{ name: 'Resume.pdf', size: '0.8 MB' }] },
-        { id: 'PH-2026-0041', customer: 'Sneha Kapoor', avatar: 'SK', bg: '#d97706', pages: 120, printType: 'B&W', binding: 'Hard', copies: 1, total: 840, status: 'ready', time: '32 min ago', date: '2026-01-15', files: [{ name: 'Dissertation.pdf', size: '12.4 MB' }] },
-        { id: 'PH-2026-0040', customer: 'Vikram Patel', avatar: 'VP', bg: '#059669', pages: 8, printType: 'Color', binding: 'None', copies: 3, total: 192, status: 'completed', time: '1 hr ago', date: '2026-01-15', files: [{ name: 'Brochure.pdf', size: '1.5 MB' }] },
-        { id: 'PH-2026-0039', customer: 'Anita Desai', avatar: 'AD', bg: '#be185d', pages: 24, printType: 'B&W', binding: 'Spiral', copies: 1, total: 78, status: 'completed', time: '2 hrs ago', date: '2026-01-14', files: [{ name: 'Notes.pdf', size: '3.2 MB' }] },
-        { id: 'PH-2026-0038', customer: 'Raj Kumar', avatar: 'RK', bg: '#dc2626', pages: 4, printType: 'Color', binding: 'None', copies: 1, total: 32, status: 'cancelled', time: '3 hrs ago', date: '2026-01-14', files: [{ name: 'Poster.pdf', size: '5.1 MB' }] },
-        { id: 'PH-2026-0037', customer: 'Meera Joshi', avatar: 'MJ', bg: '#0d9488', pages: 60, printType: 'B&W', binding: 'Hard', copies: 2, total: 340, status: 'completed', time: '4 hrs ago', date: '2026-01-14', files: [{ name: 'Thesis.pdf', size: '8.3 MB' }] },
-        { id: 'PH-2026-0036', customer: 'Karthik Nair', avatar: 'KN', bg: '#7c3aed', pages: 12, printType: 'B&W', binding: 'None', copies: 1, total: 24, status: 'completed', time: '5 hrs ago', date: '2026-01-13', files: [{ name: 'Assignment.pdf', size: '1.1 MB' }] },
-        { id: 'PH-2026-0035', customer: 'Divya Reddy', avatar: 'DR', bg: '#2563eb', pages: 30, printType: 'Color', binding: 'Spiral', copies: 1, total: 270, status: 'completed', time: '6 hrs ago', date: '2026-01-13', files: [{ name: 'Presentation.pdf', size: '6.7 MB' }] }
-      ];
+    // Get shopId from auth state (stored in localstorage during login)
+    const shopId = this.authState.currentUser?.shopId;
+
+    if (!shopId) {
+      console.error('No shopId found in auth state. Owner must be logged in.');
+      this.topbar.setPendingOrders(0);
+      return;
     }
-    this.topbar.setPendingOrders(this.tabs[1]?.count ?? 0);
+
+    // Fetch orders for this shop from backend
+    this.ownerOrdersService.getShopOrders(shopId).subscribe({
+      next: (response: OrderResponse[]) => {
+        // Map backend OrderResponse to component's OrderItem format
+        this.orders = response.map((order) => {
+          const customerName = order.customer?.name || 'Unknown';
+          const intials = customerName
+            .split(' ')
+            .map((n) => n[0])
+            .join('')
+            .toUpperCase();
+          return {
+            orderId: order.id,
+            id: order.orderNumber,
+            customer: customerName, // Backend doesn't return customer name in owner view
+            avatar: intials,
+            phone: order.customer?.phone,
+            bg: this.getRandomColor(),
+            pages: order.items.reduce(
+              (sum, item) => sum + item.pages * item.copies,
+              0,
+            ),
+            printType: order.items[0]?.colorMode === 'BW' ? 'B&W' : 'Color',
+            binding: 'None', // Not in backend response
+            copies: order.items[0]?.copies ?? 1,
+            total: order.total,
+            status: order.status,
+            time: this.getRelativeTime(order.createdAt),
+            date: order.createdAt.split('T')[0],
+            files: order.items.map((item) => ({
+              name: item.fileName,
+              size: '0 MB',
+            })),
+          };
+        });
+
+        this.topbar.setPendingOrders(this.tabs[1]?.count ?? 0);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to fetch orders:', err);
+        this.topbar.setPendingOrders(0);
+        this.cdr.markForCheck();
+      },
+    });
   }
 
-    ngAfterViewInit(): void {
-        if (this.topbarActions) {
-            this.topbar.setActions(this.topbarActions);
-        }
-    }
+  private getRelativeTime(isoDate: string): string {
+    const now = new Date();
+    const date = new Date(isoDate);
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
 
-    ngOnDestroy(): void {
-        this.topbar.clearActions();
-    }
+    if (diffMins < 60) return `${diffMins} min ago`;
 
-    switchTab(tabId: string): void {
-        this.activeTab = tabId;
-        this.currentPage = 1;
-        this.cdr.markForCheck();
-    }
+    const diffHrs = Math.floor(diffMins / 60);
+    if (diffHrs < 24) return `${diffHrs} hr${diffHrs > 1 ? 's' : ''} ago`;
 
-    getStatValue(Label: string): string {
-        switch (Label) {
-            case 'Pending': return this.orders.filter(o => o.status === 'pending').length.toString();
-            case 'Printing': return this.orders.filter(o => o.status === 'printing').length.toString();
-            case 'Ready': return this.orders.filter(o => o.status === 'ready').length.toString();
-            case 'Completed': return this.orders.filter(o => o.status === 'completed').length.toString();
-            case 'Revenue': return '₹' + this.todayRevenue.toLocaleString();
-            default: return '0';
-        }
-    }
+    const diffDays = Math.floor(diffHrs / 24);
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  }
 
-    toggleAutoApproval(): void {
-        this.autoApproval = !this.autoApproval;
-        this.cdr.markForCheck();
-    }
+  private getRandomColor(): string {
+    const colors = [
+      '#0d9488',
+      '#7c3aed',
+      '#f97316',
+      '#2563eb',
+      '#059669',
+      '#d97706',
+      '#e11d48',
+      '#8b5cf6',
+      '#14b8a6',
+      '#facc15',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
 
-    toggleSelectAll(): void {
-        this.selectAll = !this.selectAll;
-        this.paginatedOrders.forEach(o => (o.selected = this.selectAll));
-        this.cdr.markForCheck();
+  ngAfterViewInit(): void {
+    if (this.topbarActions) {
+      this.topbar.setActions(this.topbarActions);
     }
+  }
 
-    toggleSelect(order: OrderItem): void {
-        order.selected = !order.selected;
-        this.selectAll = this.paginatedOrders.every(o => o.selected);
-        this.cdr.markForCheck();
+  ngOnDestroy(): void {
+    this.topbar.clearActions();
+  }
+
+  switchTab(tabId: string): void {
+    this.activeTab = tabId;
+    this.currentPage = 1;
+    this.cdr.markForCheck();
+  }
+
+  getStatValue(Label: string): string {
+    switch (Label) {
+      case 'Pending':
+        return this.orders
+          .filter((o) => o.status === 'pending')
+          .length.toString();
+      case 'Printing':
+        return this.orders
+          .filter((o) => o.status === 'printing')
+          .length.toString();
+      case 'Ready':
+        return this.orders
+          .filter((o) => o.status === 'ready')
+          .length.toString();
+      case 'Completed':
+        return this.orders
+          .filter((o) => o.status === 'completed')
+          .length.toString();
+      case 'Revenue':
+        return '₹' + this.todayRevenue.toLocaleString();
+      default:
+        return '0';
     }
+  }
 
-    approveOrder(order: OrderItem): void {
+  toggleAutoApproval(): void {
+    this.autoApproval = !this.autoApproval;
+    this.cdr.markForCheck();
+  }
+
+  toggleSelectAll(): void {
+    this.selectAll = !this.selectAll;
+    this.paginatedOrders.forEach((o) => (o.selected = this.selectAll));
+    this.cdr.markForCheck();
+  }
+
+  toggleSelect(order: OrderItem): void {
+    order.selected = !order.selected;
+    this.selectAll = this.paginatedOrders.every((o) => o.selected);
+    this.cdr.markForCheck();
+  }
+
+  approveOrder(order: OrderItem): void {
+    if (!order.orderId) return;
+    this.ownerOrdersService.updateOrderStatus(order.orderId, 'printing').subscribe({
+      next: () => {
         order.status = 'printing';
         order.selected = false;
         this.cdr.markForCheck();
-    }
+      },
+      error: (err) => console.error('Failed to approve order:', err),
+    });
+  }
 
-    rejectOrder(order: OrderItem): void {
+  rejectOrder(order: OrderItem): void {
+    if (!order.orderId) return;
+    this.ownerOrdersService.updateOrderStatus(order.orderId, 'cancelled').subscribe({
+      next: () => {
         order.status = 'cancelled';
         order.selected = false;
         this.cdr.markForCheck();
-    }
+      },
+      error: (err) => console.error('Failed to reject order:', err),
+    });
+  }
 
-    markReady(order: OrderItem): void {
+  markReady(order: OrderItem): void {
+    if (!order.orderId) return;
+    this.ownerOrdersService.updateOrderStatus(order.orderId, 'ready').subscribe({
+      next: () => {
         order.status = 'ready';
         this.cdr.markForCheck();
-    }
+      },
+      error: (err) => console.error('Failed to mark ready:', err),
+    });
+  }
 
-    markCompleted(order: OrderItem): void {
+  markCompleted(order: OrderItem): void {
+    if (!order.orderId) return;
+    this.ownerOrdersService.updateOrderStatus(order.orderId, 'completed').subscribe({
+      next: () => {
         order.status = 'completed';
         this.cdr.markForCheck();
-    }
+      },
+      error: (err) => console.error('Failed to mark completed:', err),
+    });
+  }
 
-    bulkApprove(): void {
-        this.selectedOrders.forEach(o => {
-            if (o.status === 'pending') o.status = 'printing';
-            o.selected = false;
-        });
-        this.selectAll = false;
-        this.cdr.markForCheck();
-    }
+  bulkApprove(): void {
+    const pendingOrders = this.selectedOrders.filter(
+      (o) => o.status === 'pending' && o.orderId,
+    );
+    pendingOrders.forEach((order) => {
+      this.ownerOrdersService.updateOrderStatus(order.orderId!, 'printing').subscribe({
+        next: () => {
+          order.status = 'printing';
+          order.selected = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => console.error('Failed to approve order:', err),
+      });
+    });
+    this.selectAll = false;
+  }
 
-    bulkReject(): void {
-        this.selectedOrders.forEach(o => {
-            if (o.status === 'pending') o.status = 'cancelled';
-            o.selected = false;
-        });
-        this.selectAll = false;
-        this.cdr.markForCheck();
-    }
-
-    openDrawer(order: OrderItem): void {
-        this.drawerOrder = order;
-        this.showDrawer = true;
-        this.cdr.markForCheck();
-    }
-
-    closeDrawer(): void {
-        this.showDrawer = false;
-        this.drawerOrder = null;
-        this.cdr.markForCheck();
-    }
-
-    openPrinterModal(): void {
-        this.showPrinterModal = true;
-        this.selectedPrinter = this.printers[0];
-        this.cdr.markForCheck();
-    }
-
-    closePrinterModal(): void {
-        this.showPrinterModal = false;
-        this.cdr.markForCheck();
-    }
-
-    assignPrinter(): void {
-        this.closePrinterModal();
-    }
-
-    goToPage(page: number): void {
-        if (page >= 1 && page <= this.totalPages) {
-            this.currentPage = page;
+  bulkReject(): void {
+    const pendingOrders = this.selectedOrders.filter(
+      (o) => o.status === 'pending' && o.orderId,
+    );
+    pendingOrders.forEach((order) => {
+      this.ownerOrdersService
+        .updateOrderStatus(order.orderId!, 'cancelled')
+        .subscribe({
+          next: () => {
+            order.status = 'cancelled';
+            order.selected = false;
             this.cdr.markForCheck();
-        }
-    }
+          },
+          error: (err) => console.error('Failed to reject order:', err),
+        });
+    });
+    this.selectAll = false;
+  }
 
-    getStatusClass(status: string): string {
-        const map: Record<string, string> = {
-            pending: 'status-pending',
-            printing: 'status-printing',
-            ready: 'status-ready',
-            completed: 'status-completed',
-            cancelled: 'status-cancelled',
-        };
-        return map[status] || '';
-    }
+  openDrawer(order: OrderItem): void {
+    this.drawerOrder = order;
+    this.showDrawer = true;
+    this.cdr.markForCheck();
+  }
 
-    getStatusLabel(status: string): string {
-        const map: Record<string, string> = {
-            pending: 'Pending',
-            printing: 'Printing',
-            ready: 'Ready',
-            completed: 'Completed',
-            cancelled: 'Cancelled',
-        };
-        return map[status] || status;
+  closeDrawer(): void {
+    this.showDrawer = false;
+    this.drawerOrder = null;
+    this.cdr.markForCheck();
+  }
+
+  openPrinterModal(): void {
+    this.showPrinterModal = true;
+    this.selectedPrinter = this.printers[0];
+    this.cdr.markForCheck();
+  }
+
+  closePrinterModal(): void {
+    this.showPrinterModal = false;
+    this.cdr.markForCheck();
+  }
+
+  assignPrinter(): void {
+    this.closePrinterModal();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.cdr.markForCheck();
     }
+  }
+
+  getStatusClass(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'status-pending',
+      printing: 'status-printing',
+      ready: 'status-ready',
+      completed: 'status-completed',
+      cancelled: 'status-cancelled',
+    };
+    return map[status] || '';
+  }
+
+  getStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'Pending',
+      printing: 'Printing',
+      ready: 'Ready',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    };
+    return map[status] || status;
+  }
 }

@@ -316,6 +316,7 @@ export class UploadPageComponent implements OnInit, OnDestroy {
   /* * -- ORDER -- * */
 
   placeOrder(): void {
+    console.log(this.selectedShop);
     if (!this.selectedShop) {
       this.toastService.show(MESSAGES.UPLOAD.SELECT_SHOP, 'warning');
       this.router.navigate(['/']);

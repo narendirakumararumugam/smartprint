@@ -17,6 +17,7 @@ public class OrderResponse {
     private String orderNumber;
     private String status;
     private String statusLabel;
+    private CustomerSummary customer;
     private ShopSummary shop;
     private List<OrderItemDTO> items;
     private List<OrderAddonDTO> addons;
@@ -31,6 +32,19 @@ public class OrderResponse {
     private boolean canCancel;
     private boolean canReorder;
     private LocalDateTime createdAt;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class CustomerSummary {
+        private String id;
+        private String name;
+        private String avatar;
+        private String email;
+        private String phone;
+    }
 
     @Getter
     @Setter

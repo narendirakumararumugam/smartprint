@@ -158,8 +158,8 @@
         <span class="pw-toggle" (click)="showPassword = !showPassword">
           <i
             class="bx"
-            [class.bx-eye-slash]="!showPassword"
-            [class.bx-eye]="showPassword"
+            [class.bx-show]="!showPassword"
+            [class.bx-hide]="showPassword"
           ></i>
         </span>
       </div>
@@ -198,8 +198,8 @@
         >
           <i
             class="bx"
-            [class.bx-eye-slash]="!showConfirmPassword"
-            [class.bx-eye]="showConfirmPassword"
+            [class.bx-show]="!showConfirmPassword"
+            [class.bx-hide]="showConfirmPassword"
           ></i>
         </span>
       </div>
@@ -521,7 +521,7 @@
         </div>
         <div class="ac-features">
           <span class="ac-feat amber"
-            ><i class="bx bx-eye"></i> Full control</span
+            ><i class="bx bx-hide"></i> Full control</span
           >
           <span class="ac-feat amber"
             ><i class="bx bx-time"></i> Review before print</span

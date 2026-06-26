@@ -130,7 +130,7 @@
               <i class="bx bx-printer"></i> Print Here
             </a>
             <button class="ca-btn ghost" (click)="openModal(shop); $event.stopPropagation()">
-              <i class="bx bx-eye"></i> Details
+              <i class="bx bx-hide"></i> Details
             </button>
             <button class="ca-btn remove" (click)="unsaveShop(shop, $event)" title="Remove">
               <i class="bx bx-trash"></i>
@@ -164,7 +164,7 @@
         
         <div class="lc-actions">
           <a class="ca-btn primary btn-sm" routerLink="/customer/upload" (click)="$event.stopPropagation()"><i class="bx bx-printer"></i> Print</a>
-          <button class="ca-btn ghost btn-sm" (click)="openModal(shop); $event.stopPropagation()"><i class="bx bx-eye"></i></button>
+          <button class="ca-btn ghost btn-sm" (click)="openModal(shop); $event.stopPropagation()"><i class="bx bx-hide"></i></button>
           <button class="ca-btn ghost btn-sm" style="color:var(--text-danger)" (click)="unsaveShop(shop, $event)"><i class="bx bx-heart"></i></button>
         </div>
       </div>

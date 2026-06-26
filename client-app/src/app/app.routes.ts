@@ -18,6 +18,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'owner/login',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/owner/owner-login/owner-login.component').then(
+        (m) => m.OwnerLoginComponent,
+      ),
+  },
+  {
     path: 'signup',
     canActivate: [guestGuard],
     loadComponent: () =>

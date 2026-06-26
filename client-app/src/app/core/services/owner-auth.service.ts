@@ -44,9 +44,42 @@ export class OwnerAuthService extends BaseApiService {
             email: request.email,
             fullName: `${request.firstName} ${request.lastName}`,
             userType: 'owner',
+            shopId: res.shopId,
+            shopName: res.shopName,
           });
         }
       }),
+    );
+  }
+
+  login(request: { email: string; password: string }): Observable<OwnerRegisterResponse | { success: boolean; message?: string }> {
+    // For owners we reuse the owner/auth resource path and post to 'login'.
+    // Returns a similar shaped response to register for mock fallback.
+    return this.apiPost<OwnerRegisterResponse | { success: boolean; message?: string }>(
+      'login',
+      request,
+      {
+        success: true,
+        shopId: 6,
+        shopName: 'Mock Owner Shop',
+        message: 'Login successful',
+        accessToken: 'mock-owner-token-xyz',
+        refreshToken: 'mock-owner-refresh-xyz',
+      }
+    ).pipe(
+      tap(res => {
+        // On successful login, set session as owner
+        if ((res as any).success) {
+          const response = res as OwnerRegisterResponse;
+          this.authState.setSession({
+            email: request.email,
+            fullName: request.email.split('@')[0], // Fallback to email prefix
+            userType: 'owner',
+            shopId: response.shopId,
+            shopName: response.shopName,
+          });
+        }
+      })
     );
   }
 

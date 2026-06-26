@@ -2,6 +2,7 @@ package com.smartprint.smartservice.services;
 
 import com.smartprint.smartservice.constants.LookupCodes;
 import com.smartprint.smartservice.constants.Messages;
+import com.smartprint.smartservice.dtos.LoginRequest;
 import com.smartprint.smartservice.dtos.OwnerRegisterRequest;
 import com.smartprint.smartservice.dtos.OwnerRegisterResponse;
 import com.smartprint.smartservice.models.*;
@@ -133,6 +134,60 @@ public class OwnerService {
                 .shopId(shop.getId())
                 .shopName(shop.getName())
                 .message("Shop registered successfully! Welcome to SmartPrint Partner.")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public OwnerRegisterResponse loginOwner(LoginRequest request) {
+        // Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElse(null);
+
+        if (user == null) {
+            return OwnerRegisterResponse.builder()
+                    .success(false)
+                    .message("Invalid email or password")
+                    .build();
+        }
+
+        // Verify password
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            return OwnerRegisterResponse.builder()
+                    .success(false)
+                    .message("Invalid email or password")
+                    .build();
+        }
+
+        // Check if user is an owner
+        if (!LookupCodes.UserTypes.OWNER.equals(user.getUserType().getCode())) {
+            return OwnerRegisterResponse.builder()
+                    .success(false)
+                    .message("This account is not registered as a shop owner")
+                    .build();
+        }
+
+        // Find the shop owned by this user
+        List<Shop> shops = shopRepository.findByOwnerId(user.getId());
+        if (shops.isEmpty()) {
+            return OwnerRegisterResponse.builder()
+                    .success(false)
+                    .message("No shop found for this owner account")
+                    .build();
+        }
+
+        Shop shop = shops.get(0); // Get the first shop (assuming one owner has one shop)
+
+        // Generate tokens
+        String accessToken = jwtService.generateAccessToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());;
+
+        return OwnerRegisterResponse.builder()
+                .success(true)
+                .shopId(shop.getId())
+                .shopName(shop.getName())
+                .message("Login successful")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

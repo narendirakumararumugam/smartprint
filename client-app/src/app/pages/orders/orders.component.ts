@@ -42,10 +42,11 @@ export interface OrderStep {
 
 export interface Order {
   id: string;
+  orderNumber: string;
   shopName: string;
   shopIcon: string;
   shopGrad: string;
-  status: 'active' | 'ready' | 'processing' | 'completed' | 'cancelled';
+  status: 'printing' | 'ready' | 'pending' | 'completed' | 'cancelled';
   statusLabel: string;
   date: string;
   time: string;
@@ -68,7 +69,7 @@ export interface Order {
   canReorder: boolean;
 }
 
-type TabType = 'all' | 'active' | 'ready' | 'completed' | 'cancelled';
+type TabType = 'all' | 'printing' | 'ready' | 'completed' | 'cancelled';
 type SortType = 'newest' | 'oldest' | 'amount-high' | 'amount-low';
 
 @Component({
@@ -91,7 +92,7 @@ type SortType = 'newest' | 'oldest' | 'amount-high' | 'amount-low';
 export class OrdersComponent implements OnInit {
   readonly tabs: { key: TabType; label: string }[] = [
     { key: 'all', label: 'All Orders' },
-    { key: 'active', label: 'Active' },
+    { key: 'printing', label: 'Printing' },
     { key: 'ready', label: 'Ready for Pickup' },
     { key: 'completed', label: 'Completed' },
     { key: 'cancelled', label: 'Cancelled' },
@@ -153,7 +154,8 @@ export class OrdersComponent implements OnInit {
     const date = new Date(o.createdAt);
     const status = (o.status as Order['status']) || 'active';
     return {
-      id: o.orderNumber || o.id,
+      id: o.id,
+      orderNumber: o.orderNumber,
       shopName: o.shop?.name || 'Unknown Shop',
       shopIcon: o.shop?.icon || '',
       shopGrad: o.shop?.gradient || 'linear-gradient(135deg,#1e3a8a,#2563eb)',
@@ -198,7 +200,7 @@ export class OrdersComponent implements OnInit {
           ? 100
           : status === 'ready'
             ? 75
-            : status === 'active'
+            : status === 'printing'
               ? 50
               : 0),
       progressLabel: o.progressLabel || (status === 'completed'
@@ -206,7 +208,7 @@ export class OrdersComponent implements OnInit {
           : status === 'ready'
             ? 'Ready for pickup'
             : 'In progress'),
-      canCancel: o.canCancel ?? (status === 'active' || status === 'processing'),
+      canCancel: o.canCancel ?? (status === 'printing' || status === 'pending'),
       canReorder: o.canReorder ?? (status === 'completed' || status === 'cancelled'),
     };
   }
@@ -214,8 +216,8 @@ export class OrdersComponent implements OnInit {
   /* -- Counts -- */
   getCount(tab: TabType): number {
     if (tab === 'all') return this.orders.length;
-    if(tab === 'active'){
-      return this.orders.filter(o => o.status === 'active' || o.status === 'processing').length;
+    if(tab === 'printing'){
+      return this.orders.filter(o => o.status === 'printing' || o.status === 'pending').length;
     }
     return this.orders.filter((o) => o.status === tab).length;
   }
@@ -236,8 +238,8 @@ export class OrdersComponent implements OnInit {
   applyFilters(): void {
     let list = this.orders;
 
-    if(this.activeTab === 'active'){
-      list = list.filter(o => o.status === 'active' || o.status === 'processing');
+    if(this.activeTab === 'printing'){
+      list = list.filter(o => o.status === 'printing' || o.status === 'pending');
     }
     else if (this.activeTab !== 'all') {
       list = list.filter((o) => o.status === this.activeTab);
@@ -362,11 +364,12 @@ export class OrdersComponent implements OnInit {
   private getMockOrders(): Order[] {
     return [
       {
-        id: 'PH-2026-0042',
+        id: '1',
+        orderNumber: 'PH-2026-0042', 
         shopName: 'PrintPro Express',
         shopIcon: '🖨️',
         shopGrad: 'linear-gradient(135deg,#1e3a8a,#2563eb)',
-        status: 'active',
+        status: 'printing',
         statusLabel: 'In Progress',
         date: 'Apr 30, 2026',
         time: '10:24 AM',
@@ -406,61 +409,6 @@ export class OrdersComponent implements OnInit {
         progressLabel: 'Printing in progress...',
         canCancel: true,
         canReorder: false,
-      },
-      {
-        id: 'PH-2026-0041',
-        shopName: 'Campus Prints',
-        shopIcon: '🏪',
-        shopGrad: 'linear-gradient(135deg,#059669,#34d399)',
-        status: 'ready',
-        statusLabel: 'Ready for Pickup',
-        date: 'Apr 30, 2026',
-        time: '9:05 AM',
-        pickupTime: 'Today 9:00 AM',
-        items: [
-          { name: 'B&W Print (A4)', qty: 120, rate: '₹1.5', total: '₹180' },
-          { name: 'Hard Binding', qty: 1, rate: '₹220', total: '₹220' },
-        ],
-        subtotal: '₹400',
-        tax: '₹0 (incl.)',
-        total: '₹400',
-        totalNum: 400,
-        note: '',
-        files: ['Project_Report_Final.pdf'],
-        pages: 120,
-        copies: 1,
-        address: 'Opposite North Campus Gate, GTB Nagar, New Delhi',
-        phone: '+91 76543 21098',
-        steps: [
-          {
-            label: 'Order Placed',
-            time: '9:05 AM',
-            desc: 'Order received.',
-            state: 'done',
-          },
-          {
-            label: 'Printing',
-            time: '9:12 AM',
-            desc: '120 pages printed.',
-            state: 'done',
-          },
-          {
-            label: 'Binding',
-            time: '9:28 AM',
-            desc: 'Hard-bound cover applied.',
-            state: 'done',
-          },
-          {
-            label: 'Ready',
-            time: '9:45 AM',
-            desc: 'Your order is packed and ready! Please collect.',
-            state: 'active',
-          },
-        ],
-        progress: 75,
-        progressLabel: 'Ready for pickup',
-        canCancel: false,
-        canReorder: true,
       },
     ];
   }

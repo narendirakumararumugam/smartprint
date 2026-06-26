@@ -292,7 +292,7 @@
             }
           </div>
           <div class="approval-card amber" [class.selected]="approvalMode === 'manual'" (click)="setApprovalMode('manual')">
-            <div class="approval-icon manual"><i class="bx bx-eye"></i></div>
+            <div class="approval-icon manual"><i class="bx bx-hide"></i></div>
             <div class="approval-card-title">Manual Review</div>
             <div class="approval-card-desc">You review and approve/reject each order manually before printing</div>
             @if (approvalMode === 'manual') {
@@ -422,7 +422,7 @@
   <div class="modal-overlay" (click)="closeDangerModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-icon" [class.red]="dangerAction === 'delete'">
-        <i class="bx" [class.bx-trash]="dangerAction === 'delete'" [class.bx-eye-slash]="dangerAction === 'deactivate'"></i>
+        <i class="bx" [class.bx-trash]="dangerAction === 'delete'" [class.bx-show]="dangerAction === 'deactivate'"></i>
       </div>
       <div class="modal-title">{{ dangerTitle }}</div>
       <div class="modal-text">{{ dangerText }}</div>

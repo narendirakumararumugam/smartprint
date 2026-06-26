@@ -84,7 +84,7 @@ export class OwnerLayoutComponent {
       title: 'Analytics',
       links: [
         {
-          icon: 'bx bx-chart-line',
+          icon: 'bx bx-line-chart',
           label: 'Revenue',
           route: '/owner/analytics/revenue',
         },

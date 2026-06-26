@@ -67,7 +67,7 @@
             <td>{{ user.joinedAt }}</td>
             <td>
               <div class="actions-cell">
-                <button class="action-btn" (click)="openDetail(user)" title="View"><i class="bx bx-eye"></i></button>
+                <button class="action-btn" (click)="openDetail(user)" title="View"><i class="bx bx-hide"></i></button>
                 <button class="action-btn" [class.danger]="user.active" (click)="toggleUserStatus(user)" [title]="user.active ? 'Deactivate' : 'Activate'">
                   <i [class]="user.active ? 'bx bx-block' : 'bx bx-check'"></i>
                 </button>

@@ -3,6 +3,7 @@ package com.smartprint.smartservice.services;
 import com.smartprint.smartservice.models.*;
 import com.smartprint.smartservice.models.lookup.*;
 import com.smartprint.smartservice.repository.OrderRepository;
+import com.smartprint.smartservice.repository.UserRepository;
 import com.smartprint.smartservice.repository.lookup.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class OrderService {
     private final PrintSideRepository printSideRepository;
     private final PaperSizeRepository paperSizeRepository;
     private final TimelineStateRepository timelineStateRepository;
+    private final UserRepository userRepository;
 
     private static final Map<String, BigDecimal> ADDON_PRICES = Map.of(
             "spiral", new BigDecimal("30"),
@@ -60,8 +62,8 @@ public class OrderService {
         String orderNumber = generateOrderNumber();
 
         // Lookup entities
-        OrderStatus processingStatus = orderStatusRepository.findByCode(LookupCodes.OrderStatuses.PROCESSING)
-                .orElseThrow(() -> new RuntimeException(Messages.Lookup.ORDER_STATUS_NOT_FOUND + LookupCodes.OrderStatuses.PROCESSING));
+        OrderStatus processingStatus = orderStatusRepository.findByCode(LookupCodes.OrderStatuses.PENDING)
+                .orElseThrow(() -> new RuntimeException(Messages.Lookup.ORDER_STATUS_NOT_FOUND + LookupCodes.OrderStatuses.PENDING));
         TimelineState doneState = timelineStateRepository.findByCode(LookupCodes.TimelineStates.DONE)
                 .orElseThrow(() -> new RuntimeException(Messages.Lookup.TIMELINE_STATE_NOT_FOUND + LookupCodes.TimelineStates.DONE));
         TimelineState pendingState = timelineStateRepository.findByCode(LookupCodes.TimelineStates.PENDING)
@@ -207,7 +209,7 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException(Messages.Orders.ORDER_NOT_FOUND));
 
         String currentCode = order.getStatus().getCode();
-        if (!LookupCodes.OrderStatuses.PROCESSING.equals(currentCode) && !LookupCodes.OrderStatuses.ACTIVE.equals(currentCode)) {
+        if (!LookupCodes.OrderStatuses.PENDING.equals(currentCode) && !LookupCodes.OrderStatuses.PRINTING.equals(currentCode)) {
             throw new IllegalStateException(Messages.Orders.CANNOT_CANCEL);
         }
 
@@ -284,7 +286,7 @@ public class OrderService {
         TimelineState activeState = timelineStateRepository.findByCode(LookupCodes.TimelineStates.ACTIVE).orElse(null);
         TimelineState doneState = timelineStateRepository.findByCode(LookupCodes.TimelineStates.DONE).orElse(null);
 
-        if (LookupCodes.OrderStatuses.ACTIVE.equals(newStatus)) {
+        if (LookupCodes.OrderStatuses.PRINTING.equals(newStatus)) {
             order.getTimeline().stream()
                     .filter(t -> "Printing".equals(t.getLabel()))
                     .findFirst()
@@ -314,12 +316,24 @@ public class OrderService {
     private OrderResponse toOrderResponse(Order order) {
         Shop shop = order.getShop();
 
+        User customer = userRepository.findById(order.getUserId()).orElse(null);
+        OrderResponse.CustomerSummary customerSummary = null;
+        if (customer != null) {
+            customerSummary = OrderResponse.CustomerSummary.builder()
+                    .id(customer.getId().toString())
+                    .name(customer.getFirstName() + " " + customer.getLastName())
+                    .phone(customer.getPhone())
+                    .avatar(customer.getAvatar())
+                    .email(customer.getEmail())
+                    .build();
+        }
+
         String statusCode = order.getStatus().getCode();
         int progress = calculateProgress(statusCode);
         String progressLabel = getProgressLabel(statusCode);
         String statusLabel = getStatusLabel(statusCode);
 
-        boolean canCancel = LookupCodes.OrderStatuses.PROCESSING.equals(statusCode) || LookupCodes.OrderStatuses.ACTIVE.equals(statusCode);
+        boolean canCancel = LookupCodes.OrderStatuses.PENDING.equals(statusCode) || LookupCodes.OrderStatuses.PRINTING.equals(statusCode);
         boolean canReorder = LookupCodes.OrderStatuses.COMPLETED.equals(statusCode) || LookupCodes.OrderStatuses.CANCELLED.equals(statusCode);
 
         return OrderResponse.builder()
@@ -327,6 +341,7 @@ public class OrderService {
                 .orderNumber(order.getOrderNumber())
                 .status(statusCode)
                 .statusLabel(statusLabel)
+                .customer(customerSummary)
                 .shop(OrderResponse.ShopSummary.builder()
                         .id(shop.getId())
                         .name(shop.getName())
@@ -370,8 +385,8 @@ public class OrderService {
     }
 
     private int calculateProgress(String status) {
-        if (LookupCodes.OrderStatuses.PROCESSING.equals(status)) return 15;
-        if (LookupCodes.OrderStatuses.ACTIVE.equals(status)) return 45;
+        if (LookupCodes.OrderStatuses.PENDING.equals(status)) return 15;
+        if (LookupCodes.OrderStatuses.PRINTING.equals(status)) return 45;
         if (LookupCodes.OrderStatuses.READY.equals(status)) return 85;
         if (LookupCodes.OrderStatuses.COMPLETED.equals(status)) return 100;
         if (LookupCodes.OrderStatuses.CANCELLED.equals(status)) return 0;
@@ -379,8 +394,8 @@ public class OrderService {
     }
 
     private String getProgressLabel(String status) {
-        if (LookupCodes.OrderStatuses.PROCESSING.equals(status)) return "Order received, waiting to start...";
-        if (LookupCodes.OrderStatuses.ACTIVE.equals(status)) return "Printing in progress...";
+        if (LookupCodes.OrderStatuses.PENDING.equals(status)) return "Order received, waiting to start...";
+        if (LookupCodes.OrderStatuses.PRINTING.equals(status)) return "Printing in progress...";
         if (LookupCodes.OrderStatuses.READY.equals(status)) return "Ready for pickup!";
         if (LookupCodes.OrderStatuses.COMPLETED.equals(status)) return "Picked up";
         if (LookupCodes.OrderStatuses.CANCELLED.equals(status)) return "Order was cancelled";
@@ -388,8 +403,8 @@ public class OrderService {
     }
 
     private String getStatusLabel(String status) {
-        if (LookupCodes.OrderStatuses.PROCESSING.equals(status)) return "Processing";
-        if (LookupCodes.OrderStatuses.ACTIVE.equals(status)) return "In Progress";
+        if (LookupCodes.OrderStatuses.PENDING.equals(status)) return "Processing";
+        if (LookupCodes.OrderStatuses.PRINTING.equals(status)) return "In Progress";
         if (LookupCodes.OrderStatuses.READY.equals(status)) return "Ready for Pickup";
         if (LookupCodes.OrderStatuses.COMPLETED.equals(status)) return "Completed";
         if (LookupCodes.OrderStatuses.CANCELLED.equals(status)) return "Cancelled";

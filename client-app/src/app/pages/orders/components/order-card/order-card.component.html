@@ -12,7 +12,7 @@
         <div>
           <div class="oc-shop-name">{{ order.shopName }}</div>
           <div class="oc-id">
-            Order {{ order.id }} &nbsp;&middot;&nbsp; {{ order.date }} at
+            Order {{ order.orderNumber }} &nbsp;&middot;&nbsp; {{ order.date }} at
             {{ order.time }}
           </div>
         </div>
@@ -75,7 +75,7 @@
         style="color: var(--success); font-weight: 600"
         >Ready for pickup!</span
       >
-      <span *ngIf="order.status === 'active'"
+      <span *ngIf="order.status === 'printing'"
         >Est. pickup: {{ order.pickupTime }}</span
       >
       <span *ngIf="order.status === 'cancelled'" style="color: var(--danger)"
@@ -91,7 +91,7 @@
         class="oc-btn oc-btn-outline"
         (click)="viewOrder.emit(order); $event.stopPropagation()"
       >
-        <i class="bx bx-eye"></i> View
+        <i class="bx bx-hide"></i> View
       </button>
       <button
         class="oc-btn oc-btn-success"

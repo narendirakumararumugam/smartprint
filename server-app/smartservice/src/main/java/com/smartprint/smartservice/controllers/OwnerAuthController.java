@@ -1,6 +1,7 @@
 package com.smartprint.smartservice.controllers;
 
 import com.smartprint.smartservice.constants.ApiPaths;
+import com.smartprint.smartservice.dtos.LoginRequest;
 import com.smartprint.smartservice.dtos.OwnerRegisterRequest;
 import com.smartprint.smartservice.dtos.OwnerRegisterResponse;
 import com.smartprint.smartservice.security.AuthCookieService;
@@ -29,6 +30,26 @@ public class OwnerAuthController {
             return ResponseEntity.badRequest().body(response);
         }
         authCookieService.addAuthCookies(httpResponse, response.getAccessToken(), response.getRefreshToken(), httpRequest.isSecure());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<OwnerRegisterResponse> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) {
+
+        OwnerRegisterResponse response = ownerService.loginOwner(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        authCookieService.addAuthCookies(
+                httpResponse,
+                response.getAccessToken(),
+                response.getRefreshToken(),
+                httpRequest.isSecure());
+
         return ResponseEntity.ok(response);
     }
 

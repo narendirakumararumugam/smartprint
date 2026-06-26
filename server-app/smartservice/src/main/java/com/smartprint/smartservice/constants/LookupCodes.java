@@ -11,8 +11,8 @@ public final class LookupCodes {
     }
 
     public static final class OrderStatuses {
-        public static final String PROCESSING = "processing";
-        public static final String ACTIVE = "active";
+        public static final String PENDING = "pending";
+        public static final String PRINTING = "printing";
         public static final String READY = "ready";
         public static final String COMPLETED = "completed";
         public static final String CANCELLED = "cancelled";
