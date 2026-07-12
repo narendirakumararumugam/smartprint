@@ -207,6 +207,14 @@ public class OwnerShopSettingsService {
         return toSettingsDTO(shop);
     }
 
+    @Transactional
+    public Object[] toggleShopOpen(UUID ownerId) {
+        Shop shop = findOwnerShop(ownerId);
+        shop.setOpen(!shop.getOpen());
+        shopRepository.save(shop);
+        return  new Object[]{shop.getId(), shop.getOpen(), shop.getName()};
+    }
+
     private Shop findOwnerShop(UUID ownerId) {
         List<Shop> shops = shopRepository.findByOwnerId(ownerId);
         if (shops.isEmpty()) {

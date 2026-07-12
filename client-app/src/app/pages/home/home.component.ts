@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { Observable, skip, Subscription } from 'rxjs';
+import { Observable, skip, Subject, Subscription, takeUntil } from 'rxjs';
 import { Shop } from '../../models/shop.model';
 import { ShopService } from '../../core/services/shop.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -27,6 +27,7 @@ import { ShopCardComponent } from './components/shop-card/shop-card.component';
 import { FeaturedCardComponent } from './components/featured-card/featured-card.component';
 import { FilterStripComponent } from './components/filter-strip/filter-strip.component';
 import { HeroComponent } from './components/hero/hero.component';
+import { OrderRealtimeService } from '../../core/services/order-realtime.service';
 
 @Component({
   selector: 'app-home',
@@ -66,6 +67,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private heroObserver?: IntersectionObserver;
   private sub!: Subscription;
   private locationSub!: Subscription;
+  private readonly destroy$ = new Subject<void>();
 
   private readonly shopService = inject(ShopService);
   private readonly toastService = inject(ToastService);
@@ -73,6 +75,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
+
+  constructor(private orderRealtime: OrderRealtimeService){}
 
   ngOnInit(): void {
     this.shops$ = this.shopService.filteredShops$;
@@ -99,6 +103,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cdr.markForCheck();
         const area = loc?.shortAddress ?? 'your area';
         this.toastService.show(MESSAGES.SHOPS.FOUND(shops.length, area), 'success');
+
+        if(isPlatformBrowser(this.platformId)){
+          this.subscribeToShopStatusUpdates(shops);
+        }
       },
       error: () => {
         this.isLoading = false;
@@ -106,6 +114,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
+
+  /**
+     * For each shop in the list, watch its status topic so the Open/Closed badge
+     * updates in real-time when the owner toggles their shop.
+     */
+    private subscribeToShopStatusUpdates(shops: Shop[]): void {
+        shops.forEach(shop => {
+            this.orderRealtime.watchShopStatus(shop.id)
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(event => {
+                    this.shopService.patchShopStatus(event.shopId, event.open);
+                    this.cdr.markForCheck();
+                });
+        });
+    }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId) && this.heroRef) {
@@ -121,6 +144,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    this.locationSub?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
     this.heroObserver?.disconnect();
   }
 

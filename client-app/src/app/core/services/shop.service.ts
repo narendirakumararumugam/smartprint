@@ -90,6 +90,18 @@ export class ShopService {
     this.searchQuery$.next(this.searchQuery$.getValue());
   }
 
+  /**
+     * Patch a shop's open/closed status in the in-memory list and trigger a re-emit.
+     * Called by the home page when a SHOP_STATUS_CHANGED WebSocket event arrives.
+     */
+    patchShopStatus(shopId: number, isOpen: boolean): void {
+        const shop = this.allShops.find(s => s.id === shopId);
+        if (shop) {
+            shop.isOpen = isOpen;
+            this.refreshFiltered();
+        }
+    }
+
   private haversineKm(
     Lat1: number,
     Lng1: number,

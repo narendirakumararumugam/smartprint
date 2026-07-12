@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
@@ -84,7 +85,9 @@ public class SecurityConfig {
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
         source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/ws/**", configuration);
         return source;
     }
 }

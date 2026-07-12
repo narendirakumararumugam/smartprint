@@ -10,6 +10,7 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
@@ -25,6 +26,8 @@ import {
 } from '../../shared/components/dropdown/dropdown.component';
 import { ToastService } from '../../core/services/toast.service';
 import { Title } from '@angular/platform-browser';
+import { Subject, takeUntil } from 'rxjs';
+import { OrderRealtimeService, OrderStatusEvent } from '../../core/services/order-realtime.service';
 
 export interface OrderItem {
   name: string;
@@ -89,7 +92,7 @@ type SortType = 'newest' | 'oldest' | 'amount-high' | 'amount-low';
   styleUrl: './orders.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
   readonly tabs: { key: TabType; label: string }[] = [
     { key: 'all', label: 'All Orders' },
     { key: 'printing', label: 'Printing' },
@@ -119,6 +122,14 @@ export class OrdersComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly title = inject(Title);
   private readonly orderService = inject(CustomerOrderService);
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(private orderRealtime: OrderRealtimeService){}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   ngOnInit(): void {
     this.title.setTitle('My Orders - SmartPrint');
@@ -134,6 +145,7 @@ export class OrdersComponent implements OnInit {
     } else {
       this.loadOrders();
     }
+    this.subscribeToRealTimeUpdates()
   }
 
   private loadOrders(): void {
@@ -149,6 +161,61 @@ export class OrdersComponent implements OnInit {
       },
     });
   }
+
+  /**
+   * Subscribe to real-time order status updates pushed by the backend via WebSocket.
+   * When an update arrives, find the matching order and patch it in-place so the UI
+   * reflects the new status without a full reload.
+   */
+  private subscribeToRealTimeUpdates(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.orderRealtime.watchOrderUpdates()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event: OrderStatusEvent) => {
+        const order = this.orders.find(o => o.id === event.orderId || o.id === event.orderNumber);
+        if (!order) return;
+
+        // Map backend status codes to the local union type
+        const statusMap: Record<string, Order['status']> = {
+          PENDING: 'pending',
+          PRINTING: 'printing',
+          READY: 'ready',
+          COMPLETED: 'completed',
+          CANCELLED: 'cancelled',
+        };
+
+        order.status = statusMap[event.status?.toUpperCase()] ?? order.status;
+        order.statusLabel = event.statusLabel || order.statusLabel;
+        order.progress = event.progress ?? order.progress;
+        order.progressLabel = event.progressLabel || order.progressLabel;
+        order.canCancel = order.status === 'printing' || order.status === 'pending';
+        order.canReorder = order.status === 'completed' || order.status === 'cancelled';
+
+        if (event.timeline?.length) {
+          order.steps = event.timeline.map(t => ({
+            label: t.label,
+            time: t.eventTime || '',
+            desc: '',
+            state: t.state as any,
+          }));
+        }
+
+        // If the open modal is this order, refresh its reference
+        if (this.selectedOrder?.id === order.id) {
+          this.selectedOrder = { ...order };
+        }
+
+        this.orders = this.orders.map(o => o.id === order.id ? { ...order } : o);
+
+        console.log(this.orders)
+        console.log(event)
+
+        this.applyFilters();
+        this.toastService.show(`Order ${order.orderNumber}: ${order.statusLabel}`, 'info');
+        this.cdr.markForCheck(); 
+      });
+}
 
   private mapOrderResponse(o: OrderResponse): Order {
     const date = new Date(o.createdAt);

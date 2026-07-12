@@ -1,5 +1,7 @@
 package com.smartprint.smartservice.services;
 
+import com.smartprint.smartservice.dtos.events.NewOrderEvent;
+import com.smartprint.smartservice.dtos.events.OrderStatusEvent;
 import com.smartprint.smartservice.models.*;
 import com.smartprint.smartservice.models.lookup.*;
 import com.smartprint.smartservice.repository.OrderRepository;
@@ -35,6 +37,7 @@ public class OrderService {
     private final PaperSizeRepository paperSizeRepository;
     private final TimelineStateRepository timelineStateRepository;
     private final UserRepository userRepository;
+    private final WebSocketNotificationService wsNotificationService;
 
     private static final Map<String, BigDecimal> ADDON_PRICES = Map.of(
             "spiral", new BigDecimal("30"),
@@ -182,7 +185,34 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        return toOrderResponse(order);
+        // — Mappers —
+        OrderResponse response = toOrderResponse(order);
+
+        // Notify shop owner via WebSocket
+        try {
+            User owner = userRepository.findById(shop.getOwnerId()).orElse(null);
+            if (owner != null) {
+                User customer = userRepository.findById(userId).orElse(null);
+                String customerName = customer != null
+                        ? customer.getFirstName() + " " + customer.getLastName()
+                        : "Customer";
+
+                wsNotificationService.pushNewOrderToOwner(owner.getEmail(),
+                        NewOrderEvent.builder()
+                                .type("NEW_ORDER")
+                                .orderId(order.getId().toString())
+                                .orderNumber(order.getOrderNumber())
+                                .customerName(customerName)
+                                .total(order.getTotal())
+                                .itemCount(order.getItems().size())
+                                .createdAt(order.getCreatedAt().toString())
+                                .build());
+            }
+        } catch (Exception e) {
+            // WS failure must never break the HTTP response
+        }
+
+        return response;
     }
 
     @Transactional(readOnly = true)
@@ -308,7 +338,30 @@ public class OrderService {
         }
 
         orderRepository.save(order);
-        return toOrderResponse(order);
+        // — Mappers —
+        OrderResponse response = toOrderResponse(order);
+
+        // Notify the customer via WebSocket
+        try {
+            User customer = userRepository.findById(order.getUserId()).orElse(null);
+            if (customer != null) {
+                wsNotificationService.pushOrderStatusToCustomer(customer.getEmail(),
+                        OrderStatusEvent.builder()
+                                .type("ORDER_STATUS_CHANGED")
+                                .orderId(order.getId().toString())
+                                .orderNumber(order.getOrderNumber())
+                                .status(response.getStatus())
+                                .statusLabel(response.getStatusLabel())
+                                .progress(response.getProgress())
+                                .progressLabel(response.getProgressLabel())
+                                .timeline(response.getTimeline())
+                                .build());
+            }
+        } catch (Exception e) {
+            // WS failure must never break the HTTP response
+        }
+
+        return response;
     }
 
     // —— Mappers ——

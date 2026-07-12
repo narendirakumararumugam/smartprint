@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { WebSocketService } from './web-socket.service';
 
 export interface AuthUser {
   id?: string;
@@ -28,6 +29,12 @@ export class AuthStateService {
   private readonly userSubject = new BehaviorSubject<AuthUser | null>(this.loadUser());
   readonly user$ = this.userSubject.asObservable();
 
+  constructor(private wsService: WebSocketService){
+    if(this.isBrowser && this.userSubject.value){
+      wsService.connect();
+    }
+  }
+
   get isLoggedIn(): boolean {
     return !!this.currentUser;
   }
@@ -44,6 +51,8 @@ export class AuthStateService {
     if (!this.isBrowser) return;
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.userSubject.next(user);
+
+    this.wsService.connect();
   }
 
   /**
@@ -53,6 +62,8 @@ export class AuthStateService {
     if (this.isBrowser) {
       localStorage.removeItem(USER_KEY);
     }
+
+    this.wsService.disconnect();
     this.userSubject.next(null);
     this.router.navigate(['/login']);
   }

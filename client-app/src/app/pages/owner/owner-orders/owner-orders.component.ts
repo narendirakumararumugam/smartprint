@@ -10,7 +10,7 @@ import {
   ChangeDetectorRef,
   PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   DropdownComponent,
@@ -23,6 +23,9 @@ import {
   OwnerOrdersService,
 } from '../../../core/services/owner-orders.service';
 import { AuthStateService } from '../../../core/services/auth-state.service';
+import { NewOrderEvent, OrderRealtimeService } from '../../../core/services/order-realtime.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 interface OrderItem {
   id: string;
@@ -61,6 +64,7 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly topbar = inject(OwnerTopbarService); // Inferred from topbar actions service context
+  private readonly wsDestroy$ = new Subject<void>();
 
   @ViewChild('topbarActions') topbarActions?: TemplateRef<unknown>;
 
@@ -98,6 +102,8 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private readonly ownerOrdersService: OwnerOrdersService,
     private readonly authState: AuthStateService,
+    private readonly orderRealtime: OrderRealtimeService,
+    private readonly toastService: ToastService
   ) {}
 
   get tabs(): OrderTab[] {
@@ -267,7 +273,48 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cdr.markForCheck();
       },
     });
+
+    if(isPlatformBrowser(this.platformId)){
+      this.subscribeToNewOrders();
+    }
   }
+
+  /**
+     * Listen for new orders pushed by the backend via WebSocket.
+     * Prepend a placeholder order entry and show a toast notification.
+     * The owner can reload to get the full details, or we can fetch the specific order.
+     */
+    private subscribeToNewOrders(): void {
+        this.orderRealtime.watchOwnerNotifications()
+            .pipe(takeUntil(this.wsDestroy$))
+            .subscribe((event: NewOrderEvent) => {
+                // Build a minimal OrderItem from the event payload
+                const customerName = event.customerName || 'Customer';
+                const initials = customerName.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2);
+                const newOrder: OrderItem = {
+                    orderId: event.orderId,
+                    id: event.orderNumber,
+                    customer: customerName,
+                    avatar: initials,
+                    bg: this.getRandomColor(),
+                    pages: 0,
+                    printType: 'B&W',
+                    binding: 'None',
+                    copies: event.itemCount,
+                    total: event.total,
+                    status: 'pending',
+                    time: 'Just now',
+                    date: event.createdAt?.split('T')[0] ?? new Date().toISOString().split('T')[0],
+                    files: [],
+                };
+
+                // Prepend to orders list so it appears at the top
+                this.orders = [newOrder, ...this.orders];
+                this.topbar.setPendingOrders(this.orders.filter(o => o.status === 'pending').length);
+                this.toastService.show(`New order ${event.orderNumber} from ${customerName}`, 'info');
+                this.cdr.markForCheck();
+            });
+    }
 
   private getRelativeTime(isoDate: string): string {
     const now = new Date();
@@ -307,6 +354,8 @@ export class OwnerOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.wsDestroy$.next();
+    this.wsDestroy$.complete();
     this.topbar.clearActions();
   }
 
